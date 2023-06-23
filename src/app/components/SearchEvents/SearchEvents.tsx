@@ -1,6 +1,6 @@
 'use client';
-const SearchEvents = ({ setEvents }) => {
-  const handleSubmit = (e) => {
+const SearchEvents = ({ setEvents }: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
 
     const form = e.currentTarget;

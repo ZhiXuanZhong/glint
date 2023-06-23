@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import SearchEvents from '../components/SearchEvents/SearchEvents';
+import FilterEvents from '../components/FilterEvents/FilterEvents';
 import EventResults from '../components/EventResults/EventResults';
 
 interface EventsData {
@@ -8,14 +9,14 @@ interface EventsData {
 }
 
 export default function Events() {
-  const [events, setEvents] = useState<EventsData | undefined>();
+  const [events, setEvents] = useState<any | undefined>();
 
-  const handleEventsUpdate = (data: EventsData) => {
+  const handleEventsUpdate = (data: any) => {
     setEvents(data);
   };
 
   const fetchData = async () => {
-    const response = await fetch('http://localhost:3000/api/get-events', { cache: 'no-store' });
+    const response = await fetch('/api/get-events', { cache: 'no-store' });
     return response.json();
   };
 
@@ -26,6 +27,7 @@ export default function Events() {
   return (
     <>
       <SearchEvents setEvents={handleEventsUpdate} />
+      <FilterEvents />
       <EventResults events={events} />
     </>
   );
