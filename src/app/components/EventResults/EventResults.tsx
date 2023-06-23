@@ -20,13 +20,13 @@ interface Event {
   id: string;
 }
 
-const formatDate = (timestamp: number) => {
-  const date = new Date(timestamp);
-  const formattedDate = date.toLocaleDateString('zh');
-  return formattedDate;
-};
-
 const EventResults = ({ events }: { events: Array<Event> | undefined }) => {
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString('zh');
+    return formattedDate;
+  };
+
   return (
     <div>
       {events &&

@@ -8,7 +8,7 @@ interface EventsData {
   data: Event[];
 }
 
-export default function Events() {
+export default function Page() {
   const [events, setEvents] = useState<any | undefined>([]);
 
   const handleEventsUpdate = (data: any) => {
