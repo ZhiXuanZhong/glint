@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import SearchEvents from '../components/SearchEvents/SearchEvents';
-import FilterEvents from '../components/FilterEvents/FilterEvents';
+import SortEvents from '../components/SortEvents/SortEvents';
 import EventResults from '../components/EventResults/EventResults';
 
 interface EventsData {
@@ -9,10 +9,28 @@ interface EventsData {
 }
 
 export default function Events() {
-  const [events, setEvents] = useState<any | undefined>();
+  const [events, setEvents] = useState<any | undefined>([]);
 
   const handleEventsUpdate = (data: any) => {
     setEvents(data);
+  };
+
+  const handleSort = (type: any) => {
+    // setEvents([...events].sort((a, b) => a.startTime - b.startTime));
+    console.log(type);
+    switch (type) {
+      case 'nerest':
+        setEvents([...events].sort((a, b) => a.startTime - b.startTime));
+
+        break;
+      case 'latest':
+        setEvents([...events].sort((a, b) => a.createdTime.seconds - b.createdTime.seconds));
+
+        break;
+
+      default:
+        break;
+    }
   };
 
   const fetchData = async () => {
@@ -27,7 +45,7 @@ export default function Events() {
   return (
     <>
       <SearchEvents setEvents={handleEventsUpdate} />
-      <FilterEvents />
+      <SortEvents handleSort={handleSort} />
       <EventResults events={events} />
     </>
   );
