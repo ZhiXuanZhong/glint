@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { Key } from 'react';
 import UserInfo from '@/app/components/UserInfo/UserInfo';
-import RevokeButton from '@/app/components/RevokeButton/RevokeButton';
+import RegistrationList from '@/app/components/RegistrationList/RegistrationList';
 
 interface UsersProfile {
   createdAt: { seconds: number; nanoseconds: number };
@@ -91,30 +91,8 @@ export default async function Page({ params }: { params: { eventID: string } }) 
         <img src={eventInfos.data.mainImage} alt="Dive event image" />
       </picture>
       <p>{eventInfos.data.description}</p>
-      <h2 className="font-bold text-xl">已加入活動</h2>
-      {eventInfos.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
-        <div key={index} className="shadow-md m-3 rounded-lg bg-gray-50">
-          <picture>
-            <img src={usersProfile[participant.id].avatarURL} alt="Avatar" />
-          </picture>
-          <div>{participant.name}</div>
-          <div>{participant.level}</div>
-          <RevokeButton userID={participant.id} eventID={params.eventID} />
-        </div>
-      ))}
-
-      <h2 className="font-bold text-xl">等待清單</h2>
-      {eventInfos.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
-        <div key={index} className="shadow-md m-3 rounded-lg bg-gray-50">
-          <picture>
-            <img src={usersProfile[applicant.id].avatarURL} alt="Avatar" />
-          </picture>
-          <div>{applicant.name}</div>
-          <div>{applicant.level}</div>
-          <button className="m-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">接受加入</button>
-          <button className="m-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">拒絕加入</button>
-        </div>
-      ))}
+      {/* 活動清單要即時互動，用client component來做比較好 */}
+      <RegistrationList eventInfos={eventInfos} usersProfile={usersProfile} eventID={params.eventID} />
     </>
   );
 }
