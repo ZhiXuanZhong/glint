@@ -13,9 +13,9 @@ export async function GET(request: Request, { params }: { params: { userID: stri
     const detail = await getDoc(reviewRef);
     const rating = detail.data()
 
+    if (rating) {
+        return NextResponse.json({ rating: parseFloat((rating.ratingSum / rating.reviewCount).toFixed(1)) })
+    }
 
-
-
-
-    return NextResponse.json({ rating })
+    return NextResponse.json({ rating: 0 })
 }

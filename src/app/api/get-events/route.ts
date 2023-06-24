@@ -4,6 +4,7 @@ import { DocumentData, Index, getFirestore } from 'firebase/firestore';
 import { collection, getDocs } from 'firebase/firestore';
 import { query, where, orderBy } from 'firebase/firestore';
 import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
 
 type QueryParams = {
   locations: string | null;
@@ -20,8 +21,45 @@ interface QueryConditions {
   value: string | number | null;
 }
 
+interface Event {
+  title: string;
+  organizer: string;
+  levelSuggection: string;
+  status: string;
+  description: string;
+  createdTime: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  endTime: number;
+  mainImage: string;
+  locations: string[];
+  startTime: number;
+  organizerType: string;
+  organizerLevel: string;
+  category: string;
+  id: string;
+}
+
 
 export async function GET(request: Request) {
+
+  const getRating = async (userID: string) => {
+    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { cache: 'no-cache' });
+    return response.json();
+  }
+
+  const addRating = async (array: Event[]) => {
+    for (let i = 0; i < array.length; i++) {
+      const rating = await getRating(array[i].organizer);
+      Object.assign(events[i], rating)
+      // events[i].rating = rating
+    }
+  };
+
+  const headersData = headers();
+  const protocol = headersData.get('x-forwarded-proto');
+  const host = headersData.get('host');
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -89,13 +127,18 @@ export async function GET(request: Request) {
 
   const querySnapshot = await getDocs(queryToPerform);
 
-  const events: DocumentData[] = [];
+  const events: Event[] = [];
 
   querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    data.id = doc.id;
-    events.push(data);
+    const data = doc.data() as Event;
+    if (data) {
+      data.id = doc.id;
+      events.push(data);
+    }
   });
+  await addRating(events)
+
 
   return NextResponse.json({ data: events, params: queryParams })
+
 }

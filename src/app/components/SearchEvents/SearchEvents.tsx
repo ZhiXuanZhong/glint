@@ -25,9 +25,9 @@ const SearchEvents = ({ setEvents }: any) => {
           <div className="flex p-2">
             <h2>地點</h2>
             <select id="location">
+              <option value="NEC">東北角</option>
               <option value="XL">小琉球</option>
               <option value="KT">墾丁</option>
-              <option value="NEC">東北角</option>
               <option value="GI">綠島</option>
               <option value="PH">澎湖</option>
               <option value="LY">蘭嶼</option>

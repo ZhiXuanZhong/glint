@@ -21,11 +21,14 @@ export default function Page() {
     switch (type) {
       case 'nerest':
         setEvents([...events].sort((a, b) => a.startTime - b.startTime));
-
         break;
+
       case 'latest':
         setEvents([...events].sort((a, b) => a.createdTime.seconds - b.createdTime.seconds));
+        break;
 
+      case 'rating':
+        setEvents([...events].sort((a, b) => b.rating - a.rating));
         break;
 
       default:
@@ -33,13 +36,16 @@ export default function Page() {
     }
   };
 
-  const fetchData = async () => {
+  const getEvents = async () => {
     const response = await fetch('/api/get-events', { cache: 'no-store' });
     return response.json();
   };
 
   useEffect(() => {
-    fetchData().then((res) => setEvents(res.data));
+    getEvents().then((res) => {
+      setEvents(res.data);
+      console.log(res);
+    });
   }, []);
 
   return (

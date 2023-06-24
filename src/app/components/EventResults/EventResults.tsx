@@ -1,6 +1,7 @@
 'use client';
 
 interface Event {
+  rating: number;
   title: string;
   organizer: string;
   levelSuggection: string;
@@ -33,6 +34,7 @@ const EventResults = ({ events }: { events: Array<Event> | undefined }) => {
         events.map((event: Event, index: number) => (
           <div key={index} className="shadow-md m-6 rounded-lg bg-gray-50">
             <h1>{event.title}</h1>
+            <p>event.organizer = {event.organizer}</p>
             <div>
               {formatDate(event.startTime)} - {formatDate(event.endTime)}
             </div>
@@ -41,6 +43,7 @@ const EventResults = ({ events }: { events: Array<Event> | undefined }) => {
             {event.locations?.map((location: string, index: number) => (
               <span key={index}>{location} </span>
             ))}
+            <p>organizer rating: {event.rating}</p>
           </div>
         ))}
     </div>

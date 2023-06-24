@@ -1,26 +1,12 @@
 import { headers } from 'next/headers';
 import { Key } from 'react';
 
-export default async function Page({ params }: { params: { postID: string } }) {
+export default async function Page({ params }: { params: { eventID: string } }) {
   // FIXME: workaround! server component can't fetch relative path
   // https://github.com/vercel/next.js/issues/46840
   const headersData = headers();
   const protocol = headersData.get('x-forwarded-proto');
   const host = headersData.get('host');
-
-  // const fetchData = async () => {
-  //   const response = await fetch(`${protocol}://${host}/api/event/${params.postID}`, { next: { revalidate: 1 } });
-  //   return response.json();
-  // };
-  // const eventInfos = await fetchData();
-  // console.log(eventInfos);
-
-  // const fetchRating = async (id) => {
-  //   const response = await fetch(`${protocol}://${host}/api/rating/${id}`, { next: { revalidate: 1 } });
-  //   return response.json();
-  // };
-  // const rating = await fetchRating();
-  // console.log(rating);
 
   async function getInfo(eventID: string) {
     const response = await fetch(`${protocol}://${host}/api/event/${eventID}`, { cache: 'no-cache' });
@@ -32,7 +18,7 @@ export default async function Page({ params }: { params: { postID: string } }) {
     return response.json();
   }
 
-  const eventInfos = await getInfo(params.postID);
+  const eventInfos = await getInfo(params.eventID);
   const { rating } = await getRating(eventInfos.data.organizer);
 
   return (
@@ -55,7 +41,7 @@ export default async function Page({ params }: { params: { postID: string } }) {
         <img src={eventInfos.data.mainImage} alt="Dive event image" />
       </picture>
       <p>{eventInfos.data.description}</p>
-      <div>評分：{(rating.ratingSum / rating.reviewCount).toFixed(1)}</div>
+      <div>organizer rating: {rating ? rating : ''}</div>
     </>
   );
 }

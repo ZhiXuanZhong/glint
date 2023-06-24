@@ -26,7 +26,7 @@ const SortEvents = ({ handleSort }: any) => {
           handleSort('rating');
         }}
       >
-        評價優先(WIP)
+        評價優先
       </button>
     </div>
   );
