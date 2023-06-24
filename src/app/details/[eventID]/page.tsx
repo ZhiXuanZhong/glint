@@ -1,5 +1,6 @@
 import { headers } from 'next/headers';
 import { Key } from 'react';
+import UserInfo from '@/app/components/UserInfo/UserInfo';
 
 export default async function Page({ params }: { params: { eventID: string } }) {
   // FIXME: workaround! server component can't fetch relative path
@@ -21,10 +22,14 @@ export default async function Page({ params }: { params: { eventID: string } }) 
   const eventInfos = await getInfo(params.eventID);
   const { rating } = await getRating(eventInfos.data.organizer);
 
+  console.log(eventInfos);
+
   return (
     <>
       <h1 className="text-3xl">活動詳情</h1>
       <h2>活動嚮導</h2>
+      <UserInfo imageURL={`https://placehold.co/50x50?text=Avatar`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={false} />
+      <div>organizer rating: {rating ? rating : ''}</div>
       {/* personal info card component gose here */}
       <h2>建議等級</h2>
       <div>{eventInfos.data.levelSuggection}</div>
@@ -36,12 +41,17 @@ export default async function Page({ params }: { params: { eventID: string } }) 
           <div key={index}>{location}</div>
         ))}
       </div>
+      {/* Pending - 活動時間 */}
+      {/* Pending - 申請加入 btn */}
+      {/* Pending - 蒐藏 btn */}
       <h2>活動詳情</h2>
       <picture>
         <img src={eventInfos.data.mainImage} alt="Dive event image" />
       </picture>
       <p>{eventInfos.data.description}</p>
-      <div>organizer rating: {rating ? rating : ''}</div>
+      <h2>已加入活動</h2>
+
+      <h2>等待清單</h2>
     </>
   );
 }
