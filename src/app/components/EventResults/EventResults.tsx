@@ -34,6 +34,7 @@ const EventResults = ({ events }: { events: Array<Event> | undefined }) => {
         events.map((event: Event, index: number) => (
           <div key={index} className="shadow-md m-6 rounded-lg bg-gray-50">
             <h1>{event.title}</h1>
+            <h1>Event ID:{event.id}</h1>
             <p>event.organizer = {event.organizer}</p>
             <div>
               {formatDate(event.startTime)} - {formatDate(event.endTime)}

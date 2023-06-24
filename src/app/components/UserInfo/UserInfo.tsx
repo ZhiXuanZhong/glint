@@ -7,7 +7,7 @@ interface Info {
 
 const UserInfo = ({ imageURL, name, level, licence }: Info) => {
   return (
-    <div className="bg-gray-400">
+    <div className="shadow-md m-3 rounded-lg bg-gray-400">
       <picture>
         <img src={imageURL} alt="avatar" />
       </picture>

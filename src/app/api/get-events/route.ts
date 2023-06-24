@@ -45,7 +45,7 @@ interface Event {
 export async function GET(request: Request) {
 
   const getRating = async (userID: string) => {
-    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { cache: 'no-cache' });
+    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { next: { revalidate: 1 } });
     return response.json();
   }
 

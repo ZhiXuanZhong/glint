@@ -37,7 +37,7 @@ export default function Page() {
   };
 
   const getEvents = async () => {
-    const response = await fetch('/api/get-events', { cache: 'no-store' });
+    const response = await fetch('/api/get-events', { next: { revalidate: 1 } });
     return response.json();
   };
 
