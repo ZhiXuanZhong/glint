@@ -8,13 +8,32 @@ export default async function Page({ params }: { params: { postID: string } }) {
   const protocol = headersData.get('x-forwarded-proto');
   const host = headersData.get('host');
 
-  const fetchData = async () => {
-    const response = await fetch(`${protocol}://${host}/api/event/${params.postID}`, { next: { revalidate: 1 } });
-    return response.json();
-  };
+  // const fetchData = async () => {
+  //   const response = await fetch(`${protocol}://${host}/api/event/${params.postID}`, { next: { revalidate: 1 } });
+  //   return response.json();
+  // };
+  // const eventInfos = await fetchData();
+  // console.log(eventInfos);
 
-  const eventInfos = await fetchData();
-  console.log(eventInfos);
+  // const fetchRating = async (id) => {
+  //   const response = await fetch(`${protocol}://${host}/api/rating/${id}`, { next: { revalidate: 1 } });
+  //   return response.json();
+  // };
+  // const rating = await fetchRating();
+  // console.log(rating);
+
+  async function getInfo(eventID: string) {
+    const response = await fetch(`${protocol}://${host}/api/event/${eventID}`, { cache: 'no-cache' });
+    return response.json();
+  }
+
+  async function getRating(userID: string) {
+    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { cache: 'no-cache' });
+    return response.json();
+  }
+
+  const eventInfos = await getInfo(params.postID);
+  const { rating } = await getRating(eventInfos.data.organizer);
 
   return (
     <>
@@ -36,6 +55,7 @@ export default async function Page({ params }: { params: { postID: string } }) {
         <img src={eventInfos.data.mainImage} alt="Dive event image" />
       </picture>
       <p>{eventInfos.data.description}</p>
+      <div>評分：{(rating.ratingSum / rating.reviewCount).toFixed(1)}</div>
     </>
   );
 }
