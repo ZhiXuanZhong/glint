@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { Key } from 'react';
 import UserInfo from '@/app/components/UserInfo/UserInfo';
+import RevokeButton from '@/app/components/RevokeButton/RevokeButton';
 
 interface UsersProfile {
   createdAt: { seconds: number; nanoseconds: number };
@@ -98,7 +99,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
           </picture>
           <div>{participant.name}</div>
           <div>{participant.level}</div>
-          <button className="m-1 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">取消加入</button>
+          <RevokeButton userID={participant.id} eventID={params.eventID} />
         </div>
       ))}
 
@@ -111,6 +112,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
           <div>{applicant.name}</div>
           <div>{applicant.level}</div>
           <button className="m-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">接受加入</button>
+          <button className="m-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">拒絕加入</button>
         </div>
       ))}
     </>

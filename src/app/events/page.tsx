@@ -4,10 +4,6 @@ import SearchEvents from '../components/SearchEvents/SearchEvents';
 import SortEvents from '../components/SortEvents/SortEvents';
 import EventResults from '../components/EventResults/EventResults';
 
-interface EventsData {
-  data: Event[];
-}
-
 export default function Page() {
   const [events, setEvents] = useState<any | undefined>([]);
 
@@ -37,7 +33,7 @@ export default function Page() {
   };
 
   const getEvents = async () => {
-    const response = await fetch('/api/get-events', { next: { revalidate: 1 } });
+    const response = await fetch('/api/get-events', { next: { revalidate: 5 } });
     return response.json();
   };
 
