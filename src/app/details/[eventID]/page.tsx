@@ -63,7 +63,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
 
   const eventInfos = await getInfo(params.eventID);
   const { rating } = await getRating(eventInfos.data.organizer);
-  const usersProfile: { [id: string]: UsersProfile } = await getProfiles(eventInfos);
+  const usersProfile = await getProfiles(eventInfos);
 
   console.log(eventInfos);
 
@@ -92,7 +92,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
       </picture>
       <p>{eventInfos.data.description}</p>
       {/* 活動清單要即時互動，用client component來做比較好 */}
-      <RegistrationList eventInfos={eventInfos} usersProfile={usersProfile} eventID={params.eventID} />
+      <RegistrationList participants={eventInfos.participants} applicants={eventInfos.applicants} usersProfile={usersProfile} eventID={params.eventID} />
     </>
   );
 }

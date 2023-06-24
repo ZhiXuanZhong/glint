@@ -4,11 +4,12 @@ import { doc, deleteDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-const RevokeButton = ({ userID, eventID }: { userID: string; eventID: string }) => {
+const RevokeButton = ({ userID, eventID, handleRevoke }: { userID: string; eventID: string; handleRevoke: Function }) => {
   const handleClick = async () => {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     await deleteDoc(doc(db, 'events', eventID, 'participants', userID));
+    handleRevoke(userID);
     console.log(`${userID} deleted from ${eventID}`);
   };
 
