@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { Key } from 'react';
-import UserInfo from '@/app/components/UserInfo/UserInfo';
-import RegistrationList from '@/app/components/RegistrationList/RegistrationList';
+import UserInfo from '@/components/UserInfo/UserInfo';
+import RegistrationList from '@/components/RegistrationList/RegistrationList';
 
 interface UsersProfile {
   createdAt: { seconds: number; nanoseconds: number };
@@ -60,7 +60,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
       <div>{eventInfos.data.category}</div>
       <h2 className="font-bold text-xl">活動地點</h2>
       <div>
-        {eventInfos.data.locations.map((location: string, index: Key) => (
+        {eventInfos.data.locations?.map((location: string, index: Key) => (
           <div key={index}>{location}</div>
         ))}
       </div>

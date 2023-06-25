@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 
 interface Event {
   rating: number;
@@ -35,6 +36,7 @@ const EventResults = ({ events }: { events: Array<Event> | undefined }) => {
           <div key={index} className="shadow-md m-6 rounded-lg bg-gray-50">
             <h1>{event.title}</h1>
             <h1>Event ID:{event.id}</h1>
+            <h1>organizerType:{event.organizerType}</h1>
             <p>event.organizer = {event.organizer}</p>
             <div>
               {formatDate(event.startTime)} - {formatDate(event.endTime)}
@@ -45,6 +47,9 @@ const EventResults = ({ events }: { events: Array<Event> | undefined }) => {
               <span key={index}>{location} </span>
             ))}
             <p>organizer rating: {event.rating}</p>
+            <Link href={`/details/${event.id}`} className="text-green-500 hover:text-green-300">
+              Details
+            </Link>
           </div>
         ))}
     </div>

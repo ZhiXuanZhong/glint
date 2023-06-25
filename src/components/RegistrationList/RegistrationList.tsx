@@ -1,5 +1,5 @@
 'use client';
-import RevokeButton from '@/app/components/RevokeButton/RevokeButton';
+import RevokeButton from '@/components/RevokeButton/RevokeButton';
 import ConfirmButton from './ConfirmButton/ConfirmButton';
 import { Key, useEffect, useState } from 'react';
 import firebaseConfig from '@/app/utils/firebaseConfig';

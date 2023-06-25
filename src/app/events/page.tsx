@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import SearchEvents from '../components/SearchEvents/SearchEvents';
-import SortEvents from '../components/SortEvents/SortEvents';
-import EventResults from '../components/EventResults/EventResults';
+import SearchEvents from '../../components/SearchEvents/SearchEvents';
+import SortEvents from '../../components/SortEvents/SortEvents';
+import EventResults from '../../components/EventResults/EventResults';
 
 export const revalidate = 0;
 
