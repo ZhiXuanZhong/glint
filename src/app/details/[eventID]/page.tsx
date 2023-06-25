@@ -40,31 +40,12 @@ export default async function Page({ params }: { params: { eventID: string } }) 
   }
 
   async function getRating(userID: string) {
-    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { next: { revalidate: 5 } });
+    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { next: { revalidate: 60 } });
     return response.json();
-  }
-
-  async function getProfile(userID: string) {
-    const response = await fetch(`${protocol}://${host}/api/profile/${userID}`, { next: { revalidate: 5 } });
-    return response.json();
-  }
-
-  async function getProfiles(data: { applicants: Applicants[]; participants: Participants[] }) {
-    const profiles = {};
-    const allParticipants = [...data.applicants, ...data.participants];
-
-    for (const person of allParticipants) {
-      const profile = await getProfile(person.id);
-      Object.assign(profiles, profile);
-    }
-
-    return profiles;
   }
 
   const eventInfos = await getInfo(params.eventID);
   const { rating } = await getRating(eventInfos.data.organizer);
-  const usersProfile = await getProfiles(eventInfos);
-
   console.log(eventInfos);
 
   return (
@@ -92,7 +73,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
       </picture>
       <p>{eventInfos.data.description}</p>
       {/* 活動清單要即時互動，用client component來做比較好 */}
-      <RegistrationList participants={eventInfos.participants} applicants={eventInfos.applicants} usersProfile={usersProfile} eventID={params.eventID} />
+      <RegistrationList eventID={params.eventID} />
     </>
   );
 }
