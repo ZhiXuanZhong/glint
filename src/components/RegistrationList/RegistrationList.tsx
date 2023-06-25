@@ -1,6 +1,6 @@
 'use client';
 import RevokeButton from '@/components/RevokeButton/RevokeButton';
-import ConfirmButton from './ConfirmButton/ConfirmButton';
+import ConfirmButton from '@/components/ConfirmButton/ConfirmButton';
 import { Key, useEffect, useState } from 'react';
 import firebaseConfig from '@/app/utils/firebaseConfig';
 import { initializeApp } from 'firebase/app';
@@ -160,6 +160,11 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
     });
 
     initData();
+
+    return () => {
+      applicantsUnsubs();
+      participantsUnsubs();
+    };
   }, []);
 
   return (
