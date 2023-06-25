@@ -1,9 +1,10 @@
 'use client';
 import RevokeButton from '@/app/components/RevokeButton/RevokeButton';
+import ConfirmButton from './ConfirmButton/ConfirmButton';
 import { Key, useEffect, useState } from 'react';
 import firebaseConfig from '@/app/utils/firebaseConfig';
 import { initializeApp } from 'firebase/app';
-import { collection, getFirestore } from 'firebase/firestore';
+import { collection, getFirestore, query, onSnapshot, doc } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
 
 interface Applicants {
@@ -17,6 +18,7 @@ interface Participants {
   level: string;
   name: string;
   id: string;
+  approvedTime: number[];
 }
 
 interface Profiles {
@@ -44,14 +46,14 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
   const [regList, setRegList] = useState<RegList>();
   const [profiles, setProfiles] = useState<Profiles>();
 
+  // firebase 基本設定
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const applicantsRef = collection(db, 'events', eventID, 'applicants');
+  const participantsRef = collection(db, 'events', eventID, 'participants');
 
   //   取回所有報名清單
   const getRegistrations = async () => {
-    const applicantsRef = collection(db, 'events', eventID, 'applicants');
-    const participantsRef = collection(db, 'events', eventID, 'participants');
-
     const [applicantsSnap, participantsSnap] = await Promise.all([getDocs(applicantsRef), getDocs(participantsRef)]);
 
     const applicants = applicantsSnap.docs.map((doc) => {
@@ -97,34 +99,68 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
       setProfiles(profiles);
     };
 
+    // 即時監聽報名者、加入者清單
+    // 以onSnapshot事件帶動state更新，不將state更新寫在按鈕中
+    const participantsQuery = query(participantsRef);
+    const participantsUnsubs = onSnapshot(participantsQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        const userID = change.doc.id;
+
+        if (change.type === 'removed') {
+          setRegList((prev) => {
+            if (prev && prev.participants) {
+              const updatedParticipants = prev.participants.filter((person) => person.id !== userID);
+              return { ...prev, participants: updatedParticipants };
+            }
+            return prev;
+          });
+        }
+
+        if (change.type === 'added') {
+          setRegList((prev) => {
+            if (prev && prev.participants) {
+              const updatedParticipants = change.doc.data() as Participants;
+              updatedParticipants.id = userID;
+              return { ...prev, participants: [...prev.participants, updatedParticipants] };
+            }
+            return prev;
+          });
+        }
+      });
+    });
+
+    // 報名但尚需審核的清單
+    const applicantsQuery = query(applicantsRef);
+    const applicantsUnsubs = onSnapshot(applicantsQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        const userID = change.doc.id;
+
+        if (change.type === 'removed') {
+          setRegList((prev) => {
+            if (prev && prev.applicants) {
+              const updatedApplicants = prev.applicants.filter((person) => person.id !== userID);
+              return { ...prev, applicants: updatedApplicants };
+            }
+            return prev;
+          });
+        }
+
+        // // 聽用戶即時加入，必須要在加入之前取得profile資料，圖片map不出來的狀況
+        // if (change.type === 'added') {
+        //   setRegList((prev) => {
+        //     if (prev && prev.applicants) {
+        //       const updatedApplicants = change.doc.data() as Applicants;
+        //       updatedApplicants.id = userID;
+        //       return { ...prev, applicants: [...prev.applicants, updatedApplicants] };
+        //     }
+        //     return prev;
+        //   });
+        // }
+      });
+    });
+
     initData();
   }, []);
-
-  // 更新state資料的typescript寫法參考
-  // 1. 做出要更新的部分
-  // 2. 把原始的資料結構複製出來，只更動步驟1的資料
-  // 這樣可以確保資料結構都一樣，typesctipt就不會跳錯了
-  // 原先長這樣
-  //   const handleRevoke = (id: string) => {
-  //     setRegList((prev) => {
-  //       const newList = { ...prev };
-  //       if(newList.participants){
-  //         const updatedParticipants = newList.participants.filter((person) => person.id !== id);
-  //           return { ...prev, participants: updatedParticipants }
-  //       }
-  //       return prev;
-  //     });
-  //   };
-
-  const handleRevoke = (id: string) => {
-    setRegList((prev) => {
-      if (prev && prev.participants) {
-        const updatedParticipants = prev.participants.filter((person) => person.id !== id);
-        return { ...prev, participants: updatedParticipants };
-      }
-      return prev;
-    });
-  };
 
   return (
     <>
@@ -136,7 +172,8 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
             <picture>{<img src={profiles[participant.id as any].avatarURL} alt="Avatar" />}</picture>
             <div>{participant.name}</div>
             <div>{participant.level}</div>
-            <RevokeButton userID={participant.id} eventID={eventID} handleRevoke={handleRevoke} />
+            <div>{participant.id}</div>
+            <RevokeButton userID={participant.id} eventID={eventID} />
           </div>
         ))}
 
@@ -147,8 +184,9 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
             <picture>{<img src={profiles[applicant.id as any].avatarURL} alt="Avatar" />}</picture>
             <div>{applicant.name}</div>
             <div>{applicant.level}</div>
-            <button className="m-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">接受加入</button>
-            <button className="m-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">拒絕加入</button>
+            <div>{applicant.id}</div>
+            <ConfirmButton userID={applicant.id} eventID={eventID} accept />
+            <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
           </div>
         ))}
     </>
