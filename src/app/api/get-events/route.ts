@@ -41,6 +41,7 @@ interface Event {
   id: string;
 }
 
+export const revalidate = 'force-cache'
 
 export async function GET(request: Request) {
 
