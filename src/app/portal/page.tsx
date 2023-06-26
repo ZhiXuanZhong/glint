@@ -1,17 +1,28 @@
 'use client';
 import firebaseConfig from '@/app/utils/firebaseConfig';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
 import { useEffect } from 'react';
 
 const Page = () => {
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const eventsRef = collection(db, 'users', userID, 'events');
+
   useEffect(() => {
-    console.log('first');
+    const getEvents = async () => {
+      const res = await getDocs(eventsRef);
+      res.forEach((doc) => console.log(doc.data()));
+    };
+
+    getEvents();
   }, []);
+
   return (
     <>
       <div>Page</div>
-      <div>User's events go here</div>
+      <div>User&quot;s events go here</div>
     </>
   );
 };
