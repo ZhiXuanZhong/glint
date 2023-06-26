@@ -13,7 +13,7 @@ export async function GET(request: Request, { params }: { params: { eventID: str
     const detail = await getDoc(detailRef);
 
     if (detail.exists()) {
-        return NextResponse.json({ data: detail.data() })
+        return NextResponse.json({ data: { ...detail.data(), id: params.eventID } })
     } else {
         return NextResponse.json({ data: 'Event not found.' })
     }

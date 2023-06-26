@@ -2,7 +2,8 @@
 import firebaseConfig from '@/app/utils/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { Key, useEffect, useState } from 'react';
+import EventCard from '@/components/EventCard/EventCard';
 
 interface Event {
   rating: number;
@@ -32,7 +33,7 @@ interface PortalEvent {
   type: string;
   endTime: number;
   id: string;
-  data?: Event;
+  data: Event;
 }
 
 interface PortalEventType {
@@ -113,13 +114,51 @@ const Page = () => {
 
   return (
     <>
+      <h2>目前的活動 - joined startTime&lt;Date.now()&lt;endTime </h2>
+      {events?.joined
+        .filter((event: PortalEvent) => Date.now() > event.data.startTime && Date.now() < event.data.endTime)
+        .map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} />
+        ))}
+
       <h2>我發起的活動 - hosted</h2>
-      <h2>即將展開的活動 - joined date&gt;today</h2>
-      <h2>蒐藏 - favorite</h2>
-      <h2>已結束的活動 - joined date&st;today </h2>
+      {events?.hosted.map((event: PortalEvent, index: Key) => (
+        <EventCard event={event.data} key={index} />
+      ))}
+
+      <h2>即將展開的活動 - joined Date.now()&lt;startTime</h2>
+      {events?.joined
+        .filter((event: PortalEvent) => Date.now() < event.data.startTime)
+        .map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} />
+        ))}
+
+      <h2>已結束的活動 - joined Date.now()&gt;endTime </h2>
+      {events?.joined
+        .filter((event: PortalEvent) => Date.now() > event.data.endTime)
+        .map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} />
+        ))}
+
       <h2>等待確認 - pending</h2>
+      {events?.pending.map((event: PortalEvent, index: Key) => (
+        <EventCard event={event.data} key={index} />
+      ))}
+
+      <h2>蒐藏 - favorite</h2>
+      {events?.favorites.map((event: PortalEvent, index: Key) => (
+        <EventCard event={event.data} key={index} />
+      ))}
+
       <h2>被拒絕 - rejected</h2>
+      {events?.rejected.map((event: PortalEvent, index: Key) => (
+        <EventCard event={event.data} key={index} />
+      ))}
+
       <h2>活動取消 - canceled</h2>
+      {events?.canceled.map((event: PortalEvent, index: Key) => (
+        <EventCard event={event.data} key={index} />
+      ))}
     </>
   );
 };
