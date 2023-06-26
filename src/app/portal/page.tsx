@@ -25,8 +25,36 @@ interface Event {
   id: string;
 }
 
+interface PortalEvent {
+  isFavorite: boolean;
+  startTime: number;
+  status: string;
+  type: string;
+  endTime: number;
+  id: string;
+  data?: Event;
+}
+
+interface PortalEventType {
+  hosted: 'hosted';
+  joined: 'joined';
+  pending: 'pending';
+  rejected: 'rejected';
+  canceled: 'canceled';
+  favorite: 'favorite';
+}
+
+// interface JoinedEvent {
+//   endTime: number;
+//   isFavorite: boolean;
+//   startTime: number;
+//   status: string;
+//   type: string;
+// }
+
 const Page = () => {
-  const [events, setEvents] = useState();
+  const groupedEvents = {};
+  const [events, setEvents] = useState<any | null>(null);
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -36,6 +64,20 @@ const Page = () => {
     const response = await fetch(`/api/event/${eventID}`, { next: { revalidate: 5 } });
     const data = await response.json();
     return data;
+  };
+
+  const groupedObjects = (events: PortalEvent[]) => {
+    const groupedData = events.reduce((result, obj) => {
+      const { type } = obj;
+
+      if (!result[type]) {
+        result[type] = [];
+      }
+      result[type].push(obj);
+
+      return result;
+    }, {} as Record<string, any[]>);
+    return groupedData;
   };
 
   useEffect(() => {
@@ -59,18 +101,25 @@ const Page = () => {
           return { ...obj, ...updatedData };
         })
       );
-      console.log(updatedArr);
+      return updatedArr;
     };
 
-    getEventList().then((res) => getDetail(res));
+    getEventList()
+      .then((res) => getDetail(res))
+      .then((data) => groupedObjects(data))
+      .then((result) => Object.assign(groupedEvents, result))
+      .then(() => setEvents(groupedEvents));
   }, []);
 
   return (
     <>
-      <h2>我發起的活動</h2>
-      <h2>即將展開的活動</h2>
-      <h2>蒐藏</h2>
-      <h2>已結束的活動</h2>
+      <h2>我發起的活動 - hosted</h2>
+      <h2>即將展開的活動 - joined date&gt;today</h2>
+      <h2>蒐藏 - favorite</h2>
+      <h2>已結束的活動 - joined date&st;today </h2>
+      <h2>等待確認 - pending</h2>
+      <h2>被拒絕 - rejected</h2>
+      <h2>活動取消 - canceled</h2>
     </>
   );
 };
