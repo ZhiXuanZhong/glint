@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import { Key } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import ApplyButton from '@/components/ApplyButton/ApplyButton';
+import FavoriteButton from '@/components/FavoriteButton/FavoriteButton';
 import RegistrationList from '@/components/RegistrationList/RegistrationList';
 
 interface UsersProfile {
@@ -66,9 +67,8 @@ export default async function Page({ params }: { params: { eventID: string } }) 
         ))}
       </div>
       {/* Pending - 活動時間 */}
-      {/* Pending - 申請加入 btn */}
       <ApplyButton eventID={params.eventID} />
-      {/* Pending - 蒐藏 btn */}
+      <FavoriteButton eventID={params.eventID} />
       <h2 className="font-bold text-xl">活動詳情</h2>
       <picture>
         <img src={eventInfos.data.mainImage} alt="Dive event image" />
