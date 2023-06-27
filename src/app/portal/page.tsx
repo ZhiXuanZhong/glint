@@ -3,12 +3,14 @@ import db from '@/app/utils/firebaseConfig';
 import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Key, useEffect, useState } from 'react';
 import EventCard from '@/components/EventCard/EventCard';
+import ReviewForm from '@/components/ReviewForm/ReviewForm';
 import { useImmer } from 'use-immer';
 
 const Page = () => {
   const groupedEvents = {};
   const [events, setEvents] = useImmer<any | null>(null);
   const [filter, setFilter] = useState<any | null>('all');
+  const [reviewing, setReviewing] = useState(false);
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   const eventsRef = collection(db, 'users', userID, 'events');
@@ -80,6 +82,7 @@ const Page = () => {
       return updatedArr;
     };
 
+    //考慮把這一包包成一個api
     getEventList()
       .then((res) => getDetail(res))
       .then((data) => groupedObjects(data))
@@ -89,6 +92,7 @@ const Page = () => {
 
   return (
     <>
+      {reviewing && <ReviewForm />}
       {/* 篩選按鈕 */}
       <div className="flex">
         <div
@@ -124,6 +128,10 @@ const Page = () => {
           等待評論
         </div>
       </div>
+
+      {/* 用array去裝規則 */}
+      {/* 像這樣 */}
+      {/* {[{ type: 'joined', portal: true,},{ type: 'rejected', portal: false }].map((item) => <EventCard portal={item.portal}/>)} */}
 
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>目前的活動 - joined startTime&lt;Date.now()&lt;endTime </h2>
       <div className={classNames(filter === 'all' ? null : 'hidden')}>

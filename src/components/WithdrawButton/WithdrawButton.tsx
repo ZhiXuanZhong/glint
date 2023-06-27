@@ -7,16 +7,21 @@ const WithdrawButton = ({ eventID, userID, updateWithdraw }: { eventID: string; 
   const userEventsRef = doc(db, 'users', userID, 'events', eventID);
 
   const handleWithdraw = async () => {
-    await deleteDoc(participantsRef);
-    await updateDoc(userEventsRef, {
-      type: 'withdrawn',
-    });
-    updateWithdraw(eventID);
+    try {
+      await deleteDoc(participantsRef);
+      await updateDoc(userEventsRef, {
+        type: 'withdrawn',
+      });
+
+      updateWithdraw(eventID);
+    } catch (error) {
+      console.log('發生錯誤，請稍後再試。');
+    }
   };
 
   return (
     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-1 rounded" onClick={handleWithdraw}>
-      退出活動(WIP) {eventID}
+      退出活動 {eventID}
     </button>
   );
 };
