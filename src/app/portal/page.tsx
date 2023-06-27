@@ -3,10 +3,11 @@ import db from '@/app/utils/firebaseConfig';
 import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Key, useEffect, useState } from 'react';
 import EventCard from '@/components/EventCard/EventCard';
+import { useImmer } from 'use-immer';
 
 const Page = () => {
   const groupedEvents = {};
-  const [events, setEvents] = useState<any | null>(null);
+  const [events, setEvents] = useImmer<any | null>(null);
   const [filter, setFilter] = useState<any | null>('all');
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
@@ -41,8 +42,22 @@ const Page = () => {
     setFilter(condition);
   };
 
+  // 處理用戶退出活動以state更新
+  // 考量：
+  // 1. 資源來看 更新local state不用fetch新資料 (目前選這個)
+  // 2. 資料正確度 聽firebase更新可以確保資料最正確
+  const updateWithdraw = (eventID: string) => {
+    setEvents((draft: any) => {
+      if (!draft.withdrawn) {
+        draft.withdrawn = [];
+      }
+      draft.withdrawn.push(draft.joined.filter((event: { id: string }) => event.id === eventID)[0]);
+      draft.joined = draft.joined.filter((event: { id: string }) => event.id !== eventID);
+    });
+  };
+
   useEffect(() => {
-    // 取回collection內所有活動清單
+    // 取回user collection內所有活動清單
     const getEventList = async () => {
       const events: Event[] = [];
       const res = await getDocs(eventsRef);
@@ -113,60 +128,69 @@ const Page = () => {
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>目前的活動 - joined startTime&lt;Date.now()&lt;endTime </h2>
       <div className={classNames(filter === 'all' ? null : 'hidden')}>
         {events?.joined
-          .filter((event: PortalEvent) => Date.now() > event.data.startTime && Date.now() < event.data.endTime)
+          ?.filter((event: PortalEvent) => Date.now() > event.data.startTime && Date.now() < event.data.endTime)
           .map((event: PortalEvent, index: Key) => (
-            <EventCard event={event.data} key={index} />
+            <EventCard event={event.data} key={index} portal apply />
           ))}
       </div>
 
       <h2 className={classNames(filter === 'all' || filter === 'hosted' ? null : 'hidden')}>我發起的活動 - hosted</h2>
       <div className={classNames(filter === 'all' || filter === 'hosted' ? null : 'hidden')}>
-        {events?.hosted.map((event: PortalEvent, index: Key) => (
-          <EventCard event={event.data} key={index} />
+        {events?.hosted?.map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} portal edit cancel />
         ))}
       </div>
 
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>即將展開的活動 - joined Date.now()&lt;startTime</h2>
       <div className={classNames(filter === 'all' ? null : 'hidden')}>
         {events?.joined
-          .filter((event: PortalEvent) => Date.now() < event.data.startTime)
+          ?.filter((event: PortalEvent) => Date.now() < event.data.startTime)
           .map((event: PortalEvent, index: Key) => (
-            <EventCard event={event.data} key={index} />
+            <EventCard event={event.data} key={index} portal withdraw updateWithdraw={updateWithdraw} />
           ))}
       </div>
 
       <h2 className={classNames(filter === 'all' || filter === 'waitingReview' ? null : 'hidden')}>已結束的活動 - joined Date.now()&gt;endTime </h2>
       <div className={classNames(filter === 'all' || filter === 'waitingReview' ? null : 'hidden')}>
         {filter !== 'waitingReview' &&
-          events?.joined.filter((event: PortalEvent) => Date.now() > event.data.endTime).map((event: PortalEvent, index: Key) => <EventCard event={event.data} key={index} />)}
+          events?.joined?.filter((event: PortalEvent) => Date.now() > event.data.endTime).map((event: PortalEvent, index: Key) => <EventCard event={event.data} key={index} portal review />)}
         {filter === 'waitingReview' &&
-          events?.joined.filter((event: PortalEvent) => Date.now() > event.data.endTime && !event.hasReview).map((event: PortalEvent, index: Key) => <EventCard event={event.data} key={index} />)}
+          events?.joined
+            ?.filter((event: PortalEvent) => Date.now() > event.data.endTime && !event.hasReview)
+            .map((event: PortalEvent, index: Key) => <EventCard event={event.data} key={index} portal review />)}
       </div>
 
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>等待確認 - pending</h2>
       <div className={classNames(filter === 'all' ? null : 'hidden')}>
-        {events?.pending.map((event: PortalEvent, index: Key) => (
-          <EventCard event={event.data} key={index} />
+        {events?.pending?.map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} portal apply />
         ))}
       </div>
 
       <h2 className={classNames(filter === 'all' || filter === 'favorite' ? null : 'hidden')}>蒐藏 - favorite</h2>
       <div className={classNames(filter === 'all' || filter === 'favorite' ? null : 'hidden')}>
-        {events?.favorites.map((event: PortalEvent, index: Key) => (
-          <EventCard event={event.data} key={index} />
+        {events?.favorites?.map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} portal apply />
         ))}
       </div>
 
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>被拒絕 - rejected</h2>
       <div className={classNames(filter === 'all' ? null : 'hidden')}>
-        {events?.rejected.map((event: PortalEvent, index: Key) => (
+        {events?.rejected?.map((event: PortalEvent, index: Key) => (
           <EventCard event={event.data} key={index} />
         ))}
       </div>
 
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>活動取消 - canceled</h2>
       <div className={classNames(filter === 'all' ? null : 'hidden')}>
-        {events?.canceled.map((event: PortalEvent, index: Key) => (
+        {events?.canceled?.map((event: PortalEvent, index: Key) => (
+          <EventCard event={event.data} key={index} />
+        ))}
+      </div>
+
+      <h2 className={classNames(filter === 'all' ? null : 'hidden')}>已退出活動 - withdrawn</h2>
+      <div className={classNames(filter === 'all' ? null : 'hidden')}>
+        {events?.withdrawn?.map((event: PortalEvent, index: Key) => (
           <EventCard event={event.data} key={index} />
         ))}
       </div>

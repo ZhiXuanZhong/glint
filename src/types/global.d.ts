@@ -76,6 +76,7 @@ declare interface PortalEventType {
     rejected: 'rejected';
     canceled: 'canceled';
     favorite: 'favorite';
+    withdrawn: 'withdrawn';
 }
 
 declare interface Profiles {
@@ -92,4 +93,15 @@ declare interface Info {
     name: string;
     level: string;
     licence: boolean;
+}
+
+declare interface EventCardProps {
+    event: Event;
+    portal?: boolean;
+    edit?: boolean;
+    cancel?: boolean;
+    withdraw?: boolean
+    apply?: boolean;
+    review?: boolean;
+    updateWithdraw?: function
 }
