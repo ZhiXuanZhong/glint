@@ -61,11 +61,10 @@ declare interface Participants {
 }
 
 declare interface PortalEvent {
+    hasReview: boolean;
     isFavorite: boolean;
-    startTime: number;
     status: string;
     type: string;
-    endTime: number;
     id: string;
     data: Event;
 }
