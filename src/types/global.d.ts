@@ -1,0 +1,96 @@
+declare interface QueryParams {
+    locations: string | null;
+    category: string | null;
+    startTime: number;
+    endTime: number;
+    organizerType: string | null;
+    [index: string]: string | number | null;
+}
+
+declare interface QueryConditions {
+    property: string;
+    operator: '==' | '>=' | '<=' | 'array-contains';
+    value: string | number | null;
+}
+
+declare interface Event {
+    rating: number;
+    title: string;
+    organizer: string;
+    levelSuggection: string;
+    status: string;
+    description: string;
+    createdTime: {
+        seconds: number;
+        nanoseconds: number;
+    };
+    endTime: number;
+    mainImage: string;
+    locations: string[];
+    startTime: number;
+    organizerType: string;
+    organizerLevel: string;
+    category: string;
+    id: string;
+}
+
+declare interface UsersProfile {
+    createdAt: { seconds: number; nanoseconds: number };
+    avatarURL: string;
+    firstDive: number;
+    location: string;
+    hasLicence: boolean;
+    username: string;
+    bio: string;
+    level: string;
+    id?: string; // Added optional id field
+}
+
+declare interface Applicants {
+    level: string;
+    name: string;
+    applyTime: number[];
+    id: string;
+}
+
+declare interface Participants {
+    level: string;
+    name: string;
+    id: string;
+    approvedTime?: number[]; // Added optional approvedTime field
+}
+
+declare interface PortalEvent {
+    isFavorite: boolean;
+    startTime: number;
+    status: string;
+    type: string;
+    endTime: number;
+    id: string;
+    data: Event;
+}
+
+declare interface PortalEventType {
+    hosted: 'hosted';
+    joined: 'joined';
+    pending: 'pending';
+    rejected: 'rejected';
+    canceled: 'canceled';
+    favorite: 'favorite';
+}
+
+declare interface Profiles {
+    [key: string]: UsersProfile;
+}
+
+declare interface RegList {
+    applicants: Applicants[];
+    participants: Participants[];
+}
+
+declare interface Info {
+    imageURL: string;
+    name: string;
+    level: string;
+    licence: boolean;
+}

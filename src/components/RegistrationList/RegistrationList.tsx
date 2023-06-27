@@ -7,41 +7,6 @@ import { initializeApp } from 'firebase/app';
 import { collection, getFirestore, query, onSnapshot, doc } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
 
-interface Applicants {
-  level: string;
-  name: string;
-  applyTime: number[];
-  id: string;
-}
-
-interface Participants {
-  level: string;
-  name: string;
-  id: string;
-  approvedTime: number[];
-}
-
-interface Profiles {
-  [key: string]: UsersProfile;
-}
-
-interface UsersProfile {
-  createdAt: { seconds: number; nanoseconds: number };
-  avatarURL: string;
-  firstDive: number;
-  location: string;
-  hasLicence: boolean;
-  username: string;
-  bio: string;
-  level: string;
-  id: string;
-}
-
-interface RegList {
-  applicants: Applicants[];
-  participants: Participants[];
-}
-
 const RegistrationList = ({ eventID }: { eventID: string }) => {
   const [regList, setRegList] = useState<RegList>();
   const [profiles, setProfiles] = useState<Profiles>();

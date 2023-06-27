@@ -1,27 +1,6 @@
 'use client';
 import Link from 'next/link';
 
-interface Event {
-  rating: number;
-  title: string;
-  organizer: string;
-  levelSuggection: string;
-  status: string;
-  description: string;
-  createdTime: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  endTime: number;
-  mainImage: string;
-  locations: string[];
-  startTime: number;
-  organizerType: string;
-  organizerLevel: string;
-  category: string;
-  id: string;
-}
-
 const EventCard = ({ event }: { event: Event }) => {
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);

@@ -4,54 +4,6 @@ import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestor
 import { Key, useEffect, useState } from 'react';
 import EventCard from '@/components/EventCard/EventCard';
 
-interface Event {
-  rating: number;
-  title: string;
-  organizer: string;
-  levelSuggection: string;
-  status: string;
-  description: string;
-  createdTime: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  endTime: number;
-  mainImage: string;
-  locations: string[];
-  startTime: number;
-  organizerType: string;
-  organizerLevel: string;
-  category: string;
-  id: string;
-}
-
-interface PortalEvent {
-  isFavorite: boolean;
-  startTime: number;
-  status: string;
-  type: string;
-  endTime: number;
-  id: string;
-  data: Event;
-}
-
-interface PortalEventType {
-  hosted: 'hosted';
-  joined: 'joined';
-  pending: 'pending';
-  rejected: 'rejected';
-  canceled: 'canceled';
-  favorite: 'favorite';
-}
-
-// interface JoinedEvent {
-//   endTime: number;
-//   isFavorite: boolean;
-//   startTime: number;
-//   status: string;
-//   type: string;
-// }
-
 const Page = () => {
   const groupedEvents = {};
   const [events, setEvents] = useState<any | null>(null);

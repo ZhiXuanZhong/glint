@@ -5,41 +5,6 @@ import { query, where, orderBy } from 'firebase/firestore';
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-type QueryParams = {
-  locations: string | null;
-  category: string | null;
-  startTime: number;
-  endTime: number;
-  organizerType: string | null;
-  [index: string]: string | number | null;
-};
-
-interface QueryConditions {
-  property: string;
-  operator: '==' | '>=' | '<=' | 'array-contains';
-  value: string | number | null;
-}
-
-interface Event {
-  title: string;
-  organizer: string;
-  levelSuggection: string;
-  status: string;
-  description: string;
-  createdTime: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  endTime: number;
-  mainImage: string;
-  locations: string[];
-  startTime: number;
-  organizerType: string;
-  organizerLevel: string;
-  category: string;
-  id: string;
-}
-
 export const revalidate = 'force-cache'
 
 export async function GET(request: Request) {

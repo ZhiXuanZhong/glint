@@ -1,10 +1,3 @@
-interface Info {
-  imageURL: string;
-  name: string;
-  level: string;
-  licence: boolean;
-}
-
 const UserInfo = ({ imageURL, name, level, licence }: Info) => {
   return (
     <div className="shadow-md m-3 rounded-lg bg-gray-400">

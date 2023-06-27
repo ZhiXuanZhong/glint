@@ -5,30 +5,6 @@ import ApplyButton from '@/components/ApplyButton/ApplyButton';
 import FavoriteButton from '@/components/FavoriteButton/FavoriteButton';
 import RegistrationList from '@/components/RegistrationList/RegistrationList';
 
-interface UsersProfile {
-  createdAt: { seconds: number; nanoseconds: number };
-  avatarURL: string;
-  firstDive: number;
-  location: string;
-  hasLicence: boolean;
-  username: string;
-  bio: string;
-  level: string;
-}
-
-interface Applicants {
-  level: string;
-  name: string;
-  applyTime: number[];
-  id: string;
-}
-
-interface Participants {
-  level: string;
-  name: string;
-  id: string;
-}
-
 export default async function Page({ params }: { params: { eventID: string } }) {
   // FIXME: workaround! server component can't fetch relative path
   // https://github.com/vercel/next.js/issues/46840
