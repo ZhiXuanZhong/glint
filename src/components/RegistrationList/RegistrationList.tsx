@@ -2,7 +2,7 @@
 import RevokeButton from '@/components/RevokeButton/RevokeButton';
 import ConfirmButton from '@/components/ConfirmButton/ConfirmButton';
 import { Key, useEffect, useState } from 'react';
-import firebaseConfig from '@/app/utils/firebaseConfig';
+import db from '@/app/utils/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 import { collection, getFirestore, query, onSnapshot, doc } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
@@ -47,8 +47,6 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
   const [profiles, setProfiles] = useState<Profiles>();
 
   // firebase 基本設定
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
   const applicantsRef = collection(db, 'events', eventID, 'applicants');
   const participantsRef = collection(db, 'events', eventID, 'participants');
 

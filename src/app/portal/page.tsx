@@ -1,6 +1,5 @@
 'use client';
-import firebaseConfig from '@/app/utils/firebaseConfig';
-import { initializeApp } from 'firebase/app';
+import db from '@/app/utils/firebaseConfig';
 import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Key, useEffect, useState } from 'react';
 import EventCard from '@/components/EventCard/EventCard';
@@ -57,8 +56,7 @@ const Page = () => {
   const groupedEvents = {};
   const [events, setEvents] = useState<any | null>(null);
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+
   const eventsRef = collection(db, 'users', userID, 'events');
 
   const getInfo = async (eventID: string) => {

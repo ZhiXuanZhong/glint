@@ -1,6 +1,5 @@
 'use client';
-import firebaseConfig from '@/app/utils/firebaseConfig';
-import { initializeApp } from 'firebase/app';
+import db from '@/app/utils/firebaseConfig';
 import { getFirestore, onSnapshot } from 'firebase/firestore';
 import { doc, deleteDoc, getDoc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -8,9 +7,7 @@ import { useEffect, useState } from 'react';
 const ApplyButton = ({ eventID }: { eventID: string }) => {
   const [applyState, setApplyState] = useState('');
 
-  const app = initializeApp(firebaseConfig);
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
-  const db = getFirestore(app);
   const applicantsRef = doc(db, 'events', eventID, 'applicants', userID);
   const applicantsCollection = collection(db, 'events', eventID, 'applicants');
   const participantsRef = doc(db, 'events', eventID, 'participants', userID);

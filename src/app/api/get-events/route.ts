@@ -1,5 +1,4 @@
-import firebaseConfig from '@/app/utils/firebaseConfig';
-import { initializeApp } from 'firebase/app';
+import db from '@/app/utils/firebaseConfig';
 import { DocumentData, Index, getFirestore } from 'firebase/firestore';
 import { collection, getDocs } from 'firebase/firestore';
 import { query, where, orderBy } from 'firebase/firestore';
@@ -62,8 +61,6 @@ export async function GET(request: Request) {
   const protocol = headersData.get('x-forwarded-proto');
   const host = headersData.get('host');
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
 
   const { searchParams } = new URL(request.url)
   const queryParams: QueryParams = {

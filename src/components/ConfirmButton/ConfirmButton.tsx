@@ -1,12 +1,10 @@
 'use client';
-import firebaseConfig from '@/app/utils/firebaseConfig';
+import db from '@/app/utils/firebaseConfig';
 import { doc, deleteDoc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const ConfirmButton = ({ userID, eventID, accept }: { userID: string; eventID: string; accept: boolean }) => {
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
   const userRef = doc(db, 'events', eventID, 'applicants', userID);
   const participantsRef = doc(db, 'events', eventID, 'participants', userID);
 

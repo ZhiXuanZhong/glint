@@ -1,13 +1,9 @@
-import firebaseConfig from '@/app/utils/firebaseConfig';
-import { initializeApp } from 'firebase/app';
+import db from '@/app/utils/firebaseConfig';
 import { collection, getFirestore } from 'firebase/firestore';
 import { getDocs } from "firebase/firestore";
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request, { params }: { params: { eventID: string } }) {
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
 
     const applicants: any = []
     const applicantsRef = collection(db, 'events', params.eventID, 'applicants')
