@@ -1,10 +1,10 @@
 import db from '@/app/utils/firebaseConfig';
 
-const ReviewForm = ({ event, toggleReviewModal, updateReview }: { event: Event; toggleReviewModal: Function; updateReview: Function }) => {
+const ReviewForm = ({ event, toggleReviewModal, updateReview }: { event: PortalEvent; toggleReviewModal: Function; updateReview: Function }) => {
   return (
     <div className="backdrop-blur-[2px] bg-white/30 h-screen w-screen fixed ">
       <div className="bg-slate-200 p-3 w-60 rounded flex flex-col items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
-        <div>{event.title}</div>
+        <div>{event.data.title}</div>
         <div>eventID:</div>
         <div>{event.id}</div>
         <div>評分 1~10</div>

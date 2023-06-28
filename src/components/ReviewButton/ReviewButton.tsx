@@ -1,6 +1,6 @@
 'use client';
 // 當前評論event傳到這邊，再傳回去page，drilling偏深
-const ReviewButton = ({ event, toggleReviewModal, hasReview }: { event: PortalEvent; toggleReviewModal: Function; hasReview: boolean }) => {
+const ReviewButton = ({ event, toggleReviewModal, hasReview }: { event: Event; toggleReviewModal: Function; hasReview: boolean | undefined }) => {
   return (
     <>
       {hasReview ? (

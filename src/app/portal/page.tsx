@@ -1,16 +1,15 @@
 'use client';
 import db from '@/app/utils/firebaseConfig';
 import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
-import { Key, useEffect, useState } from 'react';
+import { Key, SetStateAction, useEffect, useState } from 'react';
 import EventCard from '@/components/EventCard/EventCard';
 import ReviewForm from '@/components/ReviewForm/ReviewForm';
 import { useImmer } from 'use-immer';
 
 const Page = () => {
-  const groupedEvents = {};
   const [events, setEvents] = useImmer<any | null>(null);
   const [filter, setFilter] = useState<string>('all');
-  const [reviewing, setReviewing] = useState<Event | null>(null);
+  const [reviewing, setReviewing] = useState<PortalEvent | null>(null);
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   const eventsRef = collection(db, 'users', userID, 'events');
@@ -59,7 +58,7 @@ const Page = () => {
   };
 
   // 把當前在review的資料load到這層component
-  const toggleReviewModal = (event) => {
+  const toggleReviewModal = (event: PortalEvent) => {
     setReviewing(event);
   };
 
@@ -101,12 +100,11 @@ const Page = () => {
       return updatedArr;
     };
 
-    //考慮把這一包包成一個api
+    //FIXME考慮把這一包包成一個api
     getEventList()
       .then((res) => getDetail(res))
       .then((data) => groupedObjects(data))
-      .then((result) => Object.assign(groupedEvents, result))
-      .then(() => setEvents(groupedEvents));
+      .then((result) => setEvents(result));
   }, []);
 
   return (
