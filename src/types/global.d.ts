@@ -35,6 +35,7 @@ declare interface Event {
 }
 
 declare interface UsersProfile {
+    type: string;
     createdAt: { seconds: number; nanoseconds: number };
     avatarURL: string;
     firstDive: number;
