@@ -62,6 +62,7 @@ const Page = () => {
     setReviewing(event);
   };
 
+  // 用來在頻論後把指定活動id 的 hasReview state改成true
   const updateReview = (eventID: string) => {
     setEvents((draft: any) => {
       draft.joined = draft.joined.map((event: { id: string }) => {

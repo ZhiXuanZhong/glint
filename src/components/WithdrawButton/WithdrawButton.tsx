@@ -15,7 +15,7 @@ const WithdrawButton = ({ eventID, userID, updateWithdraw }: { eventID: string; 
 
       updateWithdraw(eventID);
     } catch (error) {
-      console.log('發生錯誤，請稍後再試。');
+      alert('發生錯誤，請稍後再試。');
     }
   };
 

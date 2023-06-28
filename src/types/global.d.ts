@@ -107,3 +107,8 @@ declare interface EventCardProps {
     toggleReviewModal?: function
     hasReview?: boolean
 }
+
+interface UserRating {
+    ratingSum: number;
+    reviewCount: number;
+}
