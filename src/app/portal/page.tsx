@@ -9,8 +9,8 @@ import { useImmer } from 'use-immer';
 const Page = () => {
   const groupedEvents = {};
   const [events, setEvents] = useImmer<any | null>(null);
-  const [filter, setFilter] = useState<any | null>('all');
-  const [reviewing, setReviewing] = useState(false);
+  const [filter, setFilter] = useState<string>('all');
+  const [reviewing, setReviewing] = useState<Event | null>(null);
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   const eventsRef = collection(db, 'users', userID, 'events');
@@ -58,6 +58,25 @@ const Page = () => {
     });
   };
 
+  // 把當前在review的資料load到這層component
+  const toggleReviewModal = (event) => {
+    setReviewing(event);
+  };
+
+  const updateReview = (eventID: string) => {
+    setEvents((draft: any) => {
+      draft.joined = draft.joined.map((event: { id: string }) => {
+        if (event.id === eventID) {
+          return {
+            ...event,
+            hasReview: true,
+          };
+        }
+        return event;
+      });
+    });
+  };
+
   useEffect(() => {
     // 取回user collection內所有活動清單
     const getEventList = async () => {
@@ -92,7 +111,7 @@ const Page = () => {
 
   return (
     <>
-      {reviewing && <ReviewForm />}
+      {reviewing && <ReviewForm event={reviewing} toggleReviewModal={toggleReviewModal} updateReview={updateReview} />}
       {/* 篩選按鈕 */}
       <div className="flex">
         <div
@@ -160,12 +179,38 @@ const Page = () => {
 
       <h2 className={classNames(filter === 'all' || filter === 'waitingReview' ? null : 'hidden')}>已結束的活動 - joined Date.now()&gt;endTime </h2>
       <div className={classNames(filter === 'all' || filter === 'waitingReview' ? null : 'hidden')}>
+        {/* 結束的所有活動全部資料 */}
         {filter !== 'waitingReview' &&
-          events?.joined?.filter((event: PortalEvent) => Date.now() > event.data.endTime).map((event: PortalEvent, index: Key) => <EventCard event={event.data} key={index} portal review />)}
+          events?.joined
+            ?.filter((event: PortalEvent) => Date.now() > event.data.endTime)
+            .map((event: PortalEvent, index: Key) => (
+              <EventCard
+                event={event.data}
+                key={index}
+                portal
+                review
+                hasReview={event.hasReview}
+                toggleReviewModal={() => {
+                  toggleReviewModal(event);
+                }}
+              />
+            ))}
+        {/* 把評價加入篩選，點按鈕時顯示 */}
         {filter === 'waitingReview' &&
           events?.joined
             ?.filter((event: PortalEvent) => Date.now() > event.data.endTime && !event.hasReview)
-            .map((event: PortalEvent, index: Key) => <EventCard event={event.data} key={index} portal review />)}
+            .map((event: PortalEvent, index: Key) => (
+              <EventCard
+                event={event.data}
+                key={index}
+                portal
+                review
+                hasReview={event.hasReview}
+                toggleReviewModal={() => {
+                  toggleReviewModal(event);
+                }}
+              />
+            ))}
       </div>
 
       <h2 className={classNames(filter === 'all' ? null : 'hidden')}>等待確認 - pending</h2>

@@ -104,4 +104,6 @@ declare interface EventCardProps {
     apply?: boolean;
     review?: boolean;
     updateWithdraw?: function
+    toggleReviewModal?: function
+    hasReview?: boolean
 }

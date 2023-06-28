@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import ApplyButton from '../ApplyButton/ApplyButton';
 import WithdrawButton from '../WithdrawButton/WithdrawButton';
+import ReviewButton from '../ReviewButton/ReviewButton';
 
-const EventCard = ({ event, portal = false, edit = false, cancel = false, withdraw = false, apply = false, review = false, updateWithdraw }: EventCardProps) => {
+const EventCard = ({ event, portal = false, edit = false, cancel = false, withdraw = false, apply = false, review = false, updateWithdraw, toggleReviewModal, hasReview }: EventCardProps) => {
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
     const formattedDate = date.toLocaleDateString('zh');
@@ -41,7 +42,7 @@ const EventCard = ({ event, portal = false, edit = false, cancel = false, withdr
           {/* 等待確認        - waiting && organizer !== userID */}
           {apply && <ApplyButton eventID={event.id} />}
           {/* 留下評價        - confirm && organizer !== userID && timeFrame[1] < today */}
-          {review && <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-1 rounded">留下評價</button>}
+          {review && <ReviewButton event={event} toggleReviewModal={toggleReviewModal} hasReview={hasReview} />}
         </div>
       )}
     </div>
