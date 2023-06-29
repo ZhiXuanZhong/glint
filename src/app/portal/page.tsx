@@ -109,7 +109,7 @@ const Page = () => {
   }, []);
 
   return (
-    <>
+    <div>
       {reviewing && <ReviewForm event={reviewing} toggleReviewModal={toggleReviewModal} updateReview={updateReview} />}
       {/* 篩選按鈕 */}
       <div className="flex">
@@ -246,7 +246,7 @@ const Page = () => {
           <EventCard event={event.data} key={index} />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

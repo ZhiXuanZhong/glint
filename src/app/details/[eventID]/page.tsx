@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
   console.log(eventInfos);
 
   return (
-    <>
+    <div>
       <h1 className="text-3xl">活動詳情</h1>
       <h2 className="font-bold text-xl">活動嚮導</h2>
       <UserInfo imageURL={`https://placehold.co/50x50?text=Avatar`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={false} />
@@ -52,6 +52,6 @@ export default async function Page({ params }: { params: { eventID: string } }) 
       <p>{eventInfos.data.description}</p>
       {/* 活動清單要即時互動，用client component來做比較好 */}
       <RegistrationList eventID={params.eventID} />
-    </>
+    </div>
   );
 }

@@ -47,10 +47,10 @@ export default function Page() {
   }, []);
 
   return (
-    <>
+    <div>
       <SearchEvents setEvents={handleEventsUpdate} />
       <SortEvents handleSort={handleSort} />
       <EventResults events={events} />
-    </>
+    </div>
   );
 }
