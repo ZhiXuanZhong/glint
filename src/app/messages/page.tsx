@@ -1,7 +1,7 @@
 'use client';
 import Messages from '@/components/Messages/Messages';
 
-const conversation = [
+const conversation: Conversation[] = [
   {
     message: '嗨，你好嗎？',
     userID: 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1',

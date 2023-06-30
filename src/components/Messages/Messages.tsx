@@ -1,24 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import VideoChat from '../VideoChat/VideoChat';
+import { Key, useState } from 'react';
 
-const Messages = ({ conversation }) => {
+const Messages = ({ conversation }: { conversation: Conversation[] }) => {
   const [isStreaming, setIsStreaming] = useState(false);
 
-  const handleStreaming = () => {
+  const toggleStreaming = () => {
     setIsStreaming(!isStreaming);
   };
 
   return (
     <>
-      {isStreaming && (
-        <div className="flex justify-center outline outline-1">
-          <div className="w-[400px] h-[300px] bg-red-200  m-3"></div>
-          <div className="w-[400px] h-[300px] bg-red-200  m-3"></div>
-        </div>
-      )}
+      {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div>
-        {conversation?.map((data, index) => {
+        {conversation?.map((data: Conversation, index: Key) => {
           return <div key={index}>{data.message}</div>;
         })}
       </div>
@@ -27,7 +23,7 @@ const Messages = ({ conversation }) => {
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">送出</button>
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">傳送語音</button>
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">傳送圖片</button>
-        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={handleStreaming}>
+        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={toggleStreaming}>
           視訊聊聊
         </button>
       </div>

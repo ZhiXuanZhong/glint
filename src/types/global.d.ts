@@ -109,7 +109,14 @@ declare interface EventCardProps {
     hasReview?: boolean
 }
 
-interface UserRating {
+declare interface UserRating {
     ratingSum: number;
     reviewCount: number;
+}
+
+declare interface Conversation {
+    message: string;
+    userID: string;
+    username: string;
+    timestamp: number;
 }
