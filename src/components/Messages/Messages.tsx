@@ -2,11 +2,21 @@
 
 import VideoChat from '../VideoChat/VideoChat';
 import AudioMessage from '../AudioMessage/AudioMessage';
-import { Key, useState } from 'react';
+import ImageMessage from '../ImageMessage/ImageMessage';
+import { Key, useRef, useState } from 'react';
 
 const Messages = ({ conversation }: { conversation: Conversation[] }) => {
-  const [isStreaming, setIsStreaming] = useState(false);
+  const inputImageRef = useRef<HTMLInputElement>(null);
+  const [inputImage, setInputImage] = useState<File | null>(null);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+
+  const addFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
+    if (target.files && target.files[0]) {
+      setInputImage(target.files[0]);
+    }
+  };
 
   const toggleStreaming = () => {
     setIsStreaming(!isStreaming);
@@ -42,14 +52,36 @@ const Messages = ({ conversation }: { conversation: Conversation[] }) => {
       <div className="fixed bottom-0 w-full outline outline-1">
         <input type="text" placeholder="對話框框放這邊" />
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">送出</button>
+
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={getMicrophonePermission}>
           傳送語音
         </button>
-        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">傳送圖片</button>
+
+        <button
+          className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded"
+          onClick={() => {
+            inputImageRef.current?.click();
+          }}
+        >
+          傳送圖片
+        </button>
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          ref={inputImageRef}
+          onChange={addFile}
+          onClick={(event) => {
+            (event.target as HTMLInputElement).value = '';
+          }}
+        />
+
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={toggleStreaming}>
           視訊聊聊
         </button>
+
         {audioStream && <AudioMessage stream={audioStream} />}
+        {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} />}
       </div>
     </>
   );
