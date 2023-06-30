@@ -1,9 +1,12 @@
 'use client';
 
+import fireMediaUpload from '@/app/utils/fireMediaUpload';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRef, useState } from 'react';
 
 const AudioMessage = ({ stream }: { stream: MediaStream }) => {
   const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const audioBlob = useRef<Blob | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [audio, setAudio] = useState<string | null>(null);
@@ -37,21 +40,33 @@ const AudioMessage = ({ stream }: { stream: MediaStream }) => {
       mediaRecorder.current.stop();
       mediaRecorder.current.onstop = () => {
         //creates a blob file from the audiochunks data
-        const audioBlob = new Blob(audioChunks, { type: mimeType });
+        audioBlob.current = new Blob(audioChunks, { type: mimeType });
         //creates a playable URL from the blob file.
-        const audioUrl = URL.createObjectURL(audioBlob);
+        const audioUrl = URL.createObjectURL(audioBlob.current);
         setAudio(audioUrl);
         setAudioChunks([]);
       };
     }
   };
 
+  const handleAudioUpload = async () => {
+    if (audioBlob.current) {
+      const fileURL = await fireMediaUpload(audioBlob.current, 'message-image', 'testfile');
+      console.log(fileURL);
+    }
+  };
+
   return (
     <div className="flex">
-      <button onMouseDown={startRecording} onMouseUp={stopRecording} className="m-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold py-2 px-4 rounded">
-        {isRecording ? '放開送出' : '按下錄音'}
-      </button>
       {audio && <audio src={audio} controls></audio>}
+      {audio && (
+        <button className="m-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white  py-2 px-4 rounded" onClick={handleAudioUpload}>
+          送出語音
+        </button>
+      )}
+      <button onMouseDown={startRecording} onMouseUp={stopRecording} className="m-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white  py-2 px-4 rounded">
+        {isRecording ? '錄音中...' : '按下錄音'}
+      </button>
     </div>
   );
 };
