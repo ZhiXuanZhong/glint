@@ -1,4 +1,5 @@
 'use client';
+import Messages from '@/components/Messages/Messages';
 
 const conversation = [
   {
@@ -66,12 +67,18 @@ const conversation = [
 const page = () => {
   return (
     <div className="flex">
-      <div className="w-[500px] h-screen bg-slate-200"></div>
+      <div className="w-[500px] h-screen bg-slate-200">
+        {['member1', 'member2', 'member3'].map((data, index) => (
+          <div className="flex m-3 border-red-500 border" key={index}>
+            <picture>
+              <img src="https://placehold.co/50x50" alt="avatar" />
+            </picture>
+            <div>{data}</div>
+          </div>
+        ))}
+      </div>
       <div className="grow h-screen bg-slate-400">
-        IGDOpenMessageList
-        {conversation.map((data, index) => {
-          return <div key={index}>{data.message}</div>;
-        })}
+        <Messages conversation={conversation} />
       </div>
     </div>
   );
