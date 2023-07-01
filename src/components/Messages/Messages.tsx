@@ -5,7 +5,7 @@ import AudioMessage from '../AudioMessage/AudioMessage';
 import ImageMessage from '../ImageMessage/ImageMessage';
 import { Key, useRef, useState } from 'react';
 
-const Messages = ({ conversation }: { conversation: Conversation[] }) => {
+const Messages = ({ conversations }: { conversations: Conversation[] }) => {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [inputImage, setInputImage] = useState<File | null>(null);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -45,8 +45,9 @@ const Messages = ({ conversation }: { conversation: Conversation[] }) => {
     <>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div>
-        {conversation?.map((data: Conversation, index: Key) => {
-          return <div key={index}>{data.message}</div>;
+        {conversations?.map((data: Conversation, index: Key) => {
+          // FIXME 這邊先用id站待，後面load到內容再來放進來
+          return <div key={index}>{data.userIDs}</div>;
         })}
       </div>
       <div className="fixed bottom-0 w-full outline outline-1">

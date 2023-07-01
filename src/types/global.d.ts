@@ -115,8 +115,18 @@ declare interface UserRating {
 }
 
 declare interface Conversation {
-    message: string;
+    createdTime: {
+        seconds: number;
+        nanoseconds: number;
+    };
+    hasRead: string[];
+    userIDs: string[];
+}
+
+declare interface Message {
     userID: string;
     username: string;
     timestamp: number;
+    type: 'text' | 'image' | 'audio'
+    data: string;
 }
