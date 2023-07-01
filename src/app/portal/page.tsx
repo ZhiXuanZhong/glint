@@ -1,5 +1,6 @@
 'use client';
 import db from '@/app/utils/firebaseConfig';
+import classNames from '../utils/classNames';
 import { collection, getDocs, getFirestore, onSnapshot } from 'firebase/firestore';
 import { Key, SetStateAction, useEffect, useState } from 'react';
 import EventCard from '@/components/EventCard/EventCard';
@@ -34,10 +35,10 @@ const Page = () => {
     return groupedData;
   };
 
-  //處理動態classes內容
-  const classNames = (...classes: any[]) => {
-    return classes.filter(Boolean).join(' ');
-  };
+  // //處理動態classes內容
+  // const classNames = (...classes: (string | null)[]) => {
+  //   return classes.filter(Boolean).join(' ');
+  // };
 
   const handleFilter = (condition: string) => {
     setFilter(condition);

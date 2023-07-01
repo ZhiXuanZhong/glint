@@ -3,6 +3,7 @@
 import VideoChat from '../VideoChat/VideoChat';
 import AudioMessage from '../AudioMessage/AudioMessage';
 import ImageMessage from '../ImageMessage/ImageMessage';
+import MessageBubble from '../MessageBubble/MessageBubble';
 import { Key, useRef, useState } from 'react';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string | null }) => {
@@ -46,9 +47,9 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       <div className=" h-10 flex justify-center items-center bg-zinc-200">Conversation name</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
-        {messages?.map((message, index) => {
-          return <div key={index}>{message.data}</div>;
-        })}
+        {messages?.map((message, index) => (
+          <MessageBubble key={index} message={message} />
+        ))}
       </div>
       {/* 聊天室功能UI */}
       <div className=" outline">
