@@ -43,16 +43,11 @@ const Messages = ({ conversations }: { conversations: Conversation[] }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className=" h-10 text-center">Conversation name</div>
+      <div className=" h-10 flex justify-center items-center bg-zinc-200">Conversation name</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
-      <div className="mt-auto overflow-auto">
-        {conversations?.map((data: Conversation, index: Key) => {
-          // FIXME 這邊先用id站待，後面load到內容再來放進來
-          return <div key={index}>{data.userIDs}</div>;
-        })}
-      </div>
+      <div className="mt-auto overflow-auto"></div>
       {/* 聊天室功能UI */}
-      <div>
+      <div className=" outline">
         <input type="text" placeholder="對話框框放這邊" />
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">送出</button>
 
