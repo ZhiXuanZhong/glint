@@ -42,15 +42,17 @@ const Messages = ({ conversations }: { conversations: Conversation[] }) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col h-full">
+      <div className=" h-10 text-center">Conversation name</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
-      <div>
+      <div className="mt-auto overflow-auto">
         {conversations?.map((data: Conversation, index: Key) => {
           // FIXME 這邊先用id站待，後面load到內容再來放進來
           return <div key={index}>{data.userIDs}</div>;
         })}
       </div>
-      <div className="fixed bottom-0 w-full outline outline-1">
+      {/* 聊天室功能UI */}
+      <div>
         <input type="text" placeholder="對話框框放這邊" />
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">送出</button>
 
@@ -84,7 +86,7 @@ const Messages = ({ conversations }: { conversations: Conversation[] }) => {
         {audioStream && <AudioMessage stream={audioStream} />}
         {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} />}
       </div>
-    </>
+    </div>
   );
 };
 
