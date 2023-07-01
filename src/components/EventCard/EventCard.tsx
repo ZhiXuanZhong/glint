@@ -1,16 +1,11 @@
 'use client';
+import formatDate from '@/app/utils/formatDate';
 import Link from 'next/link';
 import ApplyButton from '../ApplyButton/ApplyButton';
 import WithdrawButton from '../WithdrawButton/WithdrawButton';
 import ReviewButton from '../ReviewButton/ReviewButton';
 
 const EventCard = ({ event, portal = false, edit = false, cancel = false, withdraw = false, apply = false, review = false, updateWithdraw, toggleReviewModal, hasReview }: EventCardProps) => {
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    const formattedDate = date.toLocaleDateString('zh');
-    return formattedDate;
-  };
-
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   return (

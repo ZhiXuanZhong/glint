@@ -43,7 +43,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
   };
 
   return (
-    <div className="flex flex-col h-full max-w-lg">
+    <div className="flex flex-col h-full w-full">
       <div className=" h-10 flex justify-center items-center bg-zinc-200">Conversation name</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
