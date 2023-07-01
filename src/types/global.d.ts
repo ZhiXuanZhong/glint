@@ -121,9 +121,11 @@ declare interface Conversation {
     };
     hasRead: string[];
     userIDs: string[];
+    conversationID: string;
 }
 
 declare interface Message {
+    conversationID: string;
     userID: string;
     username: string;
     timestamp: number;

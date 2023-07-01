@@ -5,7 +5,7 @@ import AudioMessage from '../AudioMessage/AudioMessage';
 import ImageMessage from '../ImageMessage/ImageMessage';
 import { Key, useRef, useState } from 'react';
 
-const Messages = ({ conversations }: { conversations: Conversation[] }) => {
+const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string | null }) => {
   const inputImageRef = useRef<HTMLInputElement>(null);
   const [inputImage, setInputImage] = useState<File | null>(null);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -42,10 +42,14 @@ const Messages = ({ conversations }: { conversations: Conversation[] }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full max-w-lg">
       <div className=" h-10 flex justify-center items-center bg-zinc-200">Conversation name</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
-      <div className="mt-auto overflow-auto"></div>
+      <div className="mt-auto overflow-auto">
+        {messages?.map((message, index) => {
+          return <div key={index}>{message.data}</div>;
+        })}
+      </div>
       {/* 聊天室功能UI */}
       <div className=" outline">
         <input type="text" placeholder="對話框框放這邊" />

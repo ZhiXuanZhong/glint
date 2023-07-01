@@ -2,8 +2,8 @@
 import Messages from '@/components/Messages/Messages';
 import ConversationCard from '@/components/ConversationCard/ConversationCard';
 import db from '../utils/firebaseConfig';
-import { useEffect, useRef } from 'react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
+import { QuerySnapshot, collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useImmer } from 'use-immer';
 
 const Page = () => {
@@ -11,19 +11,70 @@ const Page = () => {
   const conversationsRef = collection(db, 'messages');
   const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', userID));
   const [conversations, setConversations] = useImmer([] as Conversation[]);
+  const conversationIDs = useRef<string[]>([]);
+  const currentConversation = useRef<string | null>(null);
+  const messagesChunk = useRef([] as Message[]);
+  const [messages, setMmessages] = useState([] as Message[]);
+
+  const listenToMultipleDocChanges = (docIds: string[]) => {
+    docIds.forEach((docId) => {
+      const docRef = collection(db, 'messages', docId, 'details');
+      const docQuery = query(docRef, orderBy('timestamp', 'asc'));
+
+      onSnapshot(docQuery, (docSnapshot) => {
+        docSnapshot.docChanges().forEach((change) => {
+          if (change.type === 'added') {
+            const messageWithID = { ...(change.doc.data() as Message), conversationID: docId };
+
+            messagesChunk.current.push(messageWithID);
+          }
+        });
+      });
+    });
+  };
+
+  const stopListeningToMultipleDocChanges = (docIds: string[]) => {
+    docIds.forEach((docId) => {
+      const docRef = collection(db, 'messages', docId, 'details');
+      const docQuery = query(docRef);
+      onSnapshot(docQuery, (_) => {
+        // 再觸發一次停止監聽
+      });
+    });
+  };
 
   useEffect(() => {
     // 取得即時更新聊天室資料(使用中可能會有新的聊天室產生)
     // snapshop 第一次也可以直接load出所有資料
-    const unsubscribe = onSnapshot(conversationsQuery, (querySnapshot) => {
+    const unsubscribeConversations = onSnapshot(conversationsQuery, (querySnapshot) => {
       querySnapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
           setConversations((draft) => {
-            draft.push(change.doc.data() as Conversation);
+            const conversationWithID = { ...change.doc.data(), conversationID: change.doc.id };
+
+            draft.push(conversationWithID as Conversation);
+
+            // 假如都還沒有對話被載入，就先存
+            if (!conversationIDs.current) {
+              conversationIDs.current = [...conversationIDs.current, change.doc.id];
+            } else {
+              //如果有新對話進來，就先綁監聽再加入清單
+              listenToMultipleDocChanges([change.doc.id]);
+              conversationIDs.current = [...conversationIDs.current, change.doc.id];
+            }
           });
         }
       });
     });
+
+    listenToMultipleDocChanges(conversationIDs.current);
+
+    return () => {
+      // 解除聊天室的監聽
+      unsubscribeConversations();
+      // 解除聊天室datails內文的監聽
+      stopListeningToMultipleDocChanges(conversationIDs.current);
+    };
   }, []);
 
   return (
@@ -34,7 +85,8 @@ const Page = () => {
             key={index}
             className=" cursor-pointer"
             onClick={() => {
-              console.log('here');
+              setMmessages(messagesChunk.current.filter((message) => message.conversationID === data.conversationID));
+              currentConversation.current = data.conversationID;
             }}
           >
             <ConversationCard data={data} />
@@ -42,10 +94,27 @@ const Page = () => {
         ))}
       </div>
       <div className="grow h-screen bg-slate-400">
-        <Messages conversations={conversations} />
+        <Messages messages={messages} currentConversation={currentConversation.current} />
       </div>
     </div>
   );
 };
 
 export default Page;
+
+// 主要策略：都由firebase onSnapShot驅動畫面資料更新
+
+// Step 1
+// 利用 useEffect中 unsubscribeConversations 先取得用戶的所有對話ID，做成array
+
+// Step 2
+// 藉由上一步存出來了 對話ID array， 送到 listenToMultipleDocChanges 大量綁snapshot監聽 PS: Step1, Step2的監聽都在useEffect的return時解除
+
+// Step 3
+// 監聽回來的資料以時間 由JS timestemp小到大排序，形成舊訊息在上、新訊息在下
+
+// Step 4
+// 利用ConversationCard的click事件去filter出messageChunk裡面對應的訊息
+
+// Step 5
+// 設定currentConversation讓Message component傳資料的時候知道要傳到哪個對話
