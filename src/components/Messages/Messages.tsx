@@ -1,13 +1,18 @@
 'use client';
 
+import db from '@/app/utils/firebaseConfig';
 import VideoChat from '../VideoChat/VideoChat';
 import AudioMessage from '../AudioMessage/AudioMessage';
 import ImageMessage from '../ImageMessage/ImageMessage';
 import MessageBubble from '../MessageBubble/MessageBubble';
 import { Key, use, useEffect, useRef, useState } from 'react';
+import { addDoc, collection } from 'firebase/firestore';
 
-const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string | null }) => {
+const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string }) => {
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+  const username = 'Admin';
   const inputImageRef = useRef<HTMLInputElement>(null);
+  const inputTextRef = useRef<HTMLInputElement>(null);
   const dummyRef = useRef<HTMLDivElement>(null);
   const [inputImage, setInputImage] = useState<File | null>(null);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -43,6 +48,20 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
     }
   };
 
+  const sendMessage = async (type: string, data?: string) => {
+    const messagesDetailsRef = collection(db, 'messages', currentConversation, 'details');
+
+    const message = {
+      userID: userID,
+      username: 'Admin',
+      timestamp: Date.now(),
+      type,
+      data,
+    };
+
+    await addDoc(messagesDetailsRef, message);
+  };
+
   useEffect(() => {
     dummyRef.current?.scrollIntoView();
   }, [messages]);
@@ -59,8 +78,20 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       </div>
       {/* 聊天室功能UI */}
       <div className=" outline">
-        <input type="text" placeholder="對話框框放這邊" />
-        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded">送出</button>
+        <>
+          <input type="text" placeholder="對話框框放這邊" ref={inputTextRef} />
+          <button
+            className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded"
+            onClick={() => {
+              if (inputTextRef.current && inputTextRef.current.value !== '') {
+                sendMessage('text', inputTextRef.current?.value);
+                inputTextRef.current.value = '';
+              }
+            }}
+          >
+            送出
+          </button>
+        </>
 
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={getMicrophonePermission}>
           傳送語音

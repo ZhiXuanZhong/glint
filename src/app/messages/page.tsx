@@ -101,7 +101,7 @@ const Page = () => {
         ))}
       </div>
       <div className="grow h-screen bg-slate-400">
-        <Messages messages={messages} currentConversation={currentConversation.current} />
+        <Messages messages={messages} currentConversation={currentConversation.current as string} />
       </div>
     </div>
   );
