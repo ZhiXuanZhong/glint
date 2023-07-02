@@ -78,7 +78,11 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       </div>
       {/* 聊天室功能UI */}
       <div className=" outline">
-        <>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <input type="text" placeholder="對話框框放這邊" ref={inputTextRef} />
           <button
             className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded"
@@ -91,7 +95,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           >
             送出
           </button>
-        </>
+        </form>
 
         <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={getMicrophonePermission}>
           傳送語音
