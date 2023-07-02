@@ -121,7 +121,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
         </button>
 
         {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
-        {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} />}
+        {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} sendMessage={sendMessage} />}
       </div>
     </div>
   );

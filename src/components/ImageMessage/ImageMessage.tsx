@@ -6,15 +6,20 @@ import { SetStateAction } from 'react';
 interface ImageMessageProps {
   inputImage: File | null;
   setInputImage: (value: SetStateAction<File | null>) => void;
+  sendMessage: Function;
 }
 
-const ImageMessage = ({ inputImage, setInputImage }: ImageMessageProps) => {
+const ImageMessage = ({ inputImage, setInputImage, sendMessage }: ImageMessageProps) => {
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+
   const sendImage = async () => {
-    fireApp;
-    // FIXME 這邊的檔案名要跟訊息doc.id一樣
     if (inputImage) {
       try {
-        await fireMediaUpload(inputImage, 'message-image', String(Date.now()));
+        // 先以 `${userID}_${Date.now()}}` 當檔名建立url
+        // 再回到上層取用發訊息的function
+        // 再清空inputImage讓UI隱藏
+        const fileURL = await fireMediaUpload(inputImage, 'message-image', `${userID}_${Date.now()}`);
+        await sendMessage('image', fileURL);
         setInputImage(null);
       } catch (error) {
         console.log(error);
