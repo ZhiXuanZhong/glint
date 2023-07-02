@@ -53,7 +53,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
 
     const message = {
       userID: userID,
-      username: 'Admin',
+      username: username,
       timestamp: Date.now(),
       type,
       data,
@@ -120,7 +120,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           視訊聊聊
         </button>
 
-        {audioStream && <AudioMessage stream={audioStream} />}
+        {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
         {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} />}
       </div>
     </div>

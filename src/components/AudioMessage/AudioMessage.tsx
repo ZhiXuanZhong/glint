@@ -4,7 +4,8 @@ import fireMediaUpload from '@/app/utils/fireMediaUpload';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRef, useState } from 'react';
 
-const AudioMessage = ({ stream }: { stream: MediaStream }) => {
+const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessage: Function }) => {
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const mediaRecorder = useRef<MediaRecorder | null>(null);
   const audioBlob = useRef<Blob | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -51,8 +52,12 @@ const AudioMessage = ({ stream }: { stream: MediaStream }) => {
 
   const handleAudioUpload = async () => {
     if (audioBlob.current) {
-      const fileURL = await fireMediaUpload(audioBlob.current, 'message-image', 'testfile');
-      console.log(fileURL);
+      // 先以 `${userID}_${Date.now()}}` 當檔名建立url
+      // 再回到上層取用發訊息的function
+      // 再清空audio讓UI隱藏
+      const fileURL = await fireMediaUpload(audioBlob.current, 'message-audio', `${userID}_${Date.now()}`);
+      await sendMessage('audio', fileURL);
+      setAudio(null);
     }
   };
 
