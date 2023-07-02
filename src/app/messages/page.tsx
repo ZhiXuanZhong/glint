@@ -8,12 +8,16 @@ import { useImmer } from 'use-immer';
 
 const Page = () => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+  // conversation 是指該用戶發生過的對話，也就是聊天室的概念
   const conversationsRef = collection(db, 'messages');
   const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', userID));
   const [conversations, setConversations] = useImmer([] as Conversation[]);
   const conversationIDs = useRef<string[]>([]);
+  // currentConversation 是該用戶當前在哪個對話的指標，用來作為篩選對話的條件，目前透過conversationCard來更新值
   const currentConversation = useRef<string | null>(null);
+  // messagesChunk用來存所有聊天室的單條對話內容的pool，未來可以用where限制取回的時間點來增加效能
   const [messagesChunk, setMessagesChunk] = useImmer([] as Message[]);
+  // 從messagesChunk這個pool篩出來的資料，用來動態生成Message component的對話內容
   const [messages, setMessages] = useState([] as Message[]);
 
   const listenToMultipleDocChanges = (docIds: string[]) => {
@@ -101,7 +105,13 @@ const Page = () => {
         ))}
       </div>
       <div className="grow h-screen bg-slate-400">
-        <Messages messages={messages} currentConversation={currentConversation.current as string} />
+        {currentConversation.current ? (
+          <Messages messages={messages} currentConversation={currentConversation.current as string} />
+        ) : (
+          <div className="flex justify-center items-center h-screen">
+            <div>選擇一個對話開始聊聊吧！</div>
+          </div>
+        )}
       </div>
     </div>
   );
