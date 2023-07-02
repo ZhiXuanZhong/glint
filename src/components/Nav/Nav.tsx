@@ -13,11 +13,11 @@ const Nav = () => {
         <Link href={'/portal'}>管理潛水活動 </Link>
       </h1>
       <h1 className=" bg-slate-200 m-1 p-1">
-        <Link href={'messages'}>訊息</Link>
+        <Link href={'/messages'}>訊息</Link>
       </h1>
 
       <h1 className=" bg-slate-200 m-1 p-1">
-        <Link href={'#'}>我的潛水員地圖</Link>
+        <Link href={'/locator'}>我的潛水員地圖</Link>
       </h1>
 
       <h1 className=" bg-slate-200 m-1 p-1">
