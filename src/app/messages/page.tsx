@@ -13,20 +13,23 @@ const Page = () => {
   const [conversations, setConversations] = useImmer([] as Conversation[]);
   const conversationIDs = useRef<string[]>([]);
   const currentConversation = useRef<string | null>(null);
-  const messagesChunk = useRef([] as Message[]);
-  const [messages, setMmessages] = useState([] as Message[]);
+  const [messagesChunk, setMessagesChunk] = useImmer([] as Message[]);
+  const [messages, setMessages] = useState([] as Message[]);
 
   const listenToMultipleDocChanges = (docIds: string[]) => {
-    docIds.forEach((docId) => {
-      const docRef = collection(db, 'messages', docId, 'details');
-      const docQuery = query(docRef, orderBy('timestamp', 'asc'));
+    docIds.forEach((docID) => {
+      // 因為有docID要loop 所以query條件先不往外移
+      const messagesDetailsRef = collection(db, 'messages', docID, 'details');
+      const messagesDetailsQuery = query(messagesDetailsRef, orderBy('timestamp', 'asc'));
 
-      onSnapshot(docQuery, (docSnapshot) => {
+      onSnapshot(messagesDetailsQuery, (docSnapshot) => {
         docSnapshot.docChanges().forEach((change) => {
           if (change.type === 'added') {
-            const messageWithID = { ...(change.doc.data() as Message), conversationID: docId };
+            const messageWithID = { ...(change.doc.data() as Message), conversationID: docID };
 
-            messagesChunk.current.push(messageWithID);
+            setMessagesChunk((draft) => {
+              draft.push(messageWithID);
+            });
           }
         });
       });
@@ -77,6 +80,10 @@ const Page = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setMessages(messagesChunk.filter((message) => message.conversationID === currentConversation.current));
+  }, [messagesChunk]);
+
   return (
     <div className="flex">
       <div className="w-[500px] h-screen bg-slate-200">
@@ -85,7 +92,7 @@ const Page = () => {
             key={index}
             className=" cursor-pointer"
             onClick={() => {
-              setMmessages(messagesChunk.current.filter((message) => message.conversationID === data.conversationID));
+              setMessages(messagesChunk.filter((message) => message.conversationID === data.conversationID));
               currentConversation.current = data.conversationID;
             }}
           >
@@ -118,3 +125,5 @@ export default Page;
 
 // Step 5
 // 設定currentConversation讓Message component傳資料的時候知道要傳到哪個對話
+
+// Warning!!!! useRef無法觸發useEffect推動資料更新，如果資料有需要觸發後續資料推動渲染就不要用！！

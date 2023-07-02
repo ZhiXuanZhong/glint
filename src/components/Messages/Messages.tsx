@@ -4,10 +4,11 @@ import VideoChat from '../VideoChat/VideoChat';
 import AudioMessage from '../AudioMessage/AudioMessage';
 import ImageMessage from '../ImageMessage/ImageMessage';
 import MessageBubble from '../MessageBubble/MessageBubble';
-import { Key, useRef, useState } from 'react';
+import { Key, use, useEffect, useRef, useState } from 'react';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string | null }) => {
   const inputImageRef = useRef<HTMLInputElement>(null);
+  const dummyRef = useRef<HTMLDivElement>(null);
   const [inputImage, setInputImage] = useState<File | null>(null);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
@@ -42,14 +43,19 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
     }
   };
 
+  useEffect(() => {
+    dummyRef.current?.scrollIntoView();
+  }, [messages]);
+
   return (
     <div className="flex flex-col h-full w-full">
-      <div className=" h-10 flex justify-center items-center bg-zinc-200">Conversation name</div>
+      <div className=" h-10 flex justify-center items-center bg-zinc-200">{currentConversation}</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
         {messages?.map((message, index) => (
           <MessageBubble key={index} message={message} />
         ))}
+        <div ref={dummyRef}></div>
       </div>
       {/* 聊天室功能UI */}
       <div className=" outline">
