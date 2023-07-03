@@ -3,16 +3,48 @@
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { users } from './mockUsers';
-import { features } from 'process';
 import { useImmer } from 'use-immer';
-import Link from 'next/link';
+import DatePicker from 'react-datepicker';
+import formatDate from '../utils/formatDate';
+import 'react-datepicker/dist/react-datepicker.css';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
 
-const page = () => {
+// 依照日期filter新結果
+const filterFeaturesByDateRange = (data, dateRange) => {
+  const [startTimestamp, endTimestamp] = dateRange;
+
+  const filteredFeatures = data.filter((feature) => {
+    const { startTime, endTime } = feature.properties;
+
+    // 只要資料的startTime或是endTime任何一者在日期區間即符合條件
+    if ((startTime >= startTimestamp && startTime <= endTimestamp) || (endTime >= startTimestamp && endTime <= endTimestamp)) {
+      return true;
+    }
+  });
+
+  return filteredFeatures;
+};
+
+// 將dateRange轉換成timecode，開頭00:00結束23:59
+const convertToTimecodes = ([starDate, endDate]: Date[]) => {
+  const start = new Date(starDate);
+  start.setHours(0, 0, 0);
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59);
+
+  return [start.getTime(), end.getTime()];
+};
+
+const Page = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef(null) as mapboxgl;
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+
+  const monthEndDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(monthEndDate);
+  const [dateRange, setDateRange] = useState<number[] | null>(convertToTimecodes([new Date(), monthEndDate]));
 
   const originalGeoData = useRef();
   const [filteredGeo, setFilteredGeo] = useImmer(users);
@@ -34,7 +66,6 @@ const page = () => {
   useEffect(() => {
     const source = map.current?.getSource('locations');
     if (source) {
-      console.log('filteredGeo effect hit');
       source.setData(filteredGeo);
     }
   }, [filteredGeo]);
@@ -43,11 +74,14 @@ const page = () => {
   useEffect(() => {
     setFilteredGeo((draft) => {
       if (originalGeoData.current) {
-        const updatedList = originalGeoData.current.features.filter((data) => bounds?.contains(data.geometry.coordinates));
-        draft.features = updatedList;
+        const mapUpdate = originalGeoData.current.features.filter((data) => bounds?.contains(data.geometry.coordinates));
+        const dateUpdate = filterFeaturesByDateRange(mapUpdate, dateRange);
+
+        draft.features = dateUpdate;
       }
     });
-  }, [bounds]);
+    console.log('[dateRange,bounds] effect');
+  }, [bounds, dateRange]);
 
   // 隨時都在更新的圖面
   // 其他功能性在這邊config
@@ -57,6 +91,7 @@ const page = () => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current as HTMLElement,
       style: 'mapbox://styles/mapbox/light-v11',
+      attributionControl: false,
       center: [120.8937, 23.1956],
       zoom: 7.5,
       pitch: 31,
@@ -192,16 +227,43 @@ const page = () => {
     };
   });
 
+  const onChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // 有點選結束時間才取dateRange
+    if (end) {
+      setDateRange(convertToTimecodes(dates));
+    }
+  };
+
   return (
     <div className="flex h-screen">
       <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" />
       <div className=" w-3/4 text-left" ref={mapContainer}></div>
       <div className=" w-1/4">
         {/* divers' list */}
-        {filteredGeo && filteredGeo.features?.map((user, index) => <div key={index}>{user.properties.name}</div>)}
+        <DatePicker selected={startDate} onChange={onChange} startDate={startDate} endDate={endDate} minDate={new Date()} minTime={new Date(new Date().setHours(0, 0, 0, 0))} selectsRange inline />
+        {filteredGeo &&
+          filteredGeo.features?.map((feature, index) => {
+            return (
+              <div key={index} className="p-1 m-1">
+                <div className="flex bg-slate-400">
+                  <picture>
+                    <img src={feature.properties.avatar} alt="avatar" />
+                  </picture>
+                  <div className="flex items-center">{feature.properties.name}</div>
+                </div>
+                <div className="bg-slate-400">
+                  {formatDate(feature.properties.startTime)}~{formatDate(feature.properties.endTime)}
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;
