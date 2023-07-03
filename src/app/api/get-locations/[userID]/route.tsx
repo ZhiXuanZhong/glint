@@ -102,7 +102,7 @@ export async function GET(request: Request, { params }: { params: { userID: stri
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates: location.coordinates,
+          coordinates: location.coordinates.reverse(),
         },
         properties: {
           userID: location.userID,
