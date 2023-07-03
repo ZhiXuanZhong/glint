@@ -5,6 +5,7 @@ import mapboxgl from 'mapbox-gl';
 import { users } from './mockUsers';
 import { features } from 'process';
 import { useImmer } from 'use-immer';
+import Link from 'next/link';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
 
@@ -30,7 +31,7 @@ function getRandomCoordinates(center) {
 
 const page = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map>(null);
+  const map = useRef(null) as mapboxgl;
 
   const [lng, setLng] = useState(120.9323);
   const [lat, setLat] = useState(23.5702);
@@ -38,6 +39,7 @@ const page = () => {
   const [pitch, setPitch] = useState(7.5);
   const [bearing, setBearing] = useState(7.5);
   const [usersGeo, setUsersGeo] = useImmer(users);
+  const [bounds, setBounds] = useState();
 
   const handleClick = () => {
     setUsersGeo((draft) => {
@@ -58,7 +60,7 @@ const page = () => {
       };
 
       draft.features.push(newData);
-      map.current.getSource('locations').setData(draft);
+      map.current?.getSource('locations').setData(draft);
     });
   };
 
@@ -67,8 +69,10 @@ const page = () => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current as HTMLElement,
       style: 'mapbox://styles/mapbox/light-v11',
-      center: [lng, lat],
-      zoom: zoom,
+      center: [120.8937, 23.1956],
+      zoom: 7.5,
+      pitch: 31,
+      bearing: -7.7,
     });
 
     map.current?.on('load', () => {
@@ -79,7 +83,7 @@ const page = () => {
         /* Add a GeoJSON source containing place coordinates and information. */
         source: {
           type: 'geojson',
-          data: users,
+          data: usersGeo,
           cluster: true,
           clusterMaxZoom: 14, // Max zoom to cluster points on
           clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
@@ -140,27 +144,55 @@ const page = () => {
           'text-size': 12,
         },
       });
+      setBounds(map.current.getBounds());
     });
 
-    map.current.on('move', () => {
-      setLng(map.current.getCenter().lng.toFixed(4));
-      setLat(map.current.getCenter().lat.toFixed(4));
-      setZoom(map.current.getZoom().toFixed(2));
+    map.current?.on('move', () => {
+      setLng(map.current?.getCenter().lng.toFixed(4));
+      setLat(map.current?.getCenter().lat.toFixed(4));
+      setZoom(map.current?.getZoom().toFixed(2));
       setPitch(map.current?.getPitch().toFixed(2));
       setBearing(map.current?.getBearing().toFixed(2));
+      setBounds(map.current.getBounds());
     });
 
     // 4-1 enable click then center behaviour by using mapbox flyTo method
     const flyToUser = (currentFeature) => {
-      map.current.flyTo({
+      map.current?.flyTo({
         center: currentFeature.geometry.coordinates,
         zoom: 9.7,
       });
     };
 
-    map.current.on('click', (event) => {
+    //4-2 create Popup to display user's info
+    const createPopUp = (currentFeature) => {
+      const popUps = document.getElementsByClassName('mapboxgl-popup');
+      /** Check if there is already a popup on the map and if so, remove it */
+      if (popUps[0]) popUps[0].remove();
+
+      const popup = new mapboxgl.Popup({ closeOnClick: false })
+        .setLngLat(currentFeature.geometry.coordinates)
+        .setHTML(
+          `
+						 <div style="display:flex;width:250px">
+							<div>
+								<img src="${currentFeature.properties.avatar}"/>
+							</div>
+							<div>
+									<div>${currentFeature.properties.name}</div>
+									<div>tel:${currentFeature.properties.phone}</div>
+									<div>Last updated:${currentFeature.properties.lastUpdate}</div>
+							</div>
+						
+					  </div>
+						`
+        )
+        .addTo(map.current);
+    };
+
+    map.current?.on('click', (event) => {
       /* Determine if a feature in the "locations" layer exists at that point. */
-      const features = map.current.queryRenderedFeatures(event.point, {
+      const features = map.current?.queryRenderedFeatures(event.point, {
         layers: ['locations'],
       });
 
@@ -173,18 +205,33 @@ const page = () => {
       flyToUser(clickedPoint);
 
       /* Close all other popups and display popup for clicked store */
-      //   createPopUp(clickedPoint);
+      createPopUp(clickedPoint);
     });
   });
 
+  useEffect(() => {
+    // const llb = new mapboxgl.LngLatBounds(new mapboxgl.LngLat(filterCondition._sw), new mapboxgl.LngLat(filterCondition._ne));
+    const ll = new mapboxgl.LngLat(121.34646095868027, 23.487687802790674);
+    console.log(bounds?.contains(ll));
+
+    setUsersGeo((draft) => {
+      draft.features = users.features.filter((data) => bounds?.contains(data.geometry.coordinates));
+    });
+  }, [bounds]);
+
   return (
     <div className="flex h-screen">
+      <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" />
       <div className=" w-3/4 text-left" ref={mapContainer}></div>
       <div className=" w-1/4">
         divers' list
         <div>
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom} | Pitch: {pitch} | Bearing: {bearing}
         </div>
+        {/* <div>bounds: {filterCondition}</div> */}
+        {usersGeo.features.map((user, index) => (
+          <div key={index}>{user.properties.name}</div>
+        ))}
         <button onClick={handleClick}>add</button>
       </div>
     </div>
