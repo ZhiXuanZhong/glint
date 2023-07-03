@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import { users } from './mockUsers';
 import { useImmer } from 'use-immer';
+import mapboxgl from 'mapbox-gl';
 import DatePicker from 'react-datepicker';
-import formatDate from '../utils/formatDate';
 import 'react-datepicker/dist/react-datepicker.css';
+import formatDate from '../utils/formatDate';
+import startEndToTimecodes from '../utils/startEndToTimecodes';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
 
@@ -26,16 +26,6 @@ const filterFeaturesByDateRange = (data, dateRange) => {
   return filteredFeatures;
 };
 
-// 將dateRange轉換成timecode，開頭00:00結束23:59
-const convertToTimecodes = ([starDate, endDate]: Date[]) => {
-  const start = new Date(starDate);
-  start.setHours(0, 0, 0);
-  const end = new Date(endDate);
-  end.setHours(23, 59, 59);
-
-  return [start.getTime(), end.getTime()];
-};
-
 const Page = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef(null) as mapboxgl;
@@ -44,10 +34,10 @@ const Page = () => {
   const monthEndDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(monthEndDate);
-  const [dateRange, setDateRange] = useState<number[] | null>(convertToTimecodes([new Date(), monthEndDate]));
+  const [dateRange, setDateRange] = useState<number[] | null>(startEndToTimecodes([new Date(), monthEndDate]));
 
   const originalGeoData = useRef();
-  const [filteredGeo, setFilteredGeo] = useImmer(users);
+  const [filteredGeo, setFilteredGeo] = useImmer(null);
   const [bounds, setBounds] = useState();
 
   // 取資料的effect
@@ -234,7 +224,7 @@ const Page = () => {
 
     // 有點選結束時間才取dateRange
     if (end) {
-      setDateRange(convertToTimecodes(dates));
+      setDateRange(startEndToTimecodes(dates));
     }
   };
 
