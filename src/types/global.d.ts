@@ -47,6 +47,11 @@ declare interface UsersProfile {
     id?: string; // Added optional id field
 }
 
+declare interface UsersInfo {
+    name: string;
+    birthday: number;
+}
+
 declare interface Applicants {
     level: string;
     name: string;

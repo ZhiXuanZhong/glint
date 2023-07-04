@@ -1,4 +1,5 @@
-const formatDate = (timestamp: number) => {
+const formatDate = (timestamp?: number) => {
+    if (!timestamp) return
     const date = new Date(timestamp);
     const formattedDate = date.toLocaleDateString('zh');
     return formattedDate;

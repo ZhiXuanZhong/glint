@@ -1,5 +1,6 @@
 import Link from 'next/link';
 const Nav = () => {
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   return (
     <nav className="w-[250px] min-[250px]: h-screen sticky top-0">
       <picture>
@@ -21,11 +22,7 @@ const Nav = () => {
       </h1>
 
       <h1 className=" bg-slate-200 m-1 p-1">
-        <Link href={'#'}>個人檔案</Link>
-      </h1>
-
-      <h1 className=" bg-slate-200 m-1 p-1">
-        <Link href={'#'}>設定</Link>
+        <Link href={`/profile/${userID}`}>個人檔案</Link>
       </h1>
     </nav>
   );
