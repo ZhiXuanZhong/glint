@@ -31,10 +31,10 @@ const Page = () => {
   const map = useRef(null) as mapboxgl;
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
-  const monthEndDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+  const lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(monthEndDate);
-  const [dateRange, setDateRange] = useState<number[] | null>(startEndToTimecodes([new Date(), monthEndDate]));
+  const [endDate, setEndDate] = useState(lastDayOfYear);
+  const [dateRange, setDateRange] = useState<number[] | null>(startEndToTimecodes([new Date(), lastDayOfYear]));
 
   const originalGeoData = useRef();
   const [filteredGeo, setFilteredGeo] = useImmer(null);
@@ -46,8 +46,18 @@ const Page = () => {
       .then((res) => res.json())
       .then((data) => data)
       .then((geoJSON) => {
-        setFilteredGeo(geoJSON.data);
-        originalGeoData.current = geoJSON.data;
+        // 活動的開始、結束時段，只要跟篩選的頭尾有重疊都會顯示，因為可以只參加幾天
+        // 資料篩選不在firebase做的原因：因為不能多個>=這種判斷在單一query，那就全部取回篩因為要包含頭尾，如果只取>startTime，那startTime在之前，但尚未結束的活動會被篩掉
+        // FIXME: 排序要拉到firebase做，可以減少user取回資料後都要重排，提高效能
+        const updatedFeatures = {
+          ...geoJSON.data,
+          features: geoJSON.data.features
+            .filter((feature) => feature.properties.startTime >= startDate || feature.properties.endTime >= endDate)
+            .sort((a, b) => a.properties.startTime - b.properties.startTime),
+        };
+        // [...events].sort((a, b) => a.startTime - b.startTime)
+        setFilteredGeo(updatedFeatures);
+        originalGeoData.current = updatedFeatures;
       })
       .then(console.log('got GeoJSON'));
   }, []);
