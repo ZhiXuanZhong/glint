@@ -99,6 +99,7 @@ declare interface Info {
     name: string;
     level: string;
     licence: boolean;
+    children?: React.ReactNode
 }
 
 declare interface EventCardProps {

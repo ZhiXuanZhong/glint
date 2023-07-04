@@ -1,4 +1,4 @@
-const UserInfo = ({ imageURL, name, level, licence }: Info) => {
+const UserInfo = ({ imageURL, name, level, licence, children }: Info) => {
   return (
     <div className="shadow-md m-3 rounded-lg bg-gray-400">
       <picture>
@@ -7,6 +7,7 @@ const UserInfo = ({ imageURL, name, level, licence }: Info) => {
       <div>{name}</div>
       <div>{level}</div>
       <div>{licence}</div>
+      <div>{children}</div>
     </div>
   );
 };
