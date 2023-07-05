@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Login from '../Login/Login';
 const Nav = () => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   return (
@@ -24,6 +25,8 @@ const Nav = () => {
       <h1 className=" bg-slate-200 m-1 p-1">
         <Link href={`/profile/${userID}`}>個人檔案</Link>
       </h1>
+
+      <Login />
     </nav>
   );
 };
