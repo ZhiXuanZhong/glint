@@ -25,8 +25,6 @@ const Nav = () => {
       <h1 className=" bg-slate-200 m-1 p-1">
         <Link href={`/profile/${userID}`}>個人檔案</Link>
       </h1>
-
-      <Login />
     </nav>
   );
 };

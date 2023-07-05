@@ -1,16 +1,16 @@
 'use client';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useAuthStore } from '@/store/authStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const Login = () => {
+export const GoogleLogin = () => {
   const provider = new GoogleAuthProvider();
-  const [userID, updateUserID] = useAuthStore((state) => [state.userID, state.updateUserID]);
+  const [authUser, updateAuthUser] = useAuthStore((state) => [state.authUser, state.updateAuthUser]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setLoaded(true);
-  }, [userID]);
+  }, [authUser]);
 
   const handleLogin = () => {
     const auth = getAuth();
@@ -25,7 +25,7 @@ const Login = () => {
         // ...
 
         console.log(result);
-        updateUserID(result.user.uid);
+        updateAuthUser(result.user);
       })
       .catch((error) => {
         // Handle Errors here.
@@ -39,30 +39,13 @@ const Login = () => {
       });
   };
 
-  //   const handleLogin = () => {
-  //     const email = 'admin@demo.com';
-  //     const password = 'admin@demo.com';
-  //     const auth = getAuth();
-  //     signInWithEmailAndPassword(auth, email, password)
-  //       .then((userCredential) => {
-  //         // Signed in
-  //         const user = userCredential.user;
-  //         console.log(user);
-  //         // ...
-  //       })
-  //       .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         console.log(errorCode, errorMessage);
-  //       });
-  //   };
-
   const handleLogout = () => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
         console.log('Sign-out successful.');
         // Sign-out successful.
+        updateAuthUser('');
       })
       .catch((error) => {
         // An error happened.
@@ -71,11 +54,80 @@ const Login = () => {
 
   return (
     <>
-      <div onClick={handleLogin}>Login</div>
-      <div onClick={handleLogout}>Logout</div>
-      {loaded && <div>now logged as {userID}</div>}
+      <div>
+        {' '}
+        <button className="border p-1 mx-1" onClick={handleLogin}>
+          Google Login
+        </button>
+        <button className="border p-1 mx-1" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
+      {loaded && <div>now logged as {authUser.uid}</div>}
     </>
   );
 };
 
-export default Login;
+export const EmailLogin = () => {
+  const provider = new GoogleAuthProvider();
+  const [authUser, updateAuthUser] = useAuthStore((state) => [state.authUser, state.updateAuthUser]);
+  const [loaded, setLoaded] = useState(false);
+
+  const emailRef = useRef<HTMLInputElement>();
+  const passwordRef = useRef<HTMLInputElement>();
+
+  useEffect(() => {
+    setLoaded(true);
+  }, [authUser]);
+
+  const handleLogin = () => {
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+    if (!(email && password)) return;
+
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        updateAuthUser(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        console.log(errorCode, errorMessage);
+      });
+  };
+
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        console.log('Sign-out successful.');
+        // Sign-out successful.
+        updateAuthUser('');
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  };
+
+  return (
+    <>
+      <div className="flex flex-col">
+        <div>使用 Email 登入</div>
+        <input className="border max-w-sm" type="text" ref={emailRef} />
+        <input className="border max-w-sm" type="password" ref={passwordRef} />
+        <button className="border max-w-sm" onClick={handleLogin}>
+          Login
+        </button>
+        <button className="border max-w-sm" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
+      {loaded && <div>now logged as {authUser.uid}</div>}
+    </>
+  );
+};

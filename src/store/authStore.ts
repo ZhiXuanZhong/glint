@@ -1,10 +1,11 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { shallow } from 'zustand/shallow'
 
-type State = {
-    userID: string;
-    updateUserID: (data: string) => void
-}
+// type State = {
+//     authUser: string;
+//     updateUserID: (data: string) => void
+// }
 
 // type Action = {
 //     updateUserID: (data: string) => void
@@ -13,10 +14,10 @@ type State = {
 
 export const useAuthStore = create(persist(
     (set) => ({
-        userID: '',
-        updateUserID: (authData: string) => set(() => ({ userID: authData }))
+        authUser: {},
+        updateAuthUser: (authData: string) => set(() => ({ authUser: authData }))
     }), {
-    name: 'user-id',
-    storage: createJSONStorage(() => sessionStorage),
+    name: 'user',
+    storage: createJSONStorage(() => localStorage),
 }
 ))
