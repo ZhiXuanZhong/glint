@@ -2,6 +2,7 @@
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useAuthStore } from '@/store/authStore';
 import { useEffect, useRef, useState } from 'react';
+import { app } from '@/app/utils/firebaseConfig';
 
 export const GoogleLogin = () => {
   const provider = new GoogleAuthProvider();
@@ -13,7 +14,7 @@ export const GoogleLogin = () => {
   }, [authUser]);
 
   const handleLogin = () => {
-    const auth = getAuth();
+    const auth = getAuth(app);
     signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -40,7 +41,7 @@ export const GoogleLogin = () => {
   };
 
   const handleLogout = () => {
-    const auth = getAuth();
+    const auth = getAuth(app);
     signOut(auth)
       .then(() => {
         console.log('Sign-out successful.');
@@ -86,7 +87,7 @@ export const EmailLogin = () => {
     const password = passwordRef.current?.value;
     if (!(email && password)) return;
 
-    const auth = getAuth();
+    const auth = getAuth(app);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
@@ -101,7 +102,7 @@ export const EmailLogin = () => {
   };
 
   const handleLogout = () => {
-    const auth = getAuth();
+    const auth = getAuth(app);
     signOut(auth)
       .then(() => {
         console.log('Sign-out successful.');

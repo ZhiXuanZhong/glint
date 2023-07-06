@@ -89,7 +89,7 @@ const Page = () => {
   }, [messagesChunk]);
 
   return (
-    <div className="flex">
+    <div className="flex w-full">
       <div className="w-[500px] h-screen bg-slate-200">
         {conversations?.map((data, index) => (
           <div

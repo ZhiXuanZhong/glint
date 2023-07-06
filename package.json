@@ -32,6 +32,8 @@
   },
   "devDependencies": {
     "@types/react-datepicker": "^4.11.2",
-    "encoding": "^0.1.13"
+    "encoding": "^0.1.13",
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "^0.3.0"
   }
 }
