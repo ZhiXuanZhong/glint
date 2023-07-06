@@ -1,38 +1,75 @@
+import { MdOutlineContentPasteSearch, MdOutlineAddCircleOutline, MdNewspaper, MdRecordVoiceOver, MdTravelExplore, MdPerson } from 'react-icons/md';
 import Link from 'next/link';
 
 const SideBar = () => {
   return (
     <>
-      <div className="flex w-full z-50  fixed -bottom-0 md:top-[80px] lg:w-52  md:w-32 md:flex-col text-sm bg-slate-400">
-        <h1 className="flex my-2">
-          <div>🦄</div>
-          <Link href={'/events'}>尋找潛水活動</Link>
-        </h1>
+      <div
+        className="fixed -bottom-0 z-50 flex h-14 w-full items-center justify-between border-t  border-r-moonlight-100 border-t-moonlight-100 bg-white px-16 text-sm text-moonlight-950
+        md:top-[80px] md:h-full  md:w-52  md:flex-col md:items-start md:justify-start md:border-r md:border-t-0
+        md:px-2 md:pt-3
+      "
+      >
+        {/* MdOutlineContentPasteSearch */}
+        <div className="flex h-9 rounded transition-colors hover:bg-moonlight-100 hover:font-light hover:text-neutral-950 md:w-full">
+          <Link href={'/events'} className="flex items-center md:m-2 md:ml-4 ">
+            <div className="text-3xl md:text-base">
+              <MdOutlineContentPasteSearch />
+            </div>
+            <div className="hidden pl-3  md:flex">尋找潛水活動</div>
+          </Link>
+        </div>
 
-        <h1 className="flex my-2">
-          <div>🦄</div>
-          <Link href={'/create-event'}>建立潛水活動 </Link>
-        </h1>
+        {/* MdOutlineAddCircleOutline */}
+        <div className="flex h-9 rounded transition-colors hover:bg-moonlight-100 hover:font-light hover:text-neutral-950 md:w-full">
+          <Link href={'/create-event'} className="flex items-center md:m-2 md:ml-4 ">
+            <div className="text-3xl md:text-base">
+              <MdOutlineAddCircleOutline />
+            </div>
 
-        <h1 className="flex my-2">
-          <div>🦄</div>
-          <Link href={'/portal'}>管理潛水活動 </Link>
-        </h1>
+            <div className="hidden pl-3  md:flex">建立潛水活動</div>
+          </Link>
+        </div>
 
-        <h1 className="flex my-2">
-          <div>🦄</div>
-          <Link href={'/messages'}>訊息</Link>
-        </h1>
+        {/* MdNewspaper */}
+        <div className="flex h-9 rounded transition-colors hover:bg-moonlight-100 hover:font-light hover:text-neutral-950 md:w-full">
+          <Link href={'/portal'} className="flex items-center md:m-2 md:ml-4 ">
+            <div className="text-3xl md:text-base">
+              <MdNewspaper />
+            </div>
+            <div className="hidden pl-3  md:flex">管理潛水活動</div>
+          </Link>
+        </div>
 
-        <h1 className="flex my-2">
-          <div>🦄</div>
-          <Link href={'/locator'}>我的潛水員地圖</Link>
-        </h1>
+        {/* MdRecordVoiceOver */}
+        <div className="flex h-9 rounded transition-colors hover:bg-moonlight-100 hover:font-light hover:text-neutral-950 md:w-full">
+          <Link href={'/messages'} className="flex items-center md:m-2 md:ml-4 ">
+            <div className="text-3xl md:text-base">
+              <MdRecordVoiceOver />
+            </div>
+            <div className="hidden pl-3  md:flex">訊息</div>
+          </Link>
+        </div>
 
-        <h1 className="flex my-2">
-          <div>🦄</div>
-          <Link href={`/profile/${'userID'}`}>個人檔案</Link>
-        </h1>
+        {/* MdTravelExplore */}
+        <div className="flex h-9 rounded transition-colors hover:bg-moonlight-100 hover:font-light hover:text-neutral-950 md:w-full">
+          <Link href={'/locator'} className="flex items-center md:m-2 md:ml-4 ">
+            <div className="text-3xl md:text-base">
+              <MdTravelExplore />
+            </div>
+            <div className="hidden pl-3  md:flex">我的潛水員地圖</div>
+          </Link>
+        </div>
+
+        {/* MdPerson */}
+        <div className="flex h-9 rounded transition-colors hover:bg-moonlight-100 hover:font-light hover:text-neutral-950 md:w-full">
+          <Link href={`/profile/${'userID'}`} className="flex items-center md:m-2 md:ml-4 ">
+            <div className="text-3xl md:text-base">
+              <MdPerson />
+            </div>
+            <div className="hidden pl-3  md:flex">個人檔案</div>
+          </Link>
+        </div>
       </div>
     </>
   );
