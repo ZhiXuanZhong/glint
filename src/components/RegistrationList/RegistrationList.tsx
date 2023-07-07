@@ -3,8 +3,7 @@ import RevokeButton from '@/components/RevokeButton/RevokeButton';
 import ConfirmButton from '@/components/ConfirmButton/ConfirmButton';
 import { Key, useEffect, useState } from 'react';
 import db from '@/app/utils/firebaseConfig';
-import { initializeApp } from 'firebase/app';
-import { collection, getFirestore, query, onSnapshot, doc } from 'firebase/firestore';
+import { collection, query, onSnapshot } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
 
 const RegistrationList = ({ eventID }: { eventID: string }) => {
@@ -133,10 +132,10 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
   return (
     <>
       {/* FIXME: 確認profiles都回來才把清單內容產生，這樣卡卡的 */}
-      <h2 className="font-bold text-xl">已加入活動</h2>
+      <div className="pb-3 text-xl text-moonlight-950">已加入活動</div>
       {profiles &&
         regList?.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
-          <div key={index} className="shadow-md m-3 rounded-lg bg-gray-50">
+          <div key={index} className="">
             <picture>{<img src={profiles[participant.id as any].avatarURL} alt="Avatar" />}</picture>
             <div>{participant.name}</div>
             <div>{participant.level}</div>
@@ -145,10 +144,10 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
           </div>
         ))}
 
-      <h2 className="font-bold text-xl">等待清單</h2>
+      <div className="pb-3 text-xl text-moonlight-950">等待清單</div>
       {profiles &&
         regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
-          <div key={index} className="shadow-md m-3 rounded-lg bg-gray-50">
+          <div key={index} className="">
             <picture>{<img src={profiles[applicant.id as any].avatarURL} alt="Avatar" />}</picture>
             <div>{applicant.name}</div>
             <div>{applicant.level}</div>
