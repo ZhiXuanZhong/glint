@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
     <div className="mx-4 flex h-screen flex-col p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
       <h1 className="mb-6 border-b py-3 text-2xl font-semibold text-moonlight-950">蘭嶼/綠島/小琉球跳島11日可能嗎潛旅</h1>
       <div className="md:flex">
-        <div className="h-screen bg-slate-200 p-3 md:w-2/6">Left column</div>
+        <div className="h-screen bg-gray-500 p-3 md:w-2/6">Left column</div>
         {/* right column starts here */}
         <div className="px-3 md:w-4/6">
           <h2 className="pb-3 text-xl text-moonlight-950">活動詳情</h2>
@@ -70,9 +70,16 @@ export default async function Page({ params }: { params: { eventID: string } }) 
             <br />
             <p>預估費用 NT$88,888</p>
           </div>
-
-          <RegistrationList eventID={params.eventID} />
-          <div></div>
+          <div className="flex flex-wrap">
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
+            {/* <RegistrationList eventID={params.eventID} /> */}
+          </div>
         </div>
       </div>
     </div>

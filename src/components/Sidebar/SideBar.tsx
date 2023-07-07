@@ -5,7 +5,7 @@ const SideBar = () => {
   return (
     <>
       <div
-        className="fixed -bottom-0 z-50 flex h-14 w-full items-center justify-between border-t border-r-moonlight-100 border-t-moonlight-100 bg-white  px-16 text-sm text-moonlight-950
+        className="fixed -bottom-0 z-50 flex h-14 w-full items-center justify-around border-t border-r-moonlight-100 border-t-moonlight-100 bg-white text-sm text-moonlight-950
         md:top-[80px] md:h-full  md:w-52  md:flex-col md:items-start md:justify-start md:border-r md:border-t
         md:px-2 md:pt-3
       "
