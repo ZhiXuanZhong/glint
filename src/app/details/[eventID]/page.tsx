@@ -1,10 +1,15 @@
 import { headers } from 'next/headers';
 import Image from 'next/image';
 import { Key } from 'react';
+import { convertLocationCode } from '@/app/utils/convertLocationCode';
+import formatDate from '@/app/utils/formatDate';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import ApplyButton from '@/components/ApplyButton/ApplyButton';
 import FavoriteButton from '@/components/FavoriteButton/FavoriteButton';
 import RegistrationList from '@/components/RegistrationList/RegistrationList';
+import StaticCalendar from '@/components/StaticCalendar/StaticCalendar';
+
+import { MdPool, MdOutlineLocalPolice, MdOutlineLayers, MdLocationOn, MdOutlineCalendarMonth } from 'react-icons/md';
 
 export default async function Page({ params }: { params: { eventID: string } }) {
   // FIXME: workaround! server component can't fetch relative path
@@ -29,12 +34,65 @@ export default async function Page({ params }: { params: { eventID: string } }) 
 
   return (
     <div className="mx-4 flex h-screen flex-col p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
-      <h1 className="mb-6 border-b py-3 text-2xl font-semibold text-moonlight-950">蘭嶼/綠島/小琉球跳島11日可能嗎潛旅</h1>
+      <h1 className="mb-6 border-b py-3 text-2xl font-semibold text-moonlight-900">{eventInfos.data.title}</h1>
       <div className="md:flex">
-        <div className="h-screen bg-gray-500 p-3 md:w-2/6">Left column</div>
+        <div className="pr-3 md:w-2/6">
+          <div className="mb-10">
+            <div className="flex items-center">
+              <MdPool className="mr-1 text-xl" />
+              <div className="text-xl font-medium text-moonlight-950">嚮導</div>
+            </div>
+            <div className="mt-2 text-sm font-light text-moonlight-800">鋼鐵礁這類離岸較遠</div>
+          </div>
+
+          <div className="mb-10">
+            <div>
+              <div className="mt-3 flex  items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+                <MdOutlineLayers className="mr-1 text-xl" />
+                <div>類型</div>
+              </div>
+            </div>
+            <div className="mt-2 text-sm font-light text-moonlight-800">鋼鐵礁這類離岸較遠</div>
+          </div>
+
+          <div className="mb-10">
+            <div className="mt-3 flex items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+              <MdOutlineLocalPolice className="mr-1 text-xl" />
+              <div>活動建議</div>
+            </div>
+            <div className="mt-2 text-sm font-light text-moonlight-800">{eventInfos.data.levelSuggection}</div>
+          </div>
+
+          <div className="mb-10">
+            <div className="mt-3 flex  items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+              <MdLocationOn className="mr-1 text-xl" />
+              <div>地點</div>
+            </div>
+            {eventInfos.data.locations?.map((location: string, index: Key) => (
+              <div key={index} className="mt-2 text-sm font-light text-moonlight-800">
+                {convertLocationCode(location)}
+              </div>
+            ))}
+          </div>
+
+          <div className="mb-10">
+            <div className="mt-3 flex  items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+              <MdOutlineCalendarMonth className="mr-1 text-xl" />
+              <div>時間</div>
+            </div>
+            <div>
+              {/* <div>{`${formatDate(eventInfos.data.startTime)} ~ ${formatDate(eventInfos.data.endTime)}`}</div> */}
+              <StaticCalendar start={eventInfos.data.startTime} end={eventInfos.data.endTime} />
+            </div>
+          </div>
+
+          <div>
+            <div>申請加入</div>
+            <div>蒐藏</div>
+          </div>
+        </div>
         {/* right column starts here */}
-        <div className="px-3 md:w-4/6">
-          <h2 className="pb-3 text-xl text-moonlight-950">活動詳情</h2>
+        <div className="pl-3 md:w-4/6">
           <div className=" shadow-sm">
             <Image
               width={0}
@@ -45,7 +103,8 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               alt={'event picture'}
             />
           </div>
-          <div className="border-b py-3 text-sm leading-tight tracking-wide text-moonlight-900">
+          <h2 className="mt-3 pb-3 pt-2 text-xl font-medium text-moonlight-950">活動詳情</h2>
+          <div className="py-3 text-sm leading-tight tracking-wide text-moonlight-900">
             <p>自由潛水課程結束了卻不知道該如何繼續與大海連結嗎？</p>
             <br />
             <p>在台灣或者國外的某個地方接觸了自由潛水，不論你是否達到課程結訓的要求，都可以透過我們繼續與大海連結.</p>

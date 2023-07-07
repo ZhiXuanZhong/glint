@@ -133,7 +133,7 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
   return (
     <>
       {/* FIXME: 確認profiles都回來才把清單內容產生，這樣卡卡的 */}
-      <div className="mb-5">
+      <div className="mb-5 border-t pt-5">
         <div className="pb-3 text-xl text-moonlight-950"> 已加入活動</div>
         <div className="flex flex-wrap">
           {profiles &&
@@ -147,7 +147,7 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
         </div>
       </div>
 
-      <div className="pb-3 text-xl text-moonlight-950">等待清單</div>
+      <div className="border-t pb-3 pt-5 text-xl text-moonlight-950">等待清單</div>
       {profiles && (
         <div className="flex flex-wrap">
           {regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
