@@ -8,7 +8,7 @@ const RevokeButton = ({ userID, eventID }: { userID: string; eventID: string }) 
   };
 
   return (
-    <button className="m-1 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={handleClick}>
+    <button className="rounded-md bg-gray-400 px-4 py-1 text-xs text-white hover:bg-red-500 hover:transition-all" onClick={handleClick}>
       取消加入
     </button>
   );

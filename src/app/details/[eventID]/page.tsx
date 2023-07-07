@@ -70,15 +70,8 @@ export default async function Page({ params }: { params: { eventID: string } }) 
             <br />
             <p>預估費用 NT$88,888</p>
           </div>
-          <div className="flex flex-wrap">
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            <UserInfo imageURL={`https://placehold.co/50x50.png`} name={'Jacqueline Yu'} level={'SSI Level 1'} licence={true} />
-            {/* <RegistrationList eventID={params.eventID} /> */}
+          <div className="mb-16 py-3">
+            <RegistrationList eventID={params.eventID} />
           </div>
         </div>
       </div>

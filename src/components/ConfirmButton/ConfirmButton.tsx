@@ -1,8 +1,6 @@
 'use client';
 import db from '@/app/utils/firebaseConfig';
 import { doc, deleteDoc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
 
 const ConfirmButton = ({ userID, eventID, accept }: { userID: string; eventID: string; accept: boolean }) => {
   const userRef = doc(db, 'events', eventID, 'applicants', userID);
@@ -22,12 +20,12 @@ const ConfirmButton = ({ userID, eventID, accept }: { userID: string; eventID: s
   return (
     <>
       {accept ? (
-        <button className="m-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleAccept}>
+        <button className="rounded-md bg-sunrise-400 px-4 py-1 text-xs text-white hover:bg-sunrise-500 hover:transition-all" onClick={handleAccept}>
           接受加入
         </button>
       ) : (
-        <button className="m-1 bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" onClick={handleReject}>
-          拒絕加入
+        <button className="rounded-md bg-gray-400 px-4 py-1 text-xs text-white hover:bg-red-500 hover:transition-all" onClick={handleReject}>
+          拒絕
         </button>
       )}
     </>

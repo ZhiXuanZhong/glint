@@ -5,6 +5,7 @@ import { Key, useEffect, useState } from 'react';
 import db from '@/app/utils/firebaseConfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
+import UserInfo from '../UserInfo/UserInfo';
 
 const RegistrationList = ({ eventID }: { eventID: string }) => {
   const [regList, setRegList] = useState<RegList>();
@@ -132,30 +133,35 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
   return (
     <>
       {/* FIXME: 確認profiles都回來才把清單內容產生，這樣卡卡的 */}
-      <div className="pb-3 text-xl text-moonlight-950">已加入活動</div>
-      {profiles &&
-        regList?.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
-          <div key={index} className="">
-            <picture>{<img src={profiles[participant.id as any].avatarURL} alt="Avatar" />}</picture>
-            <div>{participant.name}</div>
-            <div>{participant.level}</div>
-            <div>{participant.id}</div>
-            <RevokeButton userID={participant.id} eventID={eventID} />
-          </div>
-        ))}
+      <div className="mb-5">
+        <div className="pb-3 text-xl text-moonlight-950"> 已加入活動</div>
+        <div className="flex flex-wrap">
+          {profiles &&
+            regList?.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
+              <div key={index} className="w-full lg:w-1/2">
+                <UserInfo imageURL={profiles[participant.id as any].avatarURL} name={participant.name} level={participant.level} licence={true}>
+                  <RevokeButton userID={participant.id} eventID={eventID} />
+                </UserInfo>
+              </div>
+            ))}
+        </div>
+      </div>
 
       <div className="pb-3 text-xl text-moonlight-950">等待清單</div>
-      {profiles &&
-        regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
-          <div key={index} className="">
-            <picture>{<img src={profiles[applicant.id as any].avatarURL} alt="Avatar" />}</picture>
-            <div>{applicant.name}</div>
-            <div>{applicant.level}</div>
-            <div>{applicant.id}</div>
-            <ConfirmButton userID={applicant.id} eventID={eventID} accept />
-            <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
-          </div>
-        ))}
+      {profiles && (
+        <div className="flex flex-wrap">
+          {regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
+            <div key={index} className="w-full lg:w-1/2">
+              <UserInfo imageURL={profiles[applicant.id as any].avatarURL} name={applicant.name} level={applicant.level} licence={true}>
+                <div className="flex flex-wrap gap-1">
+                  <ConfirmButton userID={applicant.id} eventID={eventID} accept />
+                  <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
+                </div>
+              </UserInfo>
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 };
