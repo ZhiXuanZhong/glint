@@ -95,6 +95,7 @@ declare interface RegList {
 }
 
 declare interface Info {
+    userID: string;
     imageURL: string;
     name: string;
     level: string;

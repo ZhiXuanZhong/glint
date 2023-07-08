@@ -55,18 +55,21 @@ const ApplyButton = ({ eventID }: { eventID: string }) => {
   return (
     <>
       {applyState === 'apply' && (
-        <button className="m-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={handleApply}>
-          申請加入{eventID}
+        <button
+          className="w-full min-w-[100px] rounded-sm border border-transparent bg-sunrise-400 py-1 font-bold text-white transition-all hover:border hover:border-sunrise-500 hover:bg-white hover:text-sunrise-500 hover:shadow-md"
+          onClick={handleApply}
+        >
+          申請加入
         </button>
       )}
       {applyState === 'waiting' && (
-        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" disabled>
-          等待審核{eventID}
+        <button className="w-full min-w-[100px] rounded-sm border border-transparent bg-gray-600 py-1 font-bold text-white" disabled>
+          等待審核
         </button>
       )}
       {applyState === 'joined' && (
-        <button className="m-1 bg-gray-100 text-orange-400 font-bold py-2 px-4 rounded border-2" disabled>
-          已加入{eventID}
+        <button className="w-full min-w-[100px] rounded-sm  border-2 bg-gray-100 py-1 font-bold text-sunrise-500" disabled>
+          已加入
         </button>
       )}
     </>

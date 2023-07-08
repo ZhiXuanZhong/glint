@@ -45,12 +45,12 @@ const FavoriteButton = ({ eventID }: { eventID: string }) => {
   }, []);
 
   return !isFavorite ? (
-    <button className="m-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleClick}>
-      蒐藏{eventID}
+    <button className="rounded-sm bg-moonlight-600 px-4 py-1 text-white transition-colors hover:bg-slate-400" onClick={handleClick}>
+      蒐藏
     </button>
   ) : (
-    <button className="m-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleClick}>
-      已加入蒐藏{eventID}
+    <button className="rounded-sm border border-moonlight-200 px-4 py-1 text-moonlight-600 transition-colors hover:bg-slate-400" onClick={handleClick}>
+      移除蒐藏
     </button>
   );
 };

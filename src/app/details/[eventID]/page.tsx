@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import Image from 'next/image';
 import { Key } from 'react';
 import { convertLocationCode } from '@/app/utils/convertLocationCode';
+import { convertCategoryCode } from '@/app/utils/convertCategoryCode';
 import formatDate from '@/app/utils/formatDate';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import ApplyButton from '@/components/ApplyButton/ApplyButton';
@@ -28,21 +29,67 @@ export default async function Page({ params }: { params: { eventID: string } }) 
     return response.json();
   }
 
+  const getProfile = async (userID: string) => {
+    const response = await fetch(`${protocol}://${host}/api/profile/${userID}`, { next: { revalidate: 30 } });
+    return response.json();
+  };
+
+  const parseProfile = (obj: UsersProfile, propertyName: keyof UsersProfile): UsersProfile => {
+    if (obj.hasOwnProperty(propertyName)) {
+      return {
+        ...obj,
+        [propertyName]: obj[propertyName],
+      };
+    }
+    return obj;
+  };
+
   const eventInfos = await getInfo(params.eventID);
-  const { rating } = await getRating(eventInfos.data.organizer);
+  const { rating, reviewCount } = await getRating(eventInfos.data.organizer);
+  // FIXME 這邊因為api回傳的格式是{id:{...data}}，property是變動的比較難取
+  const rawOrganizerProfile = await getProfile(eventInfos.data.organizer);
+  const organizerProfile = rawOrganizerProfile[eventInfos.data.organizer];
   console.log(eventInfos);
 
   return (
     <div className="mx-4 flex h-screen flex-col p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
       <h1 className="mb-6 border-b py-3 text-2xl font-semibold text-moonlight-900">{eventInfos.data.title}</h1>
-      <div className="md:flex">
-        <div className="pr-3 md:w-2/6">
-          <div className="mb-10">
-            <div className="flex items-center">
+      <div className="flex flex-col pb-20 md:flex md:flex-row">
+        {/* left column starts here */}
+        <div className="md:w-2/6 md:pr-3 ">
+          <div className="mb-5">
+            <div className="mb-6 flex items-center">
               <MdPool className="mr-1 text-xl" />
               <div className="text-xl font-medium text-moonlight-950">嚮導</div>
             </div>
-            <div className="mt-2 text-sm font-light text-moonlight-800">鋼鐵礁這類離岸較遠</div>
+            <div className="mx-auto flex w-full flex-col items-center rounded-sm  p-4 shadow-md shadow-moonlight-100">
+              <UserInfo
+                imageURL={organizerProfile.avatarURL}
+                name={organizerProfile.username}
+                level={organizerProfile.level}
+                licence={organizerProfile.hasLicence}
+                size={75}
+                userID={eventInfos.data.organizer}
+              />
+              <div className="flex flex-col">
+                <div className="mt-2 flex w-full flex-wrap gap-3">
+                  <button className="w-full rounded-md bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">追蹤</button>
+                  <button className="w-full rounded-md bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
+                </div>
+                <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
+                  <div className="text-center text-3xl font-black text-moonlight-800">{rating ? rating.toFixed(1) : ''}</div>
+                  <div className="pt-1 text-center text-xs font-light text-gray-500">根據{reviewCount}篇評價</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-10">
+            <div className="mt-3 flex items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+              <MdOutlineLocalPolice className="mr-1 text-xl" />
+              <div>活動建議</div>
+            </div>
+            <div className="mt-2 w-full text-sm font-light text-moonlight-800">{eventInfos.data.levelSuggection}</div>
           </div>
 
           <div className="mb-10">
@@ -52,15 +99,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
                 <div>類型</div>
               </div>
             </div>
-            <div className="mt-2 text-sm font-light text-moonlight-800">鋼鐵礁這類離岸較遠</div>
-          </div>
-
-          <div className="mb-10">
-            <div className="mt-3 flex items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
-              <MdOutlineLocalPolice className="mr-1 text-xl" />
-              <div>活動建議</div>
-            </div>
-            <div className="mt-2 text-sm font-light text-moonlight-800">{eventInfos.data.levelSuggection}</div>
+            <div className="mt-2 w-fit rounded-sm bg-moonlight-500 px-3 py-1 text-sm font-light text-white">{convertCategoryCode(eventInfos.data.category)}</div>
           </div>
 
           <div className="mb-10">
@@ -69,30 +108,26 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               <div>地點</div>
             </div>
             {eventInfos.data.locations?.map((location: string, index: Key) => (
-              <div key={index} className="mt-2 text-sm font-light text-moonlight-800">
+              <div key={index} className="mt-2 w-fit rounded-sm bg-moonlight-500 px-3 py-1 text-sm font-light text-white">
                 {convertLocationCode(location)}
               </div>
             ))}
           </div>
 
-          <div className="mb-10">
-            <div className="mt-3 flex  items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+          <div>
+            {/* <div className="mb-3 mt-3 flex items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
               <MdOutlineCalendarMonth className="mr-1 text-xl" />
               <div>時間</div>
-            </div>
-            <div>
-              {/* <div>{`${formatDate(eventInfos.data.startTime)} ~ ${formatDate(eventInfos.data.endTime)}`}</div> */}
-              <StaticCalendar start={eventInfos.data.startTime} end={eventInfos.data.endTime} />
-            </div>
+            </div> */}
+            <StaticCalendar start={eventInfos.data.startTime} end={eventInfos.data.endTime} />
           </div>
-
-          <div>
-            <div>申請加入</div>
-            <div>蒐藏</div>
+          <div className="mt-2 flex flex-col gap-3 border-t border-t-moonlight-50 pt-4">
+            <ApplyButton eventID={params.eventID} />
+            <FavoriteButton eventID={params.eventID} />
           </div>
         </div>
         {/* right column starts here */}
-        <div className="pl-3 md:w-4/6">
+        <div className="order-first md:order-none md:w-4/6 md:pl-3">
           <div className=" shadow-sm">
             <Image
               width={0}
@@ -104,31 +139,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
             />
           </div>
           <h2 className="mt-3 pb-3 pt-2 text-xl font-medium text-moonlight-950">活動詳情</h2>
-          <div className="py-3 text-sm leading-tight tracking-wide text-moonlight-900">
-            <p>自由潛水課程結束了卻不知道該如何繼續與大海連結嗎？</p>
-            <br />
-            <p>在台灣或者國外的某個地方接觸了自由潛水，不論你是否達到課程結訓的要求，都可以透過我們繼續與大海連結.</p>
-            <br />
-            <p>導潛活動與海洋訓練,僅帶有證照的客人，且依照證照內容活動。EX:SSI L1 or Aida2 or Padi Freediver 程度,就從10米開始帶。</p>
-            <br />
-            <p>Basic、Aida1 程度,以平水與5米內環境為主。鋼鐵礁這類離岸較遠的潛點，僅接受&apos;&apos;船潛&apos;&apos;過去潛點。單次導潛活動地點僅帶【1】個為主。</p>
-            <br />
-            <p>Q:我有一個朋友沒有證照，可以穿救生衣一起再旁邊浮潛玩嗎?&nbsp;</p>
-            <p>A: 不能跟。請他參加地方的浮潛活動。地方浮潛每人350元</p>
-            <br />
-            <p>Q: 我有一個朋友有水肺證照，可以帶裝備一起玩嗎?&nbsp;</p>
-            <p>A: 不可以。水肺與自潛屬性不同。</p>
-            <br />
-            <p>Q : 我朋友玩體驗自由潛水活動，我可以跟去再旁邊玩嗎?&nbsp;</p>
-            <p>A:不可以。教練無法分心同時照顧不同程度的人。</p>
-            <br />
-            <p>Q: 我有上過課，只是沒考過?&nbsp;</p>
-            <p>A請先找教練把證照考完，才能參加導潛活動。導潛需要按照證照做確認。請攜帶證照以供辨識。</p>
-            <br />
-            <p>以上活動均包含保險。</p>
-            <br />
-            <p>預估費用 NT$88,888</p>
-          </div>
+          <div className="whitespace-pre-line py-3 text-sm leading-tight tracking-wide text-moonlight-900">{eventInfos.data.description}</div>
           <div className="mb-16 py-3">
             <RegistrationList eventID={params.eventID} />
           </div>

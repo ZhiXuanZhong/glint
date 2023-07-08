@@ -138,8 +138,8 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
         <div className="flex flex-wrap">
           {profiles &&
             regList?.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
-              <div key={index} className="w-full lg:w-1/2">
-                <UserInfo imageURL={profiles[participant.id as any].avatarURL} name={participant.name} level={participant.level} licence={true}>
+              <div key={index} className="w-full lg:mb-3 lg:w-1/2">
+                <UserInfo imageURL={profiles[participant.id as any].avatarURL} name={participant.name} level={participant.level} licence={true} userID={participant.id}>
                   <RevokeButton userID={participant.id} eventID={eventID} />
                 </UserInfo>
               </div>
@@ -151,8 +151,8 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
       {profiles && (
         <div className="flex flex-wrap">
           {regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
-            <div key={index} className="w-full lg:w-1/2">
-              <UserInfo imageURL={profiles[applicant.id as any].avatarURL} name={applicant.name} level={applicant.level} licence={true}>
+            <div key={index} className="w-full lg:mb-3 lg:w-1/2">
+              <UserInfo imageURL={profiles[applicant.id as any].avatarURL} name={applicant.name} level={applicant.level} licence={true} userID={applicant.id}>
                 <div className="flex flex-wrap gap-1">
                   <ConfirmButton userID={applicant.id} eventID={eventID} accept />
                   <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
