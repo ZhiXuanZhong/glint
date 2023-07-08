@@ -1,13 +1,15 @@
 'use client';
 import Messages from '@/components/Messages/Messages';
 import ConversationCard from '@/components/ConversationCard/ConversationCard';
-import db from '../utils/firebaseConfig';
+import db from '../../utils/firebaseConfig';
 import { useEffect, useRef, useState } from 'react';
 import { QuerySnapshot, collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useImmer } from 'use-immer';
 
-const Page = () => {
+const Page = ({ params }: { params: { userID: string } }) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+  const paramID = params.userID;
+
   // conversation 是指該用戶發生過的對話，也就是聊天室的概念
   const conversationsRef = collection(db, 'messages');
   const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', userID));
@@ -51,6 +53,8 @@ const Page = () => {
   };
 
   useEffect(() => {
+    console.log(params);
+
     // 取得即時更新聊天室資料(使用中可能會有新的聊天室產生)
     // snapshop 第一次也可以直接load出所有資料
     const unsubscribeConversations = onSnapshot(conversationsQuery, (querySnapshot) => {
@@ -70,6 +74,12 @@ const Page = () => {
               conversationIDs.current = [...conversationIDs.current, change.doc.id];
             }
           });
+        }
+
+        // 利用判斷param來設定當前聊天室(預設是用戶兩人永遠只有單一房間，且不考慮多個房間群組的狀況)
+        if (paramID?.length && change.doc.data().userIDs.includes(paramID[0])) {
+          console.log(change.doc.id);
+          currentConversation.current = change.doc.id;
         }
       });
     });
