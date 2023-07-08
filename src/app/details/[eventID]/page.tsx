@@ -115,10 +115,10 @@ export default async function Page({ params }: { params: { eventID: string } }) 
           </div>
 
           <div>
-            {/* <div className="mb-3 mt-3 flex items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
+            <div className="mb-3 mt-3 flex items-center border-t border-t-moonlight-50 pt-2 text-xl font-medium text-moonlight-950">
               <MdOutlineCalendarMonth className="mr-1 text-xl" />
               <div>時間</div>
-            </div> */}
+            </div>
             <StaticCalendar start={eventInfos.data.startTime} end={eventInfos.data.endTime} />
           </div>
           <div className="mt-2 flex flex-col gap-3 border-t border-t-moonlight-50 pt-4">

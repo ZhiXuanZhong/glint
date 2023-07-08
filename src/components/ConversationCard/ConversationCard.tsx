@@ -30,12 +30,12 @@ const ConversationCard = ({ data }: { data: Conversation }) => {
     fetchProfiles(data.userIDs);
   }, []);
   return (
-    <div className="flex flex-col border-red-500 border">
+    <div className="flex flex-col border-t">
       <div className="flex">
         {infos?.map((user, index) => {
           return (
             <picture key={index} className="p-1">
-              <img src={user.avatarURL} alt="avatar" className=" rounded-full" />
+              <img src={user.avatarURL} alt="avatar" className=" rounded-full" width={50} />
             </picture>
           );
         })}
@@ -45,7 +45,7 @@ const ConversationCard = ({ data }: { data: Conversation }) => {
               {user.username}
             </div>
           ))}
-          <p className="text-red-500 font-black">latest chat text gose here (WIP)</p>
+          <p className="font-black">latest chat text gose here (WIP)</p>
         </div>
       </div>
     </div>

@@ -89,26 +89,29 @@ const Page = () => {
   }, [messagesChunk]);
 
   return (
-    <div className="flex w-full">
-      <div className="w-[500px] h-screen bg-slate-200">
-        {conversations?.map((data, index) => (
-          <div
-            key={index}
-            className=" cursor-pointer"
-            onClick={() => {
-              setMessages(messagesChunk.filter((message) => message.conversationID === data.conversationID));
-              currentConversation.current = data.conversationID;
-            }}
-          >
-            <ConversationCard data={data} />
-          </div>
-        ))}
+    <div className="flex h-[calc(100vh_-_5rem)] w-full">
+      <div className="flex flex-col border-r">
+        <div className="flex h-12 items-center justify-center border-transparent bg-white drop-shadow-sm">你的對話</div>
+        <div className="h-[calc(100vh_-_5rem)] overflow-scroll">
+          {conversations?.map((data, index) => (
+            <div
+              key={index}
+              className=" cursor-pointer"
+              onClick={() => {
+                setMessages(messagesChunk.filter((message) => message.conversationID === data.conversationID));
+                currentConversation.current = data.conversationID;
+              }}
+            >
+              <ConversationCard data={data} />
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="grow h-screen bg-slate-400">
+      <div className="grow">
         {currentConversation.current ? (
           <Messages messages={messages} currentConversation={currentConversation.current as string} />
         ) : (
-          <div className="flex justify-center items-center h-screen">
+          <div className="flex items-center justify-center">
             <div>選擇一個對話開始聊聊吧！</div>
           </div>
         )}

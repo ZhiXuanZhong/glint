@@ -67,8 +67,8 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full w-full">
-      <div className=" h-10 flex justify-center items-center bg-zinc-200">{currentConversation}</div>
+    <div className="flex h-full w-full flex-col">
+      <div className=" flex h-10 items-center justify-center">{currentConversation}</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
         {messages?.map((message, index) => (
@@ -85,7 +85,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
         >
           <input type="text" placeholder="對話框框放這邊" ref={inputTextRef} />
           <button
-            className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded"
+            className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white"
             onClick={() => {
               if (inputTextRef.current && inputTextRef.current.value !== '') {
                 sendMessage('text', inputTextRef.current?.value);
@@ -97,12 +97,12 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           </button>
         </form>
 
-        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={getMicrophonePermission}>
+        <button className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white" onClick={getMicrophonePermission}>
           傳送語音
         </button>
 
         <button
-          className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded"
+          className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white"
           onClick={() => {
             inputImageRef.current?.click();
           }}
@@ -120,7 +120,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           }}
         />
 
-        <button className="m-1 bg-gray-600  text-white font-bold py-2 px-4 rounded" onClick={toggleStreaming}>
+        <button className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white" onClick={toggleStreaming}>
           視訊聊聊
         </button>
 
