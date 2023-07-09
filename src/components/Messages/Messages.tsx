@@ -9,6 +9,7 @@ import { Key, use, useEffect, useRef, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
 import { useProfilesStore } from '@/store/messageUserProfilesStore';
 import Image from 'next/image';
+import { FaMicrophone, FaRegImage, FaVideo } from 'react-icons/fa';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string }) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
@@ -71,7 +72,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex items-center border-b bg-white px-5 shadow-sm">
+      <div className="flex items-center justify-between border-b bg-white px-5 shadow-sm ">
         {profiles
           .filter((profile) => profile.conversationID === currentConversation)
           .map((profile) => {
@@ -82,6 +83,16 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
               </div>
             );
           })}
+        <div
+          className="m-1 flex cursor-pointer items-center justify-center gap-2 rounded border
+          border-transparent bg-sunrise-400 px-5 py-2 font-bold text-white transition-all 
+          hover:border hover:border-sunrise-500 hover:bg-white hover:text-sunrise-500 hover:shadow-md
+          "
+          onClick={toggleStreaming}
+        >
+          <div>視訊聊聊</div>
+          <FaVideo className="text-2xl" />
+        </div>
       </div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
@@ -90,16 +101,35 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
         ))}
         <div ref={dummyRef}></div>
       </div>
+      {/* 文字外的媒體呈現區塊 */}
+      {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
+      {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} sendMessage={sendMessage} />}
       {/* 聊天室功能UI */}
-      <div className=" outline">
+      <div className="flex h-36 w-full items-center px-4">
         <form
+          className="flex grow items-center"
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <input type="text" placeholder="對話框框放這邊" ref={inputTextRef} />
+          <input className="grow rounded-full border border-slate-300 py-1 pl-3 pr-3 shadow-sm focus:outline-none" type="text" placeholder="輸入訊息..." ref={inputTextRef} />
+
+          <div className="flex px-2">
+            <div className=" cursor-pointer rounded-md p-3 text-2xl hover:bg-moonlight-300" onClick={getMicrophonePermission}>
+              <FaMicrophone />
+            </div>
+            <div
+              className=" cursor-pointer rounded-md p-3 text-2xl hover:bg-moonlight-300"
+              onClick={() => {
+                inputImageRef.current?.click();
+              }}
+            >
+              <FaRegImage />
+            </div>
+          </div>
+
           <button
-            className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white"
+            className="rounded bg-gray-600 px-10 py-2 font-bold text-white"
             onClick={() => {
               if (inputTextRef.current && inputTextRef.current.value !== '') {
                 sendMessage('text', inputTextRef.current?.value);
@@ -111,18 +141,6 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           </button>
         </form>
 
-        <button className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white" onClick={getMicrophonePermission}>
-          傳送語音
-        </button>
-
-        <button
-          className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white"
-          onClick={() => {
-            inputImageRef.current?.click();
-          }}
-        >
-          傳送圖片
-        </button>
         <input
           type="file"
           accept="image/*"
@@ -133,13 +151,6 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
             (event.target as HTMLInputElement).value = '';
           }}
         />
-
-        <button className="m-1 rounded  bg-gray-600 px-4 py-2 font-bold text-white" onClick={toggleStreaming}>
-          視訊聊聊
-        </button>
-
-        {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
-        {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} sendMessage={sendMessage} />}
       </div>
     </div>
   );
