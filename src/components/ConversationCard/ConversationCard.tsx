@@ -1,11 +1,13 @@
 'use client';
 
+import { useProfilesStore } from '@/store/messageUserProfilesStore';
 import { useEffect, useState } from 'react';
 
 const ConversationCard = ({ data }: { data: Conversation }) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   // infos保留群組對話的擴充性，目前先以單一個實作
   const [infos, setInfos] = useState<UsersProfile[] | null>(null);
+  const [profiles, addProfile] = useProfilesStore((state) => [state.profiles, state.addProfile]);
 
   const fetchProfiles = async (userIDs: string[]) => {
     const resultArray = [];
@@ -16,13 +18,13 @@ const ConversationCard = ({ data }: { data: Conversation }) => {
         try {
           const response = await fetch(`/api/profile/${user}`);
           const profileData = await response.json();
-          resultArray.push(profileData[user]);
+          resultArray.push({ ...profileData[user], id: userID, conversationID: data.conversationID });
         } catch (error) {
           console.error(`Error fetching profile for userID ${user}:`, error);
         }
       }
     }
-
+    addProfile(resultArray);
     setInfos(resultArray);
   };
 

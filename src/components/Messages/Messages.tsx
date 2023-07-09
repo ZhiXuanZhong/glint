@@ -7,6 +7,7 @@ import ImageMessage from '../ImageMessage/ImageMessage';
 import MessageBubble from '../MessageBubble/MessageBubble';
 import { Key, use, useEffect, useRef, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
+import { useProfilesStore } from '@/store/messageUserProfilesStore';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string }) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
@@ -17,6 +18,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
   const [inputImage, setInputImage] = useState<File | null>(null);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+  const [profiles] = useProfilesStore((state) => [state.profiles]);
 
   const addFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -68,7 +70,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className=" flex h-10 items-center justify-center">{currentConversation}</div>
+      <div className="flex h-12 items-center justify-center">{profiles.filter((profile) => profile.conversationID === currentConversation).map((profile) => profile.username)}</div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
         {messages?.map((message, index) => (
