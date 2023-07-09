@@ -32,7 +32,7 @@ const ConversationCard = ({ data }: { data: Conversation }) => {
     fetchProfiles(data.userIDs);
   }, []);
   return (
-    <div className="flex flex-col border-t">
+    <div className="flex flex-col border-b">
       <div className="flex">
         {infos?.map((user, index) => {
           return (

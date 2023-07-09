@@ -8,6 +8,7 @@ import MessageBubble from '../MessageBubble/MessageBubble';
 import { Key, use, useEffect, useRef, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
 import { useProfilesStore } from '@/store/messageUserProfilesStore';
+import Image from 'next/image';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string }) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
@@ -70,7 +71,18 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex h-12 items-center justify-center">{profiles.filter((profile) => profile.conversationID === currentConversation).map((profile) => profile.username)}</div>
+      <div className="flex items-center border-b bg-white px-5 shadow-sm">
+        {profiles
+          .filter((profile) => profile.conversationID === currentConversation)
+          .map((profile) => {
+            return (
+              <div className="flex h-20 items-center gap-3">
+                <Image width={50} height={50} src={profile.avatarURL} alt="avatar" className="h-12 w-12 rounded-full border border-moonlight-50 object-cover" />
+                <div className=" text-moonlight-950">{profile.username}</div>
+              </div>
+            );
+          })}
+      </div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
         {messages?.map((message, index) => (
