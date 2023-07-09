@@ -11,6 +11,7 @@ import RegistrationList from '@/components/RegistrationList/RegistrationList';
 import StaticCalendar from '@/components/StaticCalendar/StaticCalendar';
 
 import { MdPool, MdOutlineLocalPolice, MdOutlineLayers, MdLocationOn, MdOutlineCalendarMonth } from 'react-icons/md';
+import Link from 'next/link';
 
 export default async function Page({ params }: { params: { eventID: string } }) {
   // FIXME: workaround! server component can't fetch relative path
@@ -74,7 +75,9 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               <div className="flex flex-col">
                 <div className="mt-2 flex w-full flex-wrap gap-3">
                   <button className="w-full rounded-md bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">追蹤</button>
-                  <button className="w-full rounded-md bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
+                  <Link href={`/messages/${eventInfos.data.organizer}`}>
+                    <button className="w-full rounded-md bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
+                  </Link>
                 </div>
                 <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
                   <div className="text-center text-3xl font-black text-moonlight-800">{rating ? rating.toFixed(1) : ''}</div>
