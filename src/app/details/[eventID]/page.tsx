@@ -50,6 +50,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
   // FIXME 這邊因為api回傳的格式是{id:{...data}}，property是變動的比較難取
   const rawOrganizerProfile = await getProfile(eventInfos.data.organizer);
   const organizerProfile = rawOrganizerProfile[eventInfos.data.organizer];
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   console.log(eventInfos);
 
   return (
@@ -124,10 +125,12 @@ export default async function Page({ params }: { params: { eventID: string } }) 
             </div>
             <StaticCalendar start={eventInfos.data.startTime} end={eventInfos.data.endTime} />
           </div>
-          <div className="mt-2 flex flex-col gap-3 border-t border-t-moonlight-50 pt-4">
-            <ApplyButton eventID={params.eventID} />
-            <FavoriteButton eventID={params.eventID} />
-          </div>
+          {eventInfos.data.organizer !== userID && (
+            <div className="mt-2 flex flex-col gap-3 border-t border-t-moonlight-50 pt-4">
+              <ApplyButton eventID={params.eventID} />
+              <FavoriteButton eventID={params.eventID} />
+            </div>
+          )}
         </div>
         {/* right column starts here */}
         <div className="order-first md:order-none md:w-4/6 md:pl-3">
@@ -144,7 +147,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
           <h2 className="mt-3 pb-3 pt-2 text-xl font-medium text-moonlight-950">活動詳情</h2>
           <div className="whitespace-pre-line py-3 text-sm leading-tight tracking-wide text-moonlight-900">{eventInfos.data.description}</div>
           <div className="mb-16 py-3">
-            <RegistrationList eventID={params.eventID} />
+            <RegistrationList eventID={params.eventID} organizerID={eventInfos.data.organizer} />
           </div>
         </div>
       </div>

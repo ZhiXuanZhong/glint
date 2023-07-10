@@ -7,7 +7,7 @@ import { collection, query, onSnapshot } from 'firebase/firestore';
 import { getDocs } from 'firebase/firestore';
 import UserInfo from '../UserInfo/UserInfo';
 
-const RegistrationList = ({ eventID }: { eventID: string }) => {
+const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizerID: string }) => {
   const [regList, setRegList] = useState<RegList>();
   const [profiles, setProfiles] = useState<Profiles>();
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
@@ -143,7 +143,7 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
             regList?.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
               <div key={index} className="w-full lg:mb-3 lg:w-1/2">
                 <UserInfo imageURL={profiles[participant.id as any].avatarURL} name={participant.name} level={participant.level} licence={true} userID={participant.id}>
-                  <RevokeButton userID={participant.id} eventID={eventID} />
+                  {organizerID === userID && <RevokeButton userID={participant.id} eventID={eventID} />}
                 </UserInfo>
               </div>
             ))}
@@ -156,10 +156,12 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
           {regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
             <div key={index} className="w-full lg:mb-3 lg:w-1/2">
               <UserInfo imageURL={profiles[applicant.id as string]?.avatarURL} name={applicant.name} level={applicant.level} licence={true} userID={applicant.id}>
-                <div className="flex flex-wrap gap-1">
-                  <ConfirmButton userID={applicant.id} eventID={eventID} accept />
-                  <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
-                </div>
+                {organizerID === userID && (
+                  <div className="flex flex-wrap gap-1">
+                    <ConfirmButton userID={applicant.id} eventID={eventID} accept />
+                    <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
+                  </div>
+                )}
               </UserInfo>
             </div>
           ))}
