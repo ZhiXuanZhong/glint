@@ -47,7 +47,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div>
+    <div className="mx-4 flex h-screen flex-col p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
       <SearchEvents setEvents={handleEventsUpdate} />
       <SortEvents handleSort={handleSort} />
       <EventResults events={events} />
