@@ -74,10 +74,12 @@ const InlineEdit = ({ value, setValue, field, fireCollection, userID, type }: In
 
   return (
     <>
-      {type === 'text' && <input type="text" value={value[field] ? value[field] : null} onChange={onChange} onKeyDown={onKeyDown} onBlur={onBlur} />}
-      {type === 'textarea' && <textarea rows={1} type="text" value={value[field] ? value[field] : null} onChange={onChange} onKeyDown={onKeyDown} onBlur={onBlur} />}
+      {type === 'text' && <input type="text" value={value[field] ? value[field] : null} onChange={onChange} onKeyDown={onKeyDown} onBlur={onBlur} className="font-bold text-moonlight-950" />}
+      {type === 'textarea' && (
+        <textarea rows={8} cols={100} type="text" value={value[field] ? value[field] : null} onChange={onChange} onKeyDown={onKeyDown} onBlur={onBlur} className="font-bold text-moonlight-950" />
+      )}
       {type === 'select' && (
-        <select value={value[field] ? value[field] : null} onChange={onSelectChange}>
+        <select value={value[field] ? value[field] : null} onChange={onSelectChange} className=" font-bold">
           <option value="SSI Basic / Pool">SSI Basic / Pool</option>
           <option value="SSI Level 1">SSI Level 1</option>
           <option value="SSI Level 2">SSI Level 2</option>
