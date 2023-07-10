@@ -65,14 +65,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               <div className="text-xl font-medium text-moonlight-950">嚮導</div>
             </div>
             <div className="mx-auto flex w-full flex-col items-center rounded-sm  p-4 shadow-md shadow-moonlight-100">
-              <UserInfo
-                imageURL={organizerProfile.avatarURL}
-                name={organizerProfile.username}
-                level={organizerProfile.level}
-                licence={organizerProfile.hasLicence}
-                size={75}
-                userID={eventInfos.data.organizer}
-              />
+              <UserInfo userID={eventInfos.data.organizer} size={80} />
               <div className="flex flex-col">
                 <div className="mt-2 flex w-full flex-wrap gap-3">
                   <button className="w-full rounded-sm bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">追蹤</button>

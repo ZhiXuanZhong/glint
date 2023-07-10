@@ -5,43 +5,60 @@ import ApplyButton from '../ApplyButton/ApplyButton';
 import WithdrawButton from '../WithdrawButton/WithdrawButton';
 import ReviewButton from '../ReviewButton/ReviewButton';
 import Image from 'next/image';
+import { convertLocationCode } from '@/app/utils/convertLocationCode';
+import { convertCategoryCode } from '@/app/utils/convertCategoryCode';
+import UserInfo from '../UserInfo/UserInfo';
+import Rating from '../Rating/Rating';
 
 const EventCard = ({ event, portal = false, edit = false, cancel = false, withdraw = false, apply = false, review = false, updateWithdraw, toggleReviewModal, hasReview }: EventCardProps) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   return (
-    <div className="flex flex-col rounded-md border shadow-md lg:flex-row">
+    <div className="flex flex-col overflow-hidden rounded-md border shadow-md lg:h-64 lg:flex-row">
       {/* left pic */}
-      <div className="lg:w-[500px]">
-        <Image width={0} height={0} sizes="100vw" src={event.mainImage} alt={'event picture'} className="h-48 w-full rounded-t-md object-cover lg:rounded-l-md lg:rounded-tr-none" />
+      <div className="h-52 lg:h-auto lg:w-[550px]">
+        <Image width={0} height={0} sizes="100vw" src={event.mainImage} alt={'event picture'} className="h-full w-full  object-cover " />
       </div>
 
       {/* right col */}
       <div className="w-full border p-3">
         {/* upper-right */}
-        <div className="flex justify-between">
-          <div>
-            <h1>{event.title}</h1>
-            <div>
+        <div className="flex flex-wrap justify-between border-b">
+          <div className="mb-2">
+            <h1 className=" mb-1 text-lg font-semibold text-moonlight-900">{event.title}</h1>
+            <div className="text-moonlight-800">
               {formatDate(event.startTime)} - {formatDate(event.endTime)}
             </div>
-            <p>{event.levelSuggection}</p>
-            <div>{event.category}</div>
-            {event.locations?.map((location: string, index: number) => (
-              <span key={index}>{location} </span>
-            ))}
+            <p className=" text-moonlight-800">{event.levelSuggection}</p>
+            <div className="mt-2 flex gap-3">
+              <div className="my-1 w-fit rounded-sm bg-moonlight-500 px-3 py-1 text-sm font-light text-white">{convertCategoryCode(event.category)}</div>
+              {event.locations?.map((location: string, index: number) => (
+                <div key={index} className="my-1 w-fit rounded-sm bg-moonlight-500 px-3 py-1 text-sm font-light text-white">
+                  {convertLocationCode(location)}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="outline">
-            <Link href={`/details/${event.id}`} className="text-sunrise-500">
-              GO
+          <div className="ml-auto flex items-end">
+            <Link
+              href={`/details/${event.id}`}
+              className="mb-3 w-full min-w-[100px] rounded-sm border border-transparent bg-sunrise-400 px-4 py-2 font-bold text-white transition-all hover:border hover:border-sunrise-500 hover:bg-white hover:text-sunrise-500 hover:shadow-md"
+            >
+              查看活動
             </Link>
           </div>
         </div>
         {/* lower-right */}
-        <div className="flex justify-between outline">
-          <div>user info card</div>
+        <div className="flex items-center justify-between pt-3">
           <div>
-            {!portal && <p>organizer rating: {event.rating}</p>}
+            <UserInfo userID={event.organizer} size={80} />
+          </div>
+          <div>
+            {!portal && (
+              <div className="w-36">
+                <Rating userID={event.organizer} />
+              </div>
+            )}
             {portal && (
               <div>
                 {/* 編輯活動        - waiting && organizer === userID */}
