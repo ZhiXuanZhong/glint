@@ -61,8 +61,8 @@ const Page = ({ params }: { params: { userID: string } }) => {
   }, []);
 
   return (
-    <div className="flex gap-4 p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
-      <div className="flex w-2/6 flex-col">
+    <div className="flex flex-col gap-4 p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl lg:flex-row">
+      <div className="flex w-full flex-col lg:w-2/6">
         <div>
           <div className="mx-auto flex w-full flex-col items-center rounded-sm  p-4 shadow-md shadow-moonlight-100">
             {profile?.id && <UserInfo imageURL={profile?.avatarURL} name={profile?.username} level={profile?.level} licence={profile?.hasLicence} size={70} userID={profile.id} />}
@@ -108,7 +108,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
         </div>
       </div>
 
-      <div className="flex h-screen w-4/6 flex-col">
+      <div className="flex w-full flex-col lg:w-4/6">
         <div>
           <div className="mb-5 rounded border border-moonlight-200 p-4">
             <div className="mb-3 text-xl font-medium text-moonlight-950">執照內容</div>
