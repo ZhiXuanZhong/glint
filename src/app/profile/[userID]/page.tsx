@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import Link from 'next/link';
 import db from '@/app/utils/firebaseConfig';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getCountFromServer, onSnapshot } from 'firebase/firestore';
 import formatDate from '@/app/utils/formatDate';
 import Image from 'next/image';
 
@@ -13,11 +13,17 @@ interface Licence {
   uploadTime: number;
 }
 
+interface FollowCount {
+  followersCount: number;
+  followingsCount: number;
+}
+
 const Page = ({ params }: { params: { userID: string } }) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const [profile, setProfile] = useState<UsersProfile>();
   const [rating, setRating] = useState<UserRating>();
   const [licence, setLicence] = useState<Licence>();
+  const [followCount, setFollowCount] = useState<FollowCount>();
 
   // 取得單筆profile資料
   const getProfile = async (id: string) => {
@@ -37,12 +43,19 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
       const ratingRes = await getRating(params.userID);
       setRating(ratingRes);
+
+      const followersCount = (await getCountFromServer(followersRef)).data().count;
+      const followingsCount = (await getCountFromServer(followingsRef)).data().count;
+      setFollowCount({ followersCount, followingsCount });
     };
 
-    const licenceRef = doc(db, 'users', userID, 'licence', 'info');
+    const licenceRef = doc(db, 'users', params.userID, 'licence', 'info');
     const licenceUnsub = onSnapshot(licenceRef, (doc) => {
       setLicence(doc.data() as Licence);
     });
+
+    const followersRef = collection(db, 'users', params.userID, 'followers');
+    const followingsRef = collection(db, 'users', params.userID, 'followings');
 
     initData();
   }, []);
@@ -72,13 +85,13 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
         <div className="flex items-center justify-center gap-3 rounded-sm p-4 shadow-md shadow-moonlight-100">
           <div className="flex flex-col items-center">
-            <div className="w-20 text-center text-moonlight-950">粉絲人數</div>
-            <div className="text-moonlight-700">12</div>
+            <div className="w-20 text-center text-sm text-moonlight-600">粉絲人數</div>
+            <div className="text-moonlight-900">{followCount?.followersCount}</div>
           </div>
 
           <div className="flex flex-col items-center">
-            <div className="w-20 text-center text-moonlight-950">關注中</div>
-            <div className="text-moonlight-700">3</div>
+            <div className="w-20 text-center text-sm text-moonlight-600">關注中</div>
+            <div className="text-moonlight-900">{followCount?.followingsCount}</div>
           </div>
         </div>
 
