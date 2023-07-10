@@ -117,7 +117,7 @@ declare interface EventCardProps {
 }
 
 declare interface UserRating {
-    ratingSum: number;
+    rating: number;
     reviewCount: number;
 }
 
