@@ -75,9 +75,9 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       <div className="flex items-center justify-between border-b bg-white px-5 shadow-sm ">
         {profiles
           .filter((profile) => profile.conversationID === currentConversation)
-          .map((profile) => {
+          .map((profile, index) => {
             return (
-              <div className="flex h-20 items-center gap-3">
+              <div className="flex h-20 items-center gap-3" key={index}>
                 <Image width={50} height={50} src={profile.avatarURL} alt="avatar" className="h-12 w-12 rounded-full border border-moonlight-50 object-cover" />
                 <div className=" text-moonlight-950">{profile.username}</div>
               </div>
