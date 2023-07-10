@@ -10,6 +10,7 @@ import UserInfo from '../UserInfo/UserInfo';
 const RegistrationList = ({ eventID }: { eventID: string }) => {
   const [regList, setRegList] = useState<RegList>();
   const [profiles, setProfiles] = useState<Profiles>();
+  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   // firebase 基本設定
   const applicantsRef = collection(db, 'events', eventID, 'applicants');
@@ -58,8 +59,10 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
       const members = await getRegistrations();
       setRegList(members);
 
+      const currentUserProfile = await getProfile(userID);
+
       const profiles = await getProfiles(members);
-      setProfiles(profiles);
+      setProfiles({ ...profiles, [userID]: currentUserProfile[userID] });
     };
 
     // 即時監聽報名者、加入者清單
@@ -108,17 +111,17 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
           });
         }
 
-        // // 聽用戶即時加入，必須要在加入之前取得profile資料，圖片map不出來的狀況
-        // if (change.type === 'added') {
-        //   setRegList((prev) => {
-        //     if (prev && prev.applicants) {
-        //       const updatedApplicants = change.doc.data() as Applicants;
-        //       updatedApplicants.id = userID;
-        //       return { ...prev, applicants: [...prev.applicants, updatedApplicants] };
-        //     }
-        //     return prev;
-        //   });
-        // }
+        // 聽用戶即時加入，必須要在加入之前取得profile資料，圖片map不出來的狀況
+        if (change.type === 'added') {
+          setRegList((prev) => {
+            if (prev && prev.applicants) {
+              const updatedApplicants = change.doc.data() as Applicants;
+              updatedApplicants.id = userID;
+              return { ...prev, applicants: [...prev.applicants, updatedApplicants] };
+            }
+            return prev;
+          });
+        }
       });
     });
 
@@ -152,7 +155,7 @@ const RegistrationList = ({ eventID }: { eventID: string }) => {
         <div className="flex flex-wrap">
           {regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
             <div key={index} className="w-full lg:mb-3 lg:w-1/2">
-              <UserInfo imageURL={profiles[applicant.id as any].avatarURL} name={applicant.name} level={applicant.level} licence={true} userID={applicant.id}>
+              <UserInfo imageURL={profiles[applicant.id as string]?.avatarURL} name={applicant.name} level={applicant.level} licence={true} userID={applicant.id}>
                 <div className="flex flex-wrap gap-1">
                   <ConfirmButton userID={applicant.id} eventID={eventID} accept />
                   <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
