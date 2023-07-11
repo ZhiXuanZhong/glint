@@ -8,6 +8,8 @@ interface Location {
   startTime: number;
   endTime: number;
   coordinates: number[];
+  eventID: string;
+  eventTitle: string;
 }
 
 interface Feature {
@@ -22,6 +24,8 @@ interface Feature {
     endTime: number;
     name: string;
     avatar: string;
+    eventID: string;
+    eventTitle: string;
   };
 }
 
@@ -110,6 +114,8 @@ export async function GET(request: Request, { params }: { params: { userID: stri
           endTime: location.endTime,
           name: profiles[location.userID].username,
           avatar: profiles[location.userID].avatarURL,
+          eventID: location.eventID,
+          eventTitle: location.eventTitle,
         },
       };
 

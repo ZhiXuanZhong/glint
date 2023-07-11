@@ -7,6 +7,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import formatDate from '../utils/formatDate';
 import startEndToTimecodes from '../utils/startEndToTimecodes';
+import Image from 'next/image';
+import Link from 'next/link';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
 
@@ -189,7 +191,8 @@ const Page = () => {
       flyToUser(clickedPoint);
 
       /* Close all other popups and display popup for clicked store */
-      createPopUp(clickedPoint);
+      // createPopUp(clickedPoint);
+      // 這邊先關掉不要有popup 因為也沒實際資料可以顯示
     });
 
     // 4-1 enable click then center behaviour by using mapbox flyTo method
@@ -244,21 +247,39 @@ const Page = () => {
       <div className="grow" ref={mapContainer}></div>
       <div className=" h-screenoverflow-scroll absolute bottom-0 top-0 w-full bg-white md:static md:w-1/4 md:min-w-fit md:overflow-scroll">
         {/* divers' list */}
-        <div className="sticky top-[5rem] md:sticky md:top-0">
+        <div className="sticky top-[5rem] border-b-2 bg-white shadow-md md:sticky md:top-0">
           <DatePicker selected={startDate} onChange={onChange} startDate={startDate} endDate={endDate} minDate={new Date()} minTime={new Date(new Date().setHours(0, 0, 0, 0))} selectsRange inline />
         </div>
         {filteredGeo &&
           filteredGeo.features?.map((feature, index) => {
             return (
-              <div key={index} className="m-1 p-1">
-                <div className="flex bg-slate-400">
-                  <picture>
-                    <img src={feature.properties.avatar} alt="avatar" className="h-20 w-20 rounded-full" />
-                  </picture>
-                  <div className="flex items-center">{feature.properties.name}</div>
+              <div key={index} className="m-2 border border-gray-50 p-3 shadow-md">
+                <div className="flex items-center gap-3 border-b py-2">
+                  <Image width={80} height={80} quality={100} src={feature.properties.avatar} alt="avatar" className="rounded-full border" />
+                  <div>
+                    <Link href={`/profile/${feature.properties.userID}`}>
+                      <div className="text-xl font-medium text-moonlight-900 hover:text-moonlight-400">{feature.properties.name}</div>
+                    </Link>
+                    <Link href={`/messages/${feature.properties.userID}`}>
+                      <button className="mt-1 w-16 rounded-sm border border-moonlight-200 py-1 text-sm text-moonlight-600 hover:bg-moonlight-200 hover:transition-all">發送訊息</button>
+                    </Link>
+                  </div>
                 </div>
-                <div className="bg-slate-400">
-                  {formatDate(feature.properties.startTime)}~{formatDate(feature.properties.endTime)}
+                <div className="flex">
+                  <div className="py-2">
+                    <div className="text-moonlight-700">{feature.properties.eventTitle}</div>
+                    <div className="text-moonlight-950">
+                      {formatDate(feature.properties.startTime)}~{formatDate(feature.properties.endTime)}
+                    </div>
+                  </div>
+                  <div className="ml-auto flex items-end">
+                    <Link
+                      href={`/details/${feature.properties.eventID}`}
+                      className="mb-3 w-full min-w-[100px] rounded-sm border border-transparent bg-sunrise-400 px-4 py-2 font-semibold text-white transition-all hover:border hover:border-sunrise-500 hover:bg-white hover:text-sunrise-500 hover:shadow-md"
+                    >
+                      查看活動
+                    </Link>
+                  </div>
                 </div>
               </div>
             );
