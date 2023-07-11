@@ -93,9 +93,9 @@ const Page = () => {
       style: 'mapbox://styles/mapbox/light-v11',
       attributionControl: false,
       center: [120.8937, 23.1956],
-      zoom: 7.5,
-      pitch: 31,
-      bearing: -7.7,
+      zoom: 7,
+      // pitch: 31,
+      // bearing: -7.7,
     });
 
     map.current?.on('load', () => {
@@ -125,7 +125,7 @@ const Page = () => {
           //   * Blue, 20px circles when point count is less than 100
           //   * Yellow, 30px circles when point count is between 100 and 750
           //   * Pink, 40px circles when point count is greater than or equal to 750
-          'circle-color': ['step', ['get', 'point_count'], '#FFF', 0, '#FFA500'],
+          'circle-color': ['step', ['get', 'point_count'], '#FFF', 0, '#ff8b37'],
           'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
         },
       });
@@ -150,7 +150,7 @@ const Page = () => {
         source: 'locations',
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#FFA500',
+          'circle-color': '#ff8b37',
           'circle-radius': 10,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff',
@@ -239,19 +239,21 @@ const Page = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-[calc(100vh_-_5rem)] w-full">
       <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" />
-      <div className=" w-3/4 text-left" ref={mapContainer}></div>
-      <div className=" w-1/4">
+      <div className="grow" ref={mapContainer}></div>
+      <div className=" h-screenoverflow-scroll absolute bottom-0 top-0 w-full bg-white md:static md:w-1/4 md:min-w-fit md:overflow-scroll">
         {/* divers' list */}
-        <DatePicker selected={startDate} onChange={onChange} startDate={startDate} endDate={endDate} minDate={new Date()} minTime={new Date(new Date().setHours(0, 0, 0, 0))} selectsRange inline />
+        <div className="sticky top-[5rem] md:sticky md:top-0">
+          <DatePicker selected={startDate} onChange={onChange} startDate={startDate} endDate={endDate} minDate={new Date()} minTime={new Date(new Date().setHours(0, 0, 0, 0))} selectsRange inline />
+        </div>
         {filteredGeo &&
           filteredGeo.features?.map((feature, index) => {
             return (
-              <div key={index} className="p-1 m-1">
+              <div key={index} className="m-1 p-1">
                 <div className="flex bg-slate-400">
                   <picture>
-                    <img src={feature.properties.avatar} alt="avatar" />
+                    <img src={feature.properties.avatar} alt="avatar" className="h-20 w-20 rounded-full" />
                   </picture>
                   <div className="flex items-center">{feature.properties.name}</div>
                 </div>
