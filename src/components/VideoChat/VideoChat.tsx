@@ -41,7 +41,7 @@ const VideoChat = ({ toggleStreaming }: { toggleStreaming: () => void }) => {
 
   return (
     <>
-      <div className="flex justify-center outline outline-1">
+      <div className="flex flex-row-reverse justify-center shadow-md">
         {peers.map((peer, index) => (
           <VideoPeer key={index} peer={peer} hmsActions={hmsActions} />
         ))}
