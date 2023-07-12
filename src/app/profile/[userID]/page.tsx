@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import Link from 'next/link';
 import db from '@/app/utils/firebaseConfig';
-import { collection, doc, getCountFromServer, onSnapshot } from 'firebase/firestore';
+import { DocumentData, QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import formatDate from '@/app/utils/formatDate';
 import Image from 'next/image';
+import EventCard from '@/components/EventCard/EventCard';
 
 interface Licence {
   imageURL: string;
@@ -24,6 +25,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
   const [rating, setRating] = useState<UserRating>();
   const [licence, setLicence] = useState<Licence>();
   const [followCount, setFollowCount] = useState<FollowCount>();
+  const [futureEvents, setFutureEvents] = useState<Event[]>();
 
   // 取得單筆profile資料
   const getProfile = async (id: string) => {
@@ -34,6 +36,21 @@ const Page = ({ params }: { params: { userID: string } }) => {
   const getRating = async (id: string) => {
     const response = await fetch(`/api/rating/${id}`, { next: { revalidate: 5 } });
     return response.json();
+  };
+
+  const getFutureEvents = async (userID: string) => {
+    const events: Event[] = [];
+
+    const eventsRef = collection(db, 'events');
+    const queryEvents = query(eventsRef, where('organizer', '==', userID), where('endTime', '>=', Date.now()));
+    const snapshot = await getDocs(queryEvents);
+    snapshot.forEach((event) => {
+      events.push(event.data() as Event);
+    });
+
+    const sortedEvents = events.sort((a, b) => a.startTime - b.startTime);
+
+    return sortedEvents;
   };
 
   useEffect(() => {
@@ -47,6 +64,9 @@ const Page = ({ params }: { params: { userID: string } }) => {
       const followersCount = (await getCountFromServer(followersRef)).data().count;
       const followingsCount = (await getCountFromServer(followingsRef)).data().count;
       setFollowCount({ followersCount, followingsCount });
+
+      const futureEventsResponse = await getFutureEvents(params.userID);
+      setFutureEvents(futureEventsResponse);
     };
 
     const licenceRef = doc(db, 'users', params.userID, 'licence', 'info');
@@ -138,11 +158,13 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
           <div className="mb-5 rounded border border-moonlight-200 p-4">
             <div className="mb-3 text-xl font-medium text-moonlight-950">未來的行程</div>
-            <div className="mb-3 flex h-40 items-center justify-center rounded-sm bg-gray-100">行程1</div>
-            <div className="mb-3 flex h-40 items-center justify-center rounded-sm bg-gray-100">行程2</div>
-            <div className="mb-3 flex h-40 items-center justify-center rounded-sm bg-gray-100">行程3</div>
-            <div className="mb-3 flex h-40 items-center justify-center rounded-sm bg-gray-100">行程4</div>
-            <div className="mb-3 flex h-40 items-center justify-center rounded-sm bg-gray-100">行程5</div>
+            {futureEvents?.map((event, index) => {
+              return (
+                <div className="mb-3 rounded-sm">
+                  <EventCard event={event} key={index} />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

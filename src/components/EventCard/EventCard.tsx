@@ -9,8 +9,21 @@ import { convertLocationCode } from '@/app/utils/convertLocationCode';
 import { convertCategoryCode } from '@/app/utils/convertCategoryCode';
 import UserInfo from '../UserInfo/UserInfo';
 import Rating from '../Rating/Rating';
+import classNames from '@/app/utils/classNames';
 
-const EventCard = ({ event, portal = false, edit = false, cancel = false, withdraw = false, apply = false, review = false, updateWithdraw, toggleReviewModal, hasReview }: EventCardProps) => {
+const EventCard = ({
+  event,
+  portal = false,
+  edit = false,
+  cancel = false,
+  withdraw = false,
+  apply = false,
+  review = false,
+  updateWithdraw,
+  toggleReviewModal,
+  hasReview,
+  children,
+}: EventCardProps) => {
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   return (
@@ -23,7 +36,7 @@ const EventCard = ({ event, portal = false, edit = false, cancel = false, withdr
       {/* right col */}
       <div className="w-full border p-3">
         {/* upper-right */}
-        <div className="flex flex-wrap justify-between border-b">
+        <div className="flex flex-wrap justify-between">
           <div className="mb-2">
             <h1 className=" mb-1 text-lg font-semibold text-moonlight-900">{event.title}</h1>
             <div className="text-moonlight-800">
@@ -49,13 +62,11 @@ const EventCard = ({ event, portal = false, edit = false, cancel = false, withdr
           </div>
         </div>
         {/* lower-right */}
-        <div className="flex items-center justify-between pt-3">
-          <div>
-            <UserInfo userID={event.organizer} size={80} />
-          </div>
+        <div className={classNames('flex items-center justify-between pt-3', children ? 'border-t' : null)}>
+          <div>{children}</div>
           <div>
             {!portal && (
-              <div className="w-36">
+              <div className={classNames('w-36', !children ? 'hidden' : null)}>
                 <Rating userID={event.organizer} />
               </div>
             )}

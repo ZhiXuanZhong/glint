@@ -113,7 +113,8 @@ declare interface EventCardProps {
     review?: boolean;
     updateWithdraw?: function
     toggleReviewModal?: function
-    hasReview?: boolean
+    hasReview?: boolean;
+    children?: React.ReactNode
 }
 
 declare interface UserRating {
