@@ -22,9 +22,9 @@ const SearchEvents = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-[60px]">
       <form action="/" method="get" name="query" onSubmit={handleSubmit}>
-        <div className="flex bg-gray-300 p-2">
+        <div className="flex flex-wrap p-2">
           <div className="flex p-2">
             <h2>地點</h2>
             <select id="location">
@@ -37,7 +37,7 @@ const SearchEvents = () => {
             </select>
           </div>
 
-          <div className="flex bg-gray-300 p-2">
+          <div className="flex p-2">
             <h2>類型</h2>
             <select name="category">
               <option value="divingTravel">潛旅</option>
@@ -48,24 +48,24 @@ const SearchEvents = () => {
             </select>
           </div>
 
-          <div className="flex bg-gray-300 p-2">
+          <div className="flex p-2">
             <h2>出發區間：</h2>
             <input type="date" name="startTime" required />
           </div>
 
-          <div className="flex bg-gray-300 p-2">
+          <div className="flex p-2">
             <h2>至</h2>
             <input type="date" name="endTime" required />
           </div>
 
-          <div className="flex bg-gray-300 p-2">
+          <div className="flex p-2">
             <h2>發起人</h2>
             <select name="organizerType">
               <option value="instructor">教練</option>
               <option value="diver">一般潛水員</option>
             </select>
           </div>
-          <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700" type="submit">
+          <button className="grow rounded bg-sunrise-500 px-4 py-2 font-bold text-white hover:bg-sunrise-400" type="submit">
             GO
           </button>
         </div>

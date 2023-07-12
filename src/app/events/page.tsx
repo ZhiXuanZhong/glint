@@ -66,8 +66,10 @@ export default function Page() {
   }, [searchParams]);
 
   return (
-    <div className="mx-4 flex h-screen flex-col p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
-      <SearchEvents />
+    <div className="mx-4 flex h-screen flex-col gap-5 p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
+      <div className="border shadow-md">
+        <SearchEvents />
+      </div>
       {/* <SortEvents handleSort={handleSort} /> */}
       <EventResults events={events} />
     </div>
