@@ -86,7 +86,7 @@ export async function GET(request: Request) {
 
   console.log(queryConditions)
 
-  const queryToPerform = query(collection(db, 'events'), ...queryConditions)
+  const queryToPerform = query(collection(db, 'events'), ...queryConditions, orderBy('startTime'))
 
   const querySnapshot = await getDocs(queryToPerform);
 
@@ -96,7 +96,9 @@ export async function GET(request: Request) {
     const data = doc.data() as Event;
     if (data) {
       data.id = doc.id;
-      events.push(data);
+      if (data.endTime > Date.now()) {
+        events.push(data);
+      }
     }
   });
   await addRating(events)

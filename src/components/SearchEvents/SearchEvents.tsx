@@ -1,5 +1,10 @@
 'use client';
+
+import { useSearchEventsStore } from '@/store/searchEventsStore';
+
 const SearchEvents = ({ setEvents }: any) => {
+  const [events, addEvents] = useSearchEventsStore((state: any) => [state.events, state.addEvents]);
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
@@ -15,13 +20,16 @@ const SearchEvents = ({ setEvents }: any) => {
 
     fetch('/api/get-events?' + new URLSearchParams(params))
       .then((res) => res.json())
-      .then((json) => setEvents(json.data));
+      .then((json) => {
+        setEvents(json.data);
+        addEvents(json.data);
+      });
   };
 
   return (
     <div>
       <form action="/" method="get" name="query" onSubmit={handleSubmit}>
-        <div className="bg-gray-300 p-2 flex">
+        <div className="flex bg-gray-300 p-2">
           <div className="flex p-2">
             <h2>地點</h2>
             <select id="location">
@@ -62,7 +70,7 @@ const SearchEvents = ({ setEvents }: any) => {
               <option value="diver">一般潛水員</option>
             </select>
           </div>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">
+          <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700" type="submit">
             Search with Love♥️
           </button>
         </div>
