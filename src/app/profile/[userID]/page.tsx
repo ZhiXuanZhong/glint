@@ -8,6 +8,7 @@ import { DocumentData, QueryDocumentSnapshot, collection, doc, getCountFromServe
 import formatDate from '@/app/utils/formatDate';
 import Image from 'next/image';
 import EventCard from '@/components/EventCard/EventCard';
+import FollowUserButton from '@/components/FollowUserButton/FollowUserButton';
 
 interface Licence {
   imageURL: string;
@@ -88,10 +89,10 @@ const Page = ({ params }: { params: { userID: string } }) => {
             {profile?.id && <UserInfo imageURL={profile?.avatarURL} name={profile?.username} level={profile?.level} licence={profile?.hasLicence} size={70} userID={profile.id} />}
             <div className="flex flex-col">
               <div className="mt-2 flex w-full flex-wrap gap-3">
-                <button className="w-full rounded-sm bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">追蹤</button>
+                <FollowUserButton />
                 {profile && (
                   <Link href={`/messages/${profile.id}`}>
-                    <button className="w-full rounded-sm bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
+                    <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
                   </Link>
                 )}
               </div>
