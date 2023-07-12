@@ -39,7 +39,7 @@ const UserInfo = ({ userID, children, size = 60 }: SizedInfo) => {
 
       {profile && (
         <div className="ml-2">
-          <div className="font-black text-gray-950">
+          <div className="font-semibold text-gray-950 hover:text-moonlight-700">
             <Link href={`/profile/${userID}`}>{profile.username}</Link>
           </div>
           <div className="font-thin text-gray-700">{profile.level}</div>
