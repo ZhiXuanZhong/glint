@@ -62,14 +62,14 @@ const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessag
   };
 
   return (
-    <div className="flex">
+    <div className="flex justify-end pr-3">
       {audio && <audio src={audio} controls></audio>}
       {audio && (
-        <button className="m-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white  py-2 px-4 rounded" onClick={handleAudioUpload}>
+        <button className="m-1 rounded bg-blue-500 px-4 py-2  text-white hover:bg-blue-600 active:bg-blue-700" onClick={handleAudioUpload}>
           送出語音
         </button>
       )}
-      <button onMouseDown={startRecording} onMouseUp={stopRecording} className="m-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white  py-2 px-4 rounded">
+      <button onMouseDown={startRecording} onMouseUp={stopRecording} className="m-1 rounded bg-orange-500 px-4 py-2  text-white hover:bg-orange-600 active:bg-orange-700">
         {isRecording ? '錄音中...' : '按下錄音'}
       </button>
     </div>
