@@ -28,24 +28,24 @@ const ImageMessage = ({ inputImage, setInputImage, sendMessage }: ImageMessagePr
   };
 
   return (
-    <>
+    <div className="flex flex-col items-center">
       {inputImage && (
         <picture>
           <img alt="preview image" src={URL.createObjectURL(inputImage)} className="w-96" />
         </picture>
       )}
-      <button className="m-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white  py-2 px-4 rounded" onClick={sendImage}>
+      <button className="m-1 w-96 rounded bg-blue-500 px-4 py-2  text-white hover:bg-blue-600 active:bg-blue-700" onClick={sendImage}>
         送出
       </button>
       <button
-        className="m-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white  py-2 px-4 rounded"
+        className="m-1 w-96 rounded bg-orange-500 px-4 py-2  text-white hover:bg-orange-600 active:bg-orange-700"
         onClick={() => {
           setInputImage(null);
         }}
       >
         取消
       </button>
-    </>
+    </div>
   );
 };
 
