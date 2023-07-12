@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url)
   const queryParams: QueryParams = {
-    locations: searchParams.get('location'),
+    locations: searchParams.get('locations'),
     category: searchParams.get('category'),
     startTime: Number(searchParams.get('startTime')),
     endTime: Number(searchParams.get('endTime')),

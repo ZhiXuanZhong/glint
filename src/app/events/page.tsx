@@ -3,11 +3,21 @@ import { useEffect, useState } from 'react';
 import SearchEvents from '../../components/SearchEvents/SearchEvents';
 import SortEvents from '../../components/SortEvents/SortEvents';
 import EventResults from '../../components/EventResults/EventResults';
+import { useSearchParams } from 'next/navigation';
 
 export const revalidate = 0;
 
 export default function Page() {
   const [events, setEvents] = useState<any | undefined>([]);
+  const searchParams = useSearchParams();
+
+  const queryParams = {
+    locations: searchParams.get('locations'),
+    category: searchParams.get('category'),
+    startTime: Number(searchParams.get('startTime')),
+    endTime: Number(searchParams.get('endTime')),
+    organizerType: searchParams.get('organizerType'),
+  };
 
   const handleEventsUpdate = (data: any) => {
     setEvents(data);
@@ -34,15 +44,17 @@ export default function Page() {
     }
   };
 
-  const getEvents = async () => {
-    const response = await fetch('/api/get-events', { cache: 'no-cache' });
+  const getEvents = async (query) => {
+    const response = await fetch(`/api/get-events${query}`, { cache: 'no-cache' });
     return response.json();
   };
 
   useEffect(() => {
-    getEvents().then((res) => {
+    const objString = '?' + new URLSearchParams(queryParams).toString();
+    console.log(objString);
+    getEvents(objString).then((res) => {
       setEvents(res.data);
-      console.log(res);
+      // console.log(res);
     });
   }, []);
 
