@@ -1,9 +1,19 @@
-import Image from 'next/image';
+import SearchEvents from '@/components/SearchEvents/SearchEvents';
 
 export default function Home() {
   return (
-    <main className="flex h-full items-center justify-center">
-      <div>Hey there! This landing page might look empty, but trust me, it&#39;s a blank slate ready to blow your mind!</div>
+    <main className="fixed left-0 z-50 h-screen w-screen">
+      <div className="absolute left-0 top-0 h-screen w-screen bg-landing_bg bg-cover"></div>
+      <div className="absolute left-0 top-0 h-screen w-screen px-60">
+        <div className="pt-36 text-8xl font-bold text-white opacity-70">Dive into Adventure with</div>
+        <div className="pt-10 text-5xl font-semibold tracking-widest text-sunrise-500">GLINT</div>
+      </div>
+      <div className="absolute left-0 top-0 h-screen w-screen bg-landing_fg bg-cover"></div>
+      <div className="relative flex h-[calc(100vh_-_5rem)] w-screen flex-col justify-end">
+        <div className="mx-auto mb-56 w-3/5 bg-white">
+          <SearchEvents />
+        </div>
+      </div>
     </main>
   );
 }

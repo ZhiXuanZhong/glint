@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div>
           <Nav />
-          <div>
+          <div className="relative">
             <SideBar />
             <div className="relative top-[80px] md:ml-[208px] ">{children}</div>
           </div>

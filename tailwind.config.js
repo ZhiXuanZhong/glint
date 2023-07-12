@@ -3,6 +3,10 @@ module.exports = {
   content: ['./src/pages/**/*.{js,ts,jsx,tsx,mdx}', './src/components/**/*.{js,ts,jsx,tsx,mdx}', './src/app/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
+      backgroundImage: {
+        landing_bg: "url('../../public/landing_bg.png')",
+        landing_fg: "url('../../public/landing_fg.png')",
+      },
       fontFamily: {
         sans: ['var(--font-noto-sans-tc)'],
       },
