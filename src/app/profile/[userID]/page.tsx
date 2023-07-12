@@ -161,8 +161,8 @@ const Page = ({ params }: { params: { userID: string } }) => {
             <div className="mb-3 text-xl font-medium text-moonlight-950">未來的行程</div>
             {futureEvents?.map((event, index) => {
               return (
-                <div className="mb-3 rounded-sm">
-                  <EventCard event={event} key={index} />
+                <div className="mb-3 rounded-sm" key={index}>
+                  <EventCard event={event} />
                 </div>
               );
             })}

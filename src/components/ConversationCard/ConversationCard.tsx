@@ -45,7 +45,7 @@ const ConversationCard = ({ data }: { data: Conversation }) => {
       <div className="flex h-16 items-center gap-3 px-4">
         {infos?.map((user, index) => {
           return (
-            <div className="flex">
+            <div className="flex" key={index}>
               <Image width={60} height={60} src={user.avatarURL} alt={'avatar'} className="aspect-square rounded-full object-cover" />
             </div>
           );

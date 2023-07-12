@@ -129,14 +129,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
         {/* right column starts here */}
         <div className="order-first md:order-none md:w-4/6 md:pl-3">
           <div className=" shadow-sm">
-            <Image
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{ width: '100%', height: '250px', objectFit: 'cover' }}
-              src={'https://images.pexels.com/photos/7146556/pexels-photo-7146556.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
-              alt={'event picture'}
-            />
+            <Image width={0} height={0} sizes="100vw" style={{ width: '100%', height: '250px', objectFit: 'cover' }} src={eventInfos.data.mainImage} alt={'event picture'} />
           </div>
           <h2 className="mt-3 pb-3 pt-2 text-xl font-medium text-moonlight-950">活動詳情</h2>
           <div className="whitespace-pre-line py-3 text-sm leading-tight tracking-wide text-moonlight-900">{eventInfos.data.description}</div>
