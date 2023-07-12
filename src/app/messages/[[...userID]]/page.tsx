@@ -101,7 +101,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
   return (
     <div className="flex h-[calc(100vh_-_5rem)] w-full">
       <div className="flex flex-col border-r">
-        <div className="flex min-h-[48px] items-center justify-center bg-white text-moonlight-950 shadow-md">訊息總覽</div>
+        <div className="flex min-h-[48px] items-center justify-center bg-white text-moonlight-950 shadow-md lg:w-[450px]">訊息總覽</div>
         <div className="h-[calc(100vh_-_5rem)] overflow-scroll">
           {conversations?.map((data, index) => (
             <div
