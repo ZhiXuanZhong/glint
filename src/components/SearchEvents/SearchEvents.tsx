@@ -1,9 +1,9 @@
 'use client';
 
-import { useSearchEventsStore } from '@/store/searchEventsStore';
+import { useRouter } from 'next/navigation';
 
-const SearchEvents = ({ setEvents }: any) => {
-  const [events, addEvents] = useSearchEventsStore((state: any) => [state.events, state.addEvents]);
+const SearchEvents = () => {
+  const router = useRouter();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -11,19 +11,14 @@ const SearchEvents = ({ setEvents }: any) => {
     const form = e.currentTarget;
     const { location, category, startTime, endTime, organizerType } = form.elements;
     const params = {
-      location: String(location.value),
+      locations: String(location.value),
       category: String(category.value),
       startTime: String(Date.parse(startTime.value)),
       endTime: String(Date.parse(endTime.value)),
       organizerType: String(organizerType.value),
     };
 
-    fetch('/api/get-events?' + new URLSearchParams(params))
-      .then((res) => res.json())
-      .then((json) => {
-        setEvents(json.data);
-        addEvents(json.data);
-      });
+    router.push(`/events?${new URLSearchParams(params)}`);
   };
 
   return (
@@ -71,7 +66,7 @@ const SearchEvents = ({ setEvents }: any) => {
             </select>
           </div>
           <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700" type="submit">
-            Search with Love♥️
+            GO
           </button>
         </div>
       </form>
