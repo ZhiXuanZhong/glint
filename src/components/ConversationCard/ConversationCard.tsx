@@ -4,8 +4,8 @@ import { useProfilesStore } from '@/store/messageUserProfilesStore';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-const ConversationCard = ({ data }: { data: Conversation }) => {
-  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+const ConversationCard = ({ data, authUser }: { data: Conversation; authUser: string }) => {
+  const userID = authUser;
   // infos保留群組對話的擴充性，目前先以單一個實作
   const [infos, setInfos] = useState<UsersProfile[] | null>(null);
   const [profiles, addProfile] = useProfilesStore((state) => [state.profiles, state.addProfile]);
