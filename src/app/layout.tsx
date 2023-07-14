@@ -2,6 +2,7 @@ import './globals.css';
 import { Noto_Sans_TC } from 'next/font/google';
 import Nav from '@/components/Nav/Nav';
 import SideBar from '@/components/Sidebar/SideBar';
+import GetFireSignState from '@/components/GetFireSignState/GetFireSignState';
 
 const noto_sans_tc = Noto_Sans_TC({
   subsets: ['latin'],
@@ -19,6 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html className={`${noto_sans_tc.variable}`}>
+      <GetFireSignState />
       <body>
         <div>
           <Nav />

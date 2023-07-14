@@ -20,12 +20,12 @@ const NavLogin = () => {
   return (
     <>
       {loaded && authUser ? (
-        <div className="mr-7 flex items-center rounded-md border border-moonlight-50 px-4 py-1">
-          <Image width="50" height="50" src={authUser?.avatarURL} alt="logo" style={{ objectFit: 'contain' }} className="rounded-full border border-white" />
-          <div className="ml-2">{authUser?.username}</div>
-          {/* <Image width="45" height="45" src={userID.photoURL} alt="logo" style={{ objectFit: 'contain' }} className="rounded-full border border-white" />
-          <div className="ml-2">{userID.displayName}</div> */}
-        </div>
+        <Link href={`/profile/${userID}`}>
+          <div className="mr-7 flex cursor-pointer items-center rounded-md border border-moonlight-50 px-4 py-1">
+            <Image width="50" height="50" src={authUser?.avatarURL} alt="logo" style={{ objectFit: 'contain' }} className="rounded-full border border-white" />
+            <div className="ml-2">{authUser?.username}</div>
+          </div>
+        </Link>
       ) : (
         <div>
           <Link href="/login">
