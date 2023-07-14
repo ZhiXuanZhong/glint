@@ -26,7 +26,7 @@ export const GoogleLogin = () => {
         // ...
 
         console.log(result);
-        updateAuthUser(result.user);
+        updateAuthUser(result.user.uid);
       })
       .catch((error) => {
         // Handle Errors here.
@@ -57,10 +57,10 @@ export const GoogleLogin = () => {
     <>
       <div>
         {' '}
-        <button className="border p-1 mx-1" onClick={handleLogin}>
+        <button className="mx-1 border p-1" onClick={handleLogin}>
           Google Login
         </button>
-        <button className="border p-1 mx-1" onClick={handleLogout}>
+        <button className="mx-1 border p-1" onClick={handleLogout}>
           Logout
         </button>
       </div>
@@ -73,10 +73,16 @@ export const GoogleLogin = () => {
 export const EmailLogin = () => {
   const provider = new GoogleAuthProvider();
   const [authUser, updateAuthUser] = useAuthStore((state) => [state.authUser, state.updateAuthUser]);
+  const [authProfile, updateAuthProfile] = useAuthStore((state) => [state.authProfile, state.updateAuthProfile]);
   const [loaded, setLoaded] = useState(false);
 
   const emailRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
+
+  const getProfile = async (userID: string) => {
+    const response = await fetch(`/api/profile/${userID}`, { next: { revalidate: 5 } });
+    return response.json();
+  };
 
   useEffect(() => {
     setLoaded(true);
@@ -88,12 +94,14 @@ export const EmailLogin = () => {
     if (!(email && password)) return;
 
     const auth = getAuth(app);
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
         console.log(user);
-        updateAuthUser(user);
+        updateAuthUser(user.uid);
+        getProfile(user.uid).then((res) => updateAuthProfile(res[user.uid]));
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -108,6 +116,7 @@ export const EmailLogin = () => {
         console.log('Sign-out successful.');
         // Sign-out successful.
         updateAuthUser('');
+        updateAuthProfile('');
       })
       .catch((error) => {
         // An error happened.
@@ -118,12 +127,12 @@ export const EmailLogin = () => {
     <>
       <div className="flex flex-col">
         <div>使用 Email 登入</div>
-        <input className="border max-w-sm" type="text" ref={emailRef} />
-        <input className="border max-w-sm" type="password" ref={passwordRef} />
-        <button className="border max-w-sm" onClick={handleLogin}>
+        <input className="max-w-sm border" type="text" ref={emailRef} defaultValue="demo1@demo.com" />
+        <input className="max-w-sm border" type="password" ref={passwordRef} defaultValue="demo1@demo.com" />
+        <button className="max-w-sm border" onClick={handleLogin}>
           Login
         </button>
-        <button className="border max-w-sm" onClick={handleLogout}>
+        <button className="max-w-sm border" onClick={handleLogout}>
           Logout
         </button>
       </div>
