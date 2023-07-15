@@ -10,7 +10,7 @@ export default function Home() {
       </div>
       <div className="absolute left-0 top-0 h-screen w-screen bg-landing_fg bg-cover"></div>
       <div className="relative flex h-[calc(100vh_-_5rem)] w-screen flex-col justify-end">
-        <div className="relative bottom-1/4 mx-auto w-3/5 bg-white drop-shadow-lg">
+        <div className="relative bottom-1/4 mx-auto w-2/4 rounded-sm border border-moonlight-50 bg-white px-3 py-1 drop-shadow-xl">
           <SearchEvents />
         </div>
       </div>
