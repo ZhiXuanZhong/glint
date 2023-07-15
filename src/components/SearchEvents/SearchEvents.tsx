@@ -1,30 +1,51 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { timeToHTMLInput } from '@/app/utils/formatDate';
 import { useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { timeToHyphenYMD } from '@/app/utils/formatDate';
+import startEndToTimecodes from '@/app/utils/startEndToTimecodes';
 
-const SearchEvents = () => {
+const SearchEvents = ({ locations, category, startTime, endTime, organizerType }: QueryParams) => {
   const router = useRouter();
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
+
+  const defaultStartDate = new Date();
+  const lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
+
+  const defaultLocations = locations ? locations : 'NEC';
+  const defaultCategory = category ? category : 'divingTravel';
+  const defaultOrganizerType = organizerType ? organizerType : 'instructor';
+
+  const [startDate, setStartDate] = useState<Date>(startTime ? new Date(startTime) : defaultStartDate);
+  const [endDate, setEndDate] = useState(endTime ? new Date(endTime) : lastDayOfYear);
+  const [dateRange, setDateRange] = useState<number[]>(startEndToTimecodes([new Date(), lastDayOfYear]));
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
     const form = e.currentTarget;
-    const { location, category, startTime, endTime, organizerType } = form.elements;
+    const { location, category, organizerType } = form.elements;
     const params = {
       locations: String(location.value),
       category: String(category.value),
-      startTime: String(Date.parse(startTime.value)),
-      endTime: String(Date.parse(endTime.value)),
+      startTime: String(dateRange[0]),
+      endTime: String(dateRange[1]),
       organizerType: String(organizerType.value),
     };
 
     router.push(`/events?${new URLSearchParams(params)}`);
+  };
+
+  const datePickerOnChange = (dates: Date[]) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+
+    // 有點選結束時間才取dateRange
+    if (end) {
+      setDateRange(startEndToTimecodes(dates));
+    }
   };
 
   return (
@@ -34,7 +55,11 @@ const SearchEvents = () => {
           <div className="mb-6 w-full px-3 md:mb-0 md:w-2/12">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">地點</label>
             <div className="relative">
-              <select className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none">
+              <select
+                defaultValue={defaultLocations}
+                name="location"
+                className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none"
+              >
                 <option value="NEC">東北角</option>
                 <option value="XL">小琉球</option>
                 <option value="KT">墾丁</option>
@@ -53,7 +78,11 @@ const SearchEvents = () => {
           <div className="mb-6 w-full px-3 md:mb-0 md:w-2/12">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">類型</label>
             <div className="relative">
-              <select className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none">
+              <select
+                defaultValue={defaultCategory}
+                name="category"
+                className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none"
+              >
                 <option value="divingTravel">潛旅</option>
                 <option value="training">訓練</option>
                 <option value="certificationTraining">證照課程</option>
@@ -74,10 +103,10 @@ const SearchEvents = () => {
               selectsRange={true}
               startDate={startDate}
               endDate={endDate}
-              onChange={(update) => {
-                setDateRange(update);
-              }}
-              isClearable={true}
+              onChange={datePickerOnChange}
+              minDate={new Date()}
+              minTime={new Date(new Date().setHours(0, 0, 0, 0))}
+              isClearable={false}
               wrapperClassName="SearchDatePicker"
             />
           </div>
@@ -85,7 +114,11 @@ const SearchEvents = () => {
           <div className="mb-6 w-full px-3 md:mb-0 md:w-2/12">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">發起人</label>
             <div className="relative">
-              <select className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none">
+              <select
+                defaultValue={defaultOrganizerType}
+                name="organizerType"
+                className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none"
+              >
                 <option value="instructor">教練</option>
                 <option value="diver">一般潛水員</option>
               </select>
