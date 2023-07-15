@@ -48,6 +48,10 @@ body {
   outline-offset: 2px;
 }
 
+.SearchDatePicker~.react-datepicker__tab-loop .react-datepicker {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+}
+
 
 .react-datepicker {
   /* display: block !important; */
@@ -69,7 +73,6 @@ body {
 
 .react-datepicker__month-container {
   width: 100% !important;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
 }
 
 .react-datepicker__day--selected,
