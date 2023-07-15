@@ -10,8 +10,12 @@ import { addDoc, collection } from 'firebase/firestore';
 import { useProfilesStore } from '@/store/messageUserProfilesStore';
 import Image from 'next/image';
 import { FaMicrophone, FaRegImage, FaVideo } from 'react-icons/fa';
+import { useAuthStore } from '@/store/authStore';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string }) => {
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+  const [authProfile] = useAuthStore((state) => [state.authProfile]);
+
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const username = 'Admin';
   const inputImageRef = useRef<HTMLInputElement>(null);
@@ -56,8 +60,8 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
     const messagesDetailsRef = collection(db, 'messages', currentConversation, 'details');
 
     const message = {
-      userID: userID,
-      username: username,
+      userID: authUser,
+      username: authProfile.username,
       timestamp: Date.now(),
       type,
       data,
@@ -97,7 +101,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
       <div className="mt-auto overflow-auto">
         {messages?.map((message, index) => (
-          <MessageBubble key={index} message={message} />
+          <MessageBubble key={index} message={message} authUser={authUser} />
         ))}
         <div ref={dummyRef}></div>
       </div>

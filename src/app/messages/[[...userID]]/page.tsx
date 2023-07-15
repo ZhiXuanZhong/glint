@@ -5,14 +5,16 @@ import db from '../../utils/firebaseConfig';
 import { useEffect, useRef, useState } from 'react';
 import { QuerySnapshot, collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useImmer } from 'use-immer';
+import { useAuthStore } from '@/store/authStore';
 
 const Page = ({ params }: { params: { userID: string } }) => {
-  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+
   const paramID = params.userID;
 
   // conversation 是指該用戶發生過的對話，也就是聊天室的概念
   const conversationsRef = collection(db, 'messages');
-  const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', userID));
+  const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', authUser));
   const [conversations, setConversations] = useImmer([] as Conversation[]);
   const conversationIDs = useRef<string[]>([]);
   // currentConversation 是該用戶當前在哪個對話的指標，用來作為篩選對話的條件，目前透過conversationCard來更新值
@@ -92,7 +94,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
       // 解除聊天室datails內文的監聽
       stopListeningToMultipleDocChanges(conversationIDs.current);
     };
-  }, []);
+  }, [authUser]);
 
   useEffect(() => {
     setMessages(messagesChunk.filter((message) => message.conversationID === currentConversation.current));
@@ -106,13 +108,13 @@ const Page = ({ params }: { params: { userID: string } }) => {
           {conversations?.map((data, index) => (
             <div
               key={index}
-              className=" cursor-pointer"
+              className="cursor-pointer"
               onClick={() => {
                 setMessages(messagesChunk.filter((message) => message.conversationID === data.conversationID));
                 currentConversation.current = data.conversationID;
               }}
             >
-              <ConversationCard data={data} />
+              <ConversationCard data={data} authUser={authUser} />
             </div>
           ))}
         </div>
