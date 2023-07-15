@@ -27,6 +27,32 @@ body {
 } */
 
 
+.react-datepicker-wrapper,
+.SearchDatePicker {
+  display: block !important;
+}
+
+.SearchDatePicker>.react-datepicker__input-container>input {
+  width: 100% !important;
+  padding: 0.75rem !important;
+  line-height: 1.25 !important;
+  border: 1px solid rgb(229 231 235) !important;
+  border-radius: 0.25rem !important;
+  color: rgb(55 65 81) !important;
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity)) !important;
+}
+
+.SearchDatePicker>.react-datepicker__input-container>input:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.SearchDatePicker~.react-datepicker__tab-loop .react-datepicker {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+}
+
+
 .react-datepicker {
   /* display: block !important; */
   width: 100% !important;
