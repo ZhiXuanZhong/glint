@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useImmer } from 'use-immer';
 import mapboxgl from 'mapbox-gl';
 import DatePicker from 'react-datepicker';
@@ -42,6 +42,11 @@ const Page = () => {
   const [filteredGeo, setFilteredGeo] = useImmer(null);
   const [bounds, setBounds] = useState();
 
+  // datePickerRef 用來抓日曆目前的高度
+  // datePickerContainerHeight 用來設定CSS樣式觸發transition
+  const datePickerRef = useRef(null);
+  const [datePickerContainerHeight, setDatePickerContainerHeight] = useState<number>();
+
   // 取資料的effect
   useEffect(() => {
     fetch(`api/get-locations/${userID}`)
@@ -62,6 +67,9 @@ const Page = () => {
         originalGeoData.current = updatedFeatures;
       })
       .then(console.log('got GeoJSON'));
+
+    // 高度 +2 是為了讓UI初始化比較流暢
+    setDatePickerContainerHeight(datePickerRef.current.offsetHeight + 2);
   }, []);
 
   // 資料取回來後會出發filteredGeo更新，在這邊就把map source更新
@@ -241,14 +249,40 @@ const Page = () => {
     }
   };
 
+  // 日曆換月時把新的高度set到state中，進而推動CSS高度更新，觸發transition
+  const datePickerContainerTransition = () => {
+    setDatePickerContainerHeight(datePickerRef.current.offsetHeight);
+  };
+
   return (
     <div className="flex h-[calc(100vh_-_5rem)] w-full">
       <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" />
       <div className="grow" ref={mapContainer}></div>
       <div className=" h-screenoverflow-scroll absolute bottom-0 top-0 w-full bg-white md:static md:w-1/4 md:min-w-fit md:overflow-scroll">
         {/* divers' list */}
-        <div className="sticky top-[5rem] border-b-2 bg-white shadow-md md:sticky md:top-0">
-          <DatePicker selected={startDate} onChange={onChange} startDate={startDate} endDate={endDate} minDate={new Date()} minTime={new Date(new Date().setHours(0, 0, 0, 0))} selectsRange inline />
+        <div
+          className="sticky top-[5rem] h-fit border-b-2 bg-white shadow-md md:sticky md:top-0"
+          style={{
+            height: `${datePickerContainerHeight}px`,
+            minHeight: `${datePickerContainerHeight}px`,
+            maxHeight: `${datePickerContainerHeight}px`,
+            overflow: 'hidden',
+            transition: 'all 0.3s ease-in-out',
+          }}
+        >
+          <div ref={datePickerRef}>
+            <DatePicker
+              onMonthChange={datePickerContainerTransition}
+              selected={startDate}
+              onChange={onChange}
+              startDate={startDate}
+              endDate={endDate}
+              minDate={new Date()}
+              minTime={new Date(new Date().setHours(0, 0, 0, 0))}
+              selectsRange
+              inline
+            />
+          </div>
         </div>
         {filteredGeo &&
           filteredGeo.features?.map((feature, index) => {
