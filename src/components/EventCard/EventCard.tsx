@@ -29,12 +29,12 @@ const EventCard = ({
   return (
     <div className="flex flex-col overflow-hidden rounded-md border shadow-md lg:h-64 lg:flex-row">
       {/* left pic */}
-      <div className="h-52 lg:h-auto lg:w-[550px]">
-        <Image width={0} height={0} sizes="100vw" src={event.mainImage} alt={'event picture'} className="h-full w-full  object-cover " />
+      <div className="h-52 lg:h-auto lg:w-2/5">
+        <Image width={400} height={300} quality={90} src={event.mainImage} alt={'event picture'} style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
       </div>
 
       {/* right col */}
-      <div className="w-full border p-3">
+      <div className="border p-3 lg:w-3/5">
         {/* upper-right */}
         <div className="flex flex-wrap justify-between">
           <div className="mb-2">
