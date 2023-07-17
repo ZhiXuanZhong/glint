@@ -46,7 +46,8 @@ const Page = ({ params }: { params: { userID: string } }) => {
     const queryEvents = query(eventsRef, where('organizer', '==', userID), where('endTime', '>=', Date.now()));
     const snapshot = await getDocs(queryEvents);
     snapshot.forEach((event) => {
-      events.push(event.data() as Event);
+      const eventWithID = { ...event.data(), id: event.id };
+      events.push(eventWithID as Event);
     });
 
     const sortedEvents = events.sort((a, b) => a.startTime - b.startTime);
@@ -70,7 +71,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
       const followingsCount = followingsCountRes.data().count;
       setFollowCount({ followersCount, followingsCount });
 
-      const [futureEventsResponse] = await Promise.all([getFutureEvents(params.userID)]);
+      const futureEventsResponse = await getFutureEvents(params.userID);
       setFutureEvents(futureEventsResponse);
     };
 
