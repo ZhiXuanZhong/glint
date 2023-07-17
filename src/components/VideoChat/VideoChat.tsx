@@ -9,6 +9,7 @@ const VideoChat = ({ toggleStreaming }: { toggleStreaming: () => void }) => {
   const peers = useHMSStore(selectPeers);
   const count = useHMSStore(selectPeerCount);
   const [loading, setLoading] = useState(true);
+  const [connectionState, setConnectionState] = useState('等待對方加入');
 
   const hmsActions = useHMSActions();
   const roomCode = 'gbf-dwyt-slf';
@@ -44,6 +45,7 @@ const VideoChat = ({ toggleStreaming }: { toggleStreaming: () => void }) => {
   // 不是自己的視訊源進來時，會有空白，為了美觀先用白底div擋掉
   useEffect(() => {
     if (count > 1) {
+      setConnectionState('建立連線中');
       setTimeout(() => {
         setLoading(false);
       }, 4000);
@@ -52,17 +54,19 @@ const VideoChat = ({ toggleStreaming }: { toggleStreaming: () => void }) => {
 
   return (
     <div className="relative">
-      <div className="flex min-h-[324px] flex-row-reverse justify-center shadow-md">
-        {peers.map((peer, index) => (
-          <VideoPeer key={index} peer={peer} hmsActions={hmsActions} />
-        ))}
-        {loading && (
-          <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-white">
-            <ScaleLoader color="#ff690e" />
-            <div className=" text-lg text-sunrise-500">連線中</div>
-          </div>
-        )}
-      </div>
+      {peers.length > 0 && (
+        <div className="flex flex-row-reverse justify-center shadow-md">
+          {peers.map((peer, index) => (
+            <VideoPeer key={index} peer={peer} hmsActions={hmsActions} />
+          ))}
+          {loading && (
+            <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-white">
+              <ScaleLoader color="#ff690e" />
+              <div className="text-lg tracking-wider text-sunrise-500">{connectionState}</div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
