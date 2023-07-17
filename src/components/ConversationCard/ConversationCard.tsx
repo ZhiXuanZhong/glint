@@ -52,7 +52,7 @@ const ConversationCard = ({ data, authUser }: { data: Conversation; authUser: st
         })}
         <div className="flex w-full flex-col justify-center">
           {infos?.map((user, index) => (
-            <div key={index} className="text-xl font-bold text-moonlight-900">
+            <div key={index} className="font-bold text-moonlight-900">
               {user.username}
             </div>
           ))}
