@@ -66,7 +66,9 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               <div className="text-xl font-medium text-moonlight-950">嚮導</div>
             </div>
             <div className="mx-auto flex w-full flex-col items-center rounded-sm  p-4 shadow-md shadow-moonlight-100">
-              <UserInfo userID={eventInfos.data.organizer} size={80} />
+              <div className="min-h-[80px]">
+                <UserInfo userID={eventInfos.data.organizer} size={80} />
+              </div>
               <div className="flex flex-col">
                 <div className="mt-2 flex w-full flex-wrap gap-3">
                   <FollowUserButton />

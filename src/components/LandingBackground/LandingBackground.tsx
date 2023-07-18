@@ -13,7 +13,7 @@ const LandingBackground = () => {
             <div className="flex h-9 w-9 items-center justify-center bg-sunrise-500 text-xl">L</div>
             <div className="flex h-9 w-9 items-center justify-center bg-sunrise-500 text-xl">I</div>
             <div className="flex h-9 w-9 items-center justify-center bg-sunrise-500 text-xl">N</div>
-            <div className="flex h-9 w-9 items-center justify-center border border-sunrise-500 text-xl text-sunrise-500">T</div>
+            <div className="flex h-9 w-9 items-center justify-center border border-sunrise-500 bg-white bg-opacity-20 text-xl font-medium text-sunrise-500">T</div>
           </div>
           <div className="pt-10 text-5xl font-semibold tracking-widest text-white drop-shadow-xl">探索屬於你的水下探險</div>
         </MouseParallax>

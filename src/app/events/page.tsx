@@ -5,12 +5,14 @@ import SortEvents from '../../components/SortEvents/SortEvents';
 import EventResults from '../../components/EventResults/EventResults';
 import { useSearchParams } from 'next/navigation';
 import { useSearchEventsStore } from '@/store/searchEventsStore';
+import { ScaleLoader } from 'react-spinners';
 
 export const revalidate = 0;
 
 export default function Page() {
   // const [events, setEvents] = useState<any | undefined>([]);
   const [events, addEvents] = useSearchEventsStore((state: any) => [state.events, state.addEvents]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
 
@@ -50,7 +52,9 @@ export default function Page() {
 
   useEffect(() => {
     const objString = '?' + new URLSearchParams(queryParams).toString();
+    setIsLoading(true);
     getEvents(objString).then((res) => {
+      setIsLoading(false);
       addEvents(res.data);
       // console.log(res);
     });
@@ -61,6 +65,12 @@ export default function Page() {
       <div className="border shadow-md">
         <SearchEvents locations={queryParams.locations} category={queryParams.category} startTime={queryParams.startTime} endTime={queryParams.endTime} organizerType={queryParams.organizerType} />
       </div>
+      {isLoading && (
+        <div className="flex min-h-[300px] flex-col items-center justify-center text-lg tracking-wider text-sunrise-500">
+          <ScaleLoader color="#ff690e" />
+          <div>行程搜尋中</div>
+        </div>
+      )}
       {/* <SortEvents handleSort={handleSort} /> */}
       <EventResults events={events} />
     </div>
