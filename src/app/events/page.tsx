@@ -11,7 +11,7 @@ export const revalidate = 0;
 
 export default function Page() {
   // const [events, setEvents] = useState<any | undefined>([]);
-  const [events, addEvents] = useSearchEventsStore((state: any) => [state.events, state.addEvents]);
+  const [events, addEvents, emptyEvents] = useSearchEventsStore((state: any) => [state.events, state.addEvents, state.emptyEvents]);
   const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
@@ -52,6 +52,7 @@ export default function Page() {
 
   useEffect(() => {
     const objString = '?' + new URLSearchParams(queryParams).toString();
+    emptyEvents();
     setIsLoading(true);
     getEvents(objString).then((res) => {
       setIsLoading(false);
