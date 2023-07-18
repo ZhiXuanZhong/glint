@@ -50,15 +50,6 @@ export default function Page() {
 
   useEffect(() => {
     const objString = '?' + new URLSearchParams(queryParams).toString();
-    console.log(objString);
-    getEvents(objString).then((res) => {
-      addEvents(res.data);
-      // console.log(res);
-    });
-  }, []);
-
-  useEffect(() => {
-    const objString = '?' + new URLSearchParams(queryParams).toString();
     getEvents(objString).then((res) => {
       addEvents(res.data);
       // console.log(res);
