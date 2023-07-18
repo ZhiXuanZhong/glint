@@ -45,7 +45,7 @@ const FavoriteButton = ({ eventID }: { eventID: string }) => {
   }, []);
 
   return !isFavorite ? (
-    <button className="rounded-sm bg-moonlight-600 px-4 py-1 text-white transition-colors hover:bg-slate-400" onClick={handleClick}>
+    <button className="rounded-sm border border-transparent bg-moonlight-600 px-4 py-1 text-white transition-colors hover:bg-slate-400" onClick={handleClick}>
       蒐藏
     </button>
   ) : (
