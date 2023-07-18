@@ -4,7 +4,13 @@ import { useProfilesStore } from '@/store/messageUserProfilesStore';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-const ConversationCard = ({ data, authUser }: { data: Conversation; authUser: string }) => {
+import 'dayjs/locale/zh-tw';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import dayjs from 'dayjs';
+dayjs.locale('zh-tw');
+dayjs.extend(relativeTime);
+
+const ConversationCard = ({ data, authUser, messagesChunk }: { data: Conversation; authUser: string; messagesChunk: Message[] }) => {
   const userID = authUser;
   // infos保留群組對話的擴充性，目前先以單一個實作
   const [infos, setInfos] = useState<UsersProfile[] | null>(null);
@@ -27,7 +33,7 @@ const ConversationCard = ({ data, authUser }: { data: Conversation; authUser: st
         try {
           const response = await fetch(`/api/profile/${user}`);
           const profileData = await response.json();
-          resultArray.push({ ...profileData[user], id: userID, conversationID: data.conversationID });
+          resultArray.push({ ...profileData[user], id: user, conversationID: data.conversationID });
         } catch (error) {
           console.error(`Error fetching profile for userID ${user}:`, error);
         }
@@ -56,7 +62,20 @@ const ConversationCard = ({ data, authUser }: { data: Conversation; authUser: st
               {user.username}
             </div>
           ))}
-          {/* <p className="text-moonlight-600">latest chat text gose here (WIP)</p> */}
+          {/* <p className="text-moonlight-600">{messagesChunk?.map((data) => data.data)[0]}</p> */}
+          <p className="text-moonlight-700">
+            {messagesChunk
+              ?.filter((message) => message.conversationID === data.conversationID)
+              .slice(-1)
+              .map((data) => {
+                return (
+                  <div className="flex items-center justify-between">
+                    <div>{data.userID === userID ? `You: ${data.data}` : data.data}</div>
+                    <div className="text-sm">{dayjs(data.timestamp).fromNow()}</div>
+                  </div>
+                );
+              })}
+          </p>
         </div>
       </div>
     </div>

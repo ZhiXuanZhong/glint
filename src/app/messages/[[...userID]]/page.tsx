@@ -114,7 +114,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
                 currentConversation.current = data.conversationID;
               }}
             >
-              <ConversationCard data={data} authUser={authUser} />
+              <ConversationCard data={data} authUser={authUser} messagesChunk={messagesChunk} />
             </div>
           ))}
         </div>
