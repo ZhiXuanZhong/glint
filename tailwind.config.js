@@ -5,7 +5,6 @@ module.exports = {
     extend: {
       backgroundImage: {
         landing_bg: "url('../../public/landing_bg.png')",
-        landing_fg: "url('../../public/landing_fg.png')",
       },
       fontFamily: {
         sans: ['var(--font-noto-sans-tc)'],
