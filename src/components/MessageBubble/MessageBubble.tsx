@@ -17,7 +17,7 @@ const MessageBubble = ({ message, authUser }: { message: Message; authUser: stri
       )}
       {message.type === 'image' && (
         <div>
-          <div className={classNames('m-1 w-fit max-w-xs rounded-lg bg-slate-300 p-3', message.userID === authUser ? 'ml-auto' : null)}>
+          <div className={classNames('m-1 w-fit max-w-xs cursor-pointer rounded-lg bg-slate-300 p-3', message.userID === authUser ? 'ml-auto' : null)}>
             <div className={classNames('text-sm font-semibold', message.userID === authUser ? 'hidden' : null)}>{message.username}</div>
             <picture>
               <img src={message.data} alt="message picture" className=" rounded" />
