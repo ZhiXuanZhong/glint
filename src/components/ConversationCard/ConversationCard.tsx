@@ -66,9 +66,9 @@ const ConversationCard = ({ data, authUser, messagesChunk }: { data: Conversatio
               {messagesChunk
                 ?.filter((message) => message.conversationID === data.conversationID)
                 .slice(-1)
-                .map((data) => {
+                .map((data, index) => {
                   return (
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between" key={index}>
                       <div className="line-clamp-1 max-w-[280px]">{data.userID === userID ? `You: ${data.data}` : data.data}</div>
                       <div className="text-sm">{dayjs(data.timestamp).fromNow()}</div>
                     </div>
