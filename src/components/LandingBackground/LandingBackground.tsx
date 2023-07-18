@@ -5,6 +5,7 @@ const LandingBackground = () => {
   return (
     <div>
       <div className="absolute left-0 top-0 h-screen w-screen bg-landing_bg bg-cover"></div>
+      <div className="absolute left-0 top-0 h-screen w-screen bg-black opacity-25"></div>
       <div className="absolute left-0 top-0 h-screen w-screen bg-gradient-to-r from-orange-400 to-rose-400 opacity-25"></div>
       <div className="absolute left-0 top-0 h-screen w-screen px-96 pt-56">
         <MouseParallax lerpEase={0.08} strength={0.02}>
