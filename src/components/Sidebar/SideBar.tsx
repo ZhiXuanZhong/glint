@@ -1,8 +1,14 @@
+'use client';
 import { MdOutlineContentPasteSearch, MdOutlineAddCircleOutline, MdNewspaper, MdRecordVoiceOver, MdTravelExplore } from 'react-icons/md';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import ProfileButton from '../ProfileButton/ProfileButton';
+import classNames from '@/app/utils/classNames';
+import { useEffect, useState } from 'react';
 
 const SideBar = () => {
+  const currentPage = usePathname().split('/')[1];
+
   return (
     <>
       <div
@@ -11,7 +17,12 @@ const SideBar = () => {
         md:h-full md:w-52 md:flex-col md:items-start md:justify-start md:border-r md:border-t md:px-2 md:pt-3"
       >
         {/* MdOutlineContentPasteSearch */}
-        <div className="flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full">
+        <div
+          className={classNames(
+            'flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full',
+            currentPage === 'events' ? 'text-sunrise-500' : null
+          )}
+        >
           <Link href={'/events'} className="flex items-center md:m-2 md:ml-6 ">
             <div className="text-3xl md:text-xl">
               <MdOutlineContentPasteSearch />
@@ -21,7 +32,12 @@ const SideBar = () => {
         </div>
 
         {/* MdOutlineAddCircleOutline */}
-        <div className="flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full">
+        <div
+          className={classNames(
+            'flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full',
+            currentPage === 'create-event' ? 'text-sunrise-500' : null
+          )}
+        >
           <Link href={'/create-event'} className="flex items-center md:m-2 md:ml-6 ">
             <div className="text-3xl md:text-xl">
               <MdOutlineAddCircleOutline />
@@ -32,7 +48,12 @@ const SideBar = () => {
         </div>
 
         {/* MdNewspaper */}
-        <div className="flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full">
+        <div
+          className={classNames(
+            'flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full',
+            currentPage === 'portal' ? 'text-sunrise-500' : null
+          )}
+        >
           <Link href={'/portal'} className="flex items-center md:m-2 md:ml-6 ">
             <div className="text-3xl md:text-xl">
               <MdNewspaper />
@@ -46,7 +67,12 @@ const SideBar = () => {
         </div>
 
         {/* MdRecordVoiceOver */}
-        <div className="flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full">
+        <div
+          className={classNames(
+            'flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full',
+            currentPage === 'messages' ? 'text-sunrise-500' : null
+          )}
+        >
           <Link href={'/messages'} className="flex items-center md:m-2 md:ml-6 ">
             <div className="text-3xl md:text-xl">
               <MdRecordVoiceOver />
@@ -56,7 +82,12 @@ const SideBar = () => {
         </div>
 
         {/* MdTravelExplore */}
-        <div className="flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full">
+        <div
+          className={classNames(
+            'flex h-9 rounded font-normal text-moonlight-950 transition-colors hover:bg-moonlight-100 hover:text-neutral-950 md:w-full',
+            currentPage === 'locator' ? 'text-sunrise-500' : null
+          )}
+        >
           <Link href={'/locator'} className="flex items-center md:m-2 md:ml-6 ">
             <div className="text-3xl md:text-xl">
               <MdTravelExplore />
