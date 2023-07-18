@@ -14,7 +14,8 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
   // conversation 是指該用戶發生過的對話，也就是聊天室的概念
   const conversationsRef = collection(db, 'messages');
-  const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', authUser));
+  // FIXME 這邊先寫死orderby，但不能這樣寫，應該要依照最後一則訊息新舊來排
+  const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', authUser), orderBy('createdTime', 'desc'));
   const [conversations, setConversations] = useImmer([] as Conversation[]);
   const conversationIDs = useRef<string[]>([]);
   // currentConversation 是該用戶當前在哪個對話的指標，用來作為篩選對話的條件，目前透過conversationCard來更新值

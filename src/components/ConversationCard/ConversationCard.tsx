@@ -47,36 +47,36 @@ const ConversationCard = ({ data, authUser, messagesChunk }: { data: Conversatio
     fetchProfiles(data.userIDs);
   }, []);
   return (
-    <div className="flex flex-col border-b">
+    <div className="flex flex-col border-b lg:w-[450px]">
       <div className="flex h-16 items-center gap-3 px-4">
-        {infos?.map((user, index) => {
-          return (
-            <div className="flex" key={index}>
-              <Image width={60} height={60} src={user.avatarURL} alt={'avatar'} className="aspect-square rounded-full object-cover" />
-            </div>
-          );
-        })}
-        <div className="flex w-full flex-col justify-center">
-          {infos?.map((user, index) => (
-            <div key={index} className="font-bold text-moonlight-900">
-              {user.username}
-            </div>
-          ))}
-          {/* <p className="text-moonlight-600">{messagesChunk?.map((data) => data.data)[0]}</p> */}
-          <p className="text-moonlight-700">
-            {messagesChunk
-              ?.filter((message) => message.conversationID === data.conversationID)
-              .slice(-1)
-              .map((data) => {
-                return (
-                  <div className="flex items-center justify-between">
-                    <div>{data.userID === userID ? `You: ${data.data}` : data.data}</div>
-                    <div className="text-sm">{dayjs(data.timestamp).fromNow()}</div>
-                  </div>
-                );
-              })}
-          </p>
+        <div className="w-[60px]">
+          {infos?.map((user, index) => {
+            return <Image width={60} height={60} src={user.avatarURL} alt={'avatar'} className="aspect-square rounded-full object-cover" key={index} />;
+          })}
         </div>
+        {infos && (
+          <div className="flex w-full flex-col justify-center">
+            {infos.map((user, index) => (
+              <div key={index} className="font-bold text-moonlight-900">
+                {user.username}
+              </div>
+            ))}
+            {/* <p className="text-moonlight-600">{messagesChunk?.map((data) => data.data)[0]}</p> */}
+            <p className="text-moonlight-700">
+              {messagesChunk
+                ?.filter((message) => message.conversationID === data.conversationID)
+                .slice(-1)
+                .map((data) => {
+                  return (
+                    <div className="flex items-center justify-between">
+                      <div className="line-clamp-1 max-w-[280px]">{data.userID === userID ? `You: ${data.data}` : data.data}</div>
+                      <div className="text-sm">{dayjs(data.timestamp).fromNow()}</div>
+                    </div>
+                  );
+                })}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
