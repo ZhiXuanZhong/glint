@@ -109,7 +109,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
       {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} sendMessage={sendMessage} />}
       {/* 聊天室功能UI */}
-      <div className="flex h-36 w-full items-center px-4">
+      <div className="flex h-12 w-full items-center px-4">
         <form
           className="flex grow items-center"
           onSubmit={(e) => {
