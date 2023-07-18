@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { QuerySnapshot, collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useImmer } from 'use-immer';
 import { useAuthStore } from '@/store/authStore';
+import classNames from '@/app/utils/classNames';
 
 const Page = ({ params }: { params: { userID: string } }) => {
   const [authUser] = useAuthStore((state) => [state.authUser]);
@@ -17,9 +18,9 @@ const Page = ({ params }: { params: { userID: string } }) => {
   // FIXME 這邊先寫死orderby，但不能這樣寫，應該要依照最後一則訊息新舊來排
   const conversationsQuery = query(conversationsRef, where('userIDs', 'array-contains', authUser), orderBy('createdTime', 'desc'));
   const [conversations, setConversations] = useImmer([] as Conversation[]);
-  const conversationIDs = useRef<string[]>([]);
+  const [conversationIDs, setConversationIDs] = useState<string[]>([]);
   // currentConversation 是該用戶當前在哪個對話的指標，用來作為篩選對話的條件，目前透過conversationCard來更新值
-  const currentConversation = useRef<string | null>(null);
+  const [currentConversation, setCurrentConversation] = useState<string | null>(null);
   // messagesChunk用來存所有聊天室的單條對話內容的pool，未來可以用where限制取回的時間點來增加效能
   const [messagesChunk, setMessagesChunk] = useImmer([] as Message[]);
   // 從messagesChunk這個pool篩出來的資料，用來動態生成Message component的對話內容
@@ -69,12 +70,12 @@ const Page = ({ params }: { params: { userID: string } }) => {
             draft.push(conversationWithID as Conversation);
 
             // 假如都還沒有對話被載入，就先存
-            if (!conversationIDs.current) {
-              conversationIDs.current = [...conversationIDs.current, change.doc.id];
+            if (!conversationIDs) {
+              setConversationIDs([...conversationIDs, change.doc.id]);
             } else {
               //如果有新對話進來，就先綁監聽再加入清單
               listenToMultipleDocChanges([change.doc.id]);
-              conversationIDs.current = [...conversationIDs.current, change.doc.id];
+              setConversationIDs([...conversationIDs, change.doc.id]);
             }
           });
         }
@@ -82,37 +83,37 @@ const Page = ({ params }: { params: { userID: string } }) => {
         // 利用判斷param來設定當前聊天室(預設是用戶兩人永遠只有單一房間，且不考慮多個房間群組的狀況)
         if (paramID?.length && change.doc.data().userIDs.includes(paramID[0])) {
           console.log(change.doc.id);
-          currentConversation.current = change.doc.id;
+          setCurrentConversation(change.doc.id);
         }
       });
     });
 
-    listenToMultipleDocChanges(conversationIDs.current);
+    listenToMultipleDocChanges(conversationIDs);
 
     return () => {
       // 解除聊天室的監聽
       unsubscribeConversations();
       // 解除聊天室datails內文的監聽
-      stopListeningToMultipleDocChanges(conversationIDs.current);
+      stopListeningToMultipleDocChanges(conversationIDs);
     };
   }, [authUser]);
 
   useEffect(() => {
-    setMessages(messagesChunk.filter((message) => message.conversationID === currentConversation.current));
+    setMessages(messagesChunk.filter((message) => message.conversationID === currentConversation));
   }, [messagesChunk]);
 
   return (
     <div className="flex h-[calc(100vh_-_5rem)] w-full">
       <div className="flex flex-col border-r">
-        <div className="flex min-h-[48px] items-center justify-center bg-white text-moonlight-950 shadow-md lg:w-[450px]">訊息總覽</div>
+        <div className="z-10 flex min-h-[48px] items-center justify-center text-moonlight-950 shadow-sm lg:w-[450px]">訊息總覽</div>
         <div className="h-[calc(100vh_-_5rem)] overflow-scroll">
           {conversations?.map((data, index) => (
             <div
               key={index}
-              className="cursor-pointer"
+              className={classNames('cursor-pointer', currentConversation === data.conversationID ? 'bg-gray-100' : null)}
               onClick={() => {
                 setMessages(messagesChunk.filter((message) => message.conversationID === data.conversationID));
-                currentConversation.current = data.conversationID;
+                setCurrentConversation(data.conversationID);
               }}
             >
               <ConversationCard data={data} authUser={authUser} messagesChunk={messagesChunk} />
@@ -121,8 +122,8 @@ const Page = ({ params }: { params: { userID: string } }) => {
         </div>
       </div>
       <div className="grow">
-        {currentConversation.current ? (
-          <Messages messages={messages} currentConversation={currentConversation.current as string} />
+        {currentConversation ? (
+          <Messages messages={messages} currentConversation={currentConversation as string} />
         ) : (
           <div className="flex items-center justify-center">
             <div>選擇一個對話開始聊聊吧！</div>
