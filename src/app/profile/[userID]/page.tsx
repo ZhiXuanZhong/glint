@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import Link from 'next/link';
 import db from '@/app/utils/firebaseConfig';
-import { DocumentData, QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, getCountFromServer, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import formatDate from '@/app/utils/formatDate';
 import Image from 'next/image';
 import EventCard from '@/components/EventCard/EventCard';
@@ -84,6 +84,10 @@ const Page = ({ params }: { params: { userID: string } }) => {
     const followingsRef = collection(db, 'users', params.userID, 'followings');
 
     initData();
+
+    return () => {
+      licenceUnsub();
+    };
   }, []);
 
   return (
@@ -98,7 +102,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
               <div className="mt-2 flex w-full flex-wrap gap-3">
                 {profile && (
                   <>
-                    <FollowUserButton userID={params.userID} />
+                    <FollowUserButton userID={params.userID} setFollowCount={setFollowCount} />
                     <Link href={`/messages/${profile.id}`}>
                       <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
                     </Link>

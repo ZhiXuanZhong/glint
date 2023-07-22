@@ -5,13 +5,14 @@ import { useAuthStore } from '@/store/authStore';
 import { collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-const FollowUserButton = ({ userID }: { userID: string }) => {
+const FollowUserButton = ({ userID, setFollowCount }: { userID: string; setFollowCount: Function }) => {
   const [authUser] = useAuthStore((state) => [state.authUser]);
   const [isFollow, setIsFollow] = useState(false);
 
   const unfollowUser = async () => {
     await deleteDoc(doc(db, 'users', authUser, 'followings', userID));
     await deleteDoc(doc(db, 'users', userID, 'followers', authUser));
+    setFollowCount((prev: { followersCount: number }) => ({ ...prev, followersCount: prev.followersCount - 1 }));
   };
 
   const followUser = async () => {
@@ -22,6 +23,8 @@ const FollowUserButton = ({ userID }: { userID: string }) => {
     await setDoc(doc(db, 'users', userID, 'followers', authUser), {
       addedTime: serverTimestamp(),
     });
+
+    setFollowCount((prev: { followersCount: number }) => ({ ...prev, followersCount: prev.followersCount + 1 }));
   };
 
   useEffect(() => {
