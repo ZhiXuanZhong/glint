@@ -36,13 +36,13 @@ const EventCard = ({
       {/* right col */}
       <div className="border p-3 lg:w-3/5">
         {/* upper-right */}
-        <div className="flex flex-wrap justify-between">
-          <div className="mb-2">
-            <h1 className=" mb-1 text-lg font-semibold text-moonlight-900">{event.title}</h1>
+        <div className="flex flex-wrap justify-between md:flex-nowrap">
+          <div className="mb-2 lg:max-w-[400px]">
+            <h1 className="mb-1 line-clamp-1 text-lg font-semibold text-moonlight-900">{event.title}</h1>
             <div className="text-moonlight-800">
               {formatDate(event.startTime)} - {formatDate(event.endTime)}
             </div>
-            <p className=" text-moonlight-800">{event.levelSuggection}</p>
+            <p className="line-clamp-1 text-moonlight-800">{event.levelSuggection}</p>
             <div className="mt-2 flex gap-3">
               <div className="my-1 w-fit rounded-sm bg-moonlight-500 px-3 py-1 text-sm font-light text-white">{convertCategoryCode(event.category)}</div>
               {event.locations?.map((location: string, index: number) => (
