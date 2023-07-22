@@ -1,17 +1,26 @@
 'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { GoogleLogin, EmailLogin } from '@/components/Login/Login';
+import { useAuthStore } from '@/store/authStore';
+import { EmailLogin } from '@/components/Login/Login';
 
-const page = () => {
+const Page = () => {
+  const router = useRouter();
+
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+
+  useEffect(() => {
+    if (authUser) router.back();
+  }, [authUser]);
+
   return (
     <div className="container mx-auto">
       <div className="flex flex-col items-center py-24">
         <EmailLogin />
-        {/* <hr className="my-6  max-w-sm mx-auto" />
-        <GoogleLogin /> */}
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;

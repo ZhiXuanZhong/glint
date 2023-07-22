@@ -1,16 +1,15 @@
 'use client';
-import { ChangeEvent, ChangeEventHandler, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
+import db from '../utils/firebaseConfig';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
-// 第二組：本地檔案
-import { diveSites, eventTypes } from '@/data/searchOptions';
-import db from '../utils/firebaseConfig';
 import { useAuthStore } from '@/store/authStore';
+import { diveSites, eventTypes } from '@/data/searchOptions';
 import startEndToTimecodes from '../utils/startEndToTimecodes';
 
 const Page = () => {
@@ -100,6 +99,10 @@ const Page = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (!authUser) router.push('/login');
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="mx-4 flex flex-col gap-5 py-10 md:mx-auto md:max-w-3xl md:p-3 lg:max-w-5xl">
