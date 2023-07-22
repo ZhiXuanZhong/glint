@@ -71,7 +71,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               </div>
               <div className="flex flex-col">
                 <div className="mt-2 flex w-full flex-wrap gap-3">
-                  <FollowUserButton />
+                  <FollowUserButton userID={eventInfos.data.organizer} />
                   <Link href={`/messages/${eventInfos.data.organizer}`}>
                     <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
                   </Link>

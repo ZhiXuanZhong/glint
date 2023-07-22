@@ -98,7 +98,7 @@ const Page = ({ params }: { params: { userID: string } }) => {
               <div className="mt-2 flex w-full flex-wrap gap-3">
                 {profile && (
                   <>
-                    <FollowUserButton setFollowCount={setFollowCount} />
+                    <FollowUserButton userID={params.userID} />
                     <Link href={`/messages/${profile.id}`}>
                       <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
                     </Link>
