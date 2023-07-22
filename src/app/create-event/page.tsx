@@ -1,11 +1,11 @@
 'use client';
-import { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
+import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import db from '../utils/firebaseConfig';
-
-const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
+import { useAuthStore } from '@/store/authStore';
+import router, { useRouter } from 'next/navigation';
 
 interface LocationDate {
   location: string;
@@ -14,9 +14,12 @@ interface LocationDate {
 
 const Page = () => {
   // 這邊想做讓用戶可以增加每天對應的地點，因為可能會跳島
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+  const [authProfile] = useAuthStore((state) => [state.authProfile]);
   const [locationDate, setLocationDate] = useState<LocationDate[]>([{ location: '', date: '' }]);
   const [mainImage, setMainImage] = useState<any>(null);
-  const [profile, setProfile] = useState<UsersProfile>();
+  const [eventID, setEventID] = useState<string | null>(null);
+  const router = useRouter();
 
   // 這邊的type非常雜亂，gpt的產出看不懂
   const addFile: ChangeEventHandler<HTMLInputElement> = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,12 +52,12 @@ const Page = () => {
       const eventData = {
         title: formData.get('title'),
         locations: [formData.get('location')],
-        startTime: Date.parse(`${formData.get('startTime')}T00:00:00.000Z`),
-        endTime: Date.parse(`${formData.get('endTime')}T23:59:59.999Z`),
+        startTime: Date.parse(`${formData.get('startTime')}T00:00:00.000`),
+        endTime: Date.parse(`${formData.get('endTime')}T23:59:59.999`),
         mainImage: imageURL,
-        organizer: userID,
-        organizerType: profile ? profile.type : null,
-        organizerLevel: profile ? profile.level : null,
+        organizer: authUser,
+        organizerType: authProfile?.type,
+        organizerLevel: authProfile?.level,
         description: formData.get('detail'),
         levelSuggection: formData.get('levelSuggection'),
         category: formData.get('category'),
@@ -64,19 +67,28 @@ const Page = () => {
 
       console.log(eventData);
       console.log(newEventRef.id);
-
       await setDoc(newEventRef, eventData);
-      alert(`活動成功建立，這邊要再直接轉跳到新增的頁面 ${newEventRef.id}`);
+
+      const defaultParticipantsRef = doc(collection(db, 'events', newEventRef.id, 'participants'), authUser);
+      const defaultParticipant = {
+        applyTime: serverTimestamp(),
+        approvedTime: serverTimestamp(),
+        level: authProfile?.level,
+        name: authProfile?.username,
+      };
+      await setDoc(defaultParticipantsRef, defaultParticipant);
+
+      // alert(`活動成功建立，這邊要再直接轉跳到新增的頁面 ${newEventRef.id}`);
+      // setEventID(newEventRef.id);
+      router.replace(`/details/${newEventRef.id}`);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetch(`/api/profile/${userID}`)
-      .then((res) => res.json())
-      .then((data) => setProfile(data[userID]));
-  }, []);
+  // useEffect(() => {
+  //   if (eventID !== null) router.push(`/details/${eventID}`);
+  // }, []);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -89,7 +101,7 @@ const Page = () => {
         <div key={index}>
           <label>
             地點
-            <select className="border m-1" name="location">
+            <select className="m-1 border" name="location">
               <option value="NEC">東北角</option>
               <option value="XL">小琉球</option>
               <option value="KT">墾丁</option>
@@ -100,11 +112,11 @@ const Page = () => {
           </label>
           <label>
             開始時間
-            <input className="border m-1" type="date" name="startTime" />
+            <input className="m-1 border" type="date" name="startTime" />
           </label>
           <label>
             結束時間
-            <input className="border m-1" type="date" name="endTime" />
+            <input className="m-1 border" type="date" name="endTime" />
           </label>
         </div>
       ))}
@@ -136,7 +148,7 @@ const Page = () => {
         By signing up for our service, I agree to abide by the following terms and conditions available at Terms of Service.
       </label>
       <div>
-        <button className=" px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium rounded-md">建立活動</button>
+        <button className=" rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600">建立活動</button>
       </div>
     </form>
   );
