@@ -55,14 +55,14 @@ export default function Page() {
     emptyEvents();
     setIsLoading(true);
     getEvents(objString).then((res) => {
-      setIsLoading(false);
       addEvents(res.data);
+      setIsLoading(false);
       // console.log(res);
     });
   }, [searchParams]);
 
   return (
-    <div className="mx-4 flex h-screen flex-col gap-5 p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
+    <div className="mx-4 flex flex-col gap-5 p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">
       <div className="border shadow-md">
         <SearchEvents locations={queryParams.locations} category={queryParams.category} startTime={queryParams.startTime} endTime={queryParams.endTime} organizerType={queryParams.organizerType} />
       </div>

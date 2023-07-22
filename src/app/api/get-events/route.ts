@@ -42,7 +42,8 @@ export async function GET(request: Request) {
   const queryList = Object.keys(queryParams).reduce((acc: QueryConditions[], key: string) => {
     const value = queryParams[key];
 
-    if (value) {
+    if (value && value !== 'null') {
+      console.log(key, typeof value)
       switch (key) {
         case 'locations':
           acc.push({
@@ -82,11 +83,12 @@ export async function GET(request: Request) {
 
 
 
-  const queryConditions = queryList.map(condition => where(condition.property, condition.operator, condition.value))
+  const queryConditions = queryList?.map(condition => where(condition.property, condition.operator, condition.value))
 
   console.log(queryConditions)
 
   const queryToPerform = query(collection(db, 'events'), ...queryConditions, orderBy('startTime'))
+  // const queryToPerform = query(collection(db, 'events'), orderBy('startTime'))
 
   const querySnapshot = await getDocs(queryToPerform);
 
