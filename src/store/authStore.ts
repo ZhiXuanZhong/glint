@@ -1,10 +1,13 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import { shallow } from 'zustand/shallow'
 
+interface Store {
+    authUser: string;
+    authProfile: string;
+    updateAuthUser: (authData: string) => void,
+    updateAuthProfile: (profileData: string) => void
+}
 
-
-export const useAuthStore = create(
+export const useAuthStore = create<Store>(
     (set) => ({
         authUser: '',
         authProfile: '',
