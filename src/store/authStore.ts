@@ -4,7 +4,7 @@ interface Store {
     authUser: string;
     authProfile: UsersProfile | null;
     updateAuthUser: (authData: string) => void,
-    updateAuthProfile: (profileData: UsersProfile) => void
+    updateAuthProfile: (profileData: UsersProfile | null) => void
 }
 
 export const useAuthStore = create<Store>(
@@ -12,6 +12,6 @@ export const useAuthStore = create<Store>(
         authUser: '',
         authProfile: null,
         updateAuthUser: (authData: string) => set(() => ({ authUser: authData })),
-        updateAuthProfile: (profileData: UsersProfile) => set(() => ({ authProfile: profileData }))
+        updateAuthProfile: (profileData) => set(() => ({ authProfile: profileData }))
     })
 )
