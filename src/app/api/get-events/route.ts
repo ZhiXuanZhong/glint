@@ -1,9 +1,7 @@
-import db from '@/app/utils/firebaseConfig';
-import { DocumentData, Index, getFirestore } from 'firebase/firestore';
-import { collection, getDocs } from 'firebase/firestore';
-import { query, where, orderBy } from 'firebase/firestore';
-import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import db from '@/app/utils/firebaseConfig';
 
 export const revalidate = 'force-cache'
 
