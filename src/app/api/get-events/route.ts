@@ -6,7 +6,6 @@ import db from '@/app/utils/firebaseConfig';
 export const revalidate = 'force-cache'
 
 export async function GET(request: Request) {
-
   const getRating = async (userID: string) => {
     const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, { next: { revalidate: 5 } });
     return response.json();

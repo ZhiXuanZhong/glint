@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from 'firebase/firestore';
 import db from '@/app/utils/firebaseConfig';
 
-export async function GET({ params }: { params: { eventID: string } }) {
-
+export async function GET(request: Request, { params }: { params: { eventID: string } }) {
     const detailRef = doc(db, 'events', params.eventID)
     const detail = await getDoc(detailRef);
 
