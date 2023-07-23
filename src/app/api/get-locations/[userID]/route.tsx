@@ -1,7 +1,7 @@
-import db from '@/app/utils/firebaseConfig';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import db from '@/app/utils/firebaseConfig';
 
 interface Location {
   userID: string;
@@ -43,7 +43,6 @@ export async function GET(request: Request, { params }: { params: { userID: stri
   const getFollowing = async (userID: string) => {
     const list: string[] = [];
     const followingRef = collection(db, 'users', userID, 'followings');
-    const followingQuery = query(followingRef, where('isLocationPublic', '==', 'true'));
 
     const followingSnap = await getDocs(followingRef);
     followingSnap.forEach((user) => list.push(user.id));
