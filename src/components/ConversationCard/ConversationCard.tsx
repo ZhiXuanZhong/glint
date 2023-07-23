@@ -55,9 +55,9 @@ const ConversationCard = ({ data, authUser, messagesChunk }: { data: Conversatio
           })}
         </div>
         {infos && (
-          <div className="flex w-full flex-col justify-center">
+          <div className="hidden w-full flex-col justify-center md:flex">
             {infos.map((user, index) => (
-              <div key={index} className="line-clamp-1 font-bold text-moonlight-900">
+              <div key={index} className="line-clamp-1font-bold text-moonlight-900">
                 {user.username}
               </div>
             ))}
