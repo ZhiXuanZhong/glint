@@ -113,7 +113,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
 
           <div className="mt-2 flex flex-col gap-3 border-t border-t-moonlight-50 pt-4">
             <ApplyButton eventID={params.eventID} organizerID={eventInfo.organizer} />
-            <FavoriteButton eventID={params.eventID} />
+            <FavoriteButton eventInfo={eventInfo} />
           </div>
         </div>
 
