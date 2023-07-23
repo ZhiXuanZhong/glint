@@ -7,6 +7,7 @@ import { QuerySnapshot, collection, getDocs, onSnapshot, orderBy, query, where }
 import { useImmer } from 'use-immer';
 import { useAuthStore } from '@/store/authStore';
 import classNames from '@/app/utils/classNames';
+import { MdChat } from 'react-icons/md';
 
 const Page = ({ params }: { params: { userID: string } }) => {
   const [authUser] = useAuthStore((state) => [state.authUser]);
@@ -125,8 +126,9 @@ const Page = ({ params }: { params: { userID: string } }) => {
         {currentConversation ? (
           <Messages messages={messages} currentConversation={currentConversation as string} />
         ) : (
-          <div className="flex items-center justify-center">
-            <div>選擇一個對話開始聊聊吧！</div>
+          <div className="flex h-full flex-col items-center justify-center">
+            <MdChat className="mb-3 text-5xl text-moonlight-400" />
+            <div className="text-moonlight-800">選擇一個對話開始聊聊吧！</div>
           </div>
         )}
       </div>

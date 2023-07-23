@@ -116,14 +116,14 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
       {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
       {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} sendMessage={sendMessage} />}
       {/* 聊天室功能UI */}
-      <div className="flex h-12 w-full items-center px-4">
+      <div className="mb-14 flex h-fit w-full items-center px-4 md:mb-0">
         <form
-          className="flex grow items-center"
+          className="flex grow flex-wrap items-center"
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <input className="grow rounded-full border border-slate-300 py-1 pl-3 pr-3 shadow-sm focus:outline-none" type="text" placeholder="輸入訊息..." ref={inputTextRef} />
+          <input className="min-w grow rounded-full border border-slate-300 py-1 pl-3 pr-3 shadow-sm focus:outline-none" type="text" placeholder="輸入訊息..." ref={inputTextRef} />
 
           <div className="flex px-2">
             <div className=" cursor-pointer rounded-md p-3 text-2xl hover:bg-moonlight-300" onClick={getMicrophonePermission}>
@@ -140,7 +140,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           </div>
 
           <button
-            className="rounded bg-gray-600 px-10 py-2 font-bold text-white"
+            className="grow rounded bg-gray-600 px-10 py-2 font-bold text-white lg:max-w-[120px]"
             onClick={() => {
               if (inputTextRef.current && inputTextRef.current.value !== '') {
                 sendMessage('text', inputTextRef.current?.value);
