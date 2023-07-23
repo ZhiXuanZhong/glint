@@ -1,7 +1,6 @@
-import db from '@/app/utils/firebaseConfig';
-import { getFirestore } from 'firebase/firestore';
-import { doc, getDoc } from 'firebase/firestore';
 import { NextResponse } from 'next/server';
+import { doc, getDoc } from 'firebase/firestore';
+import db from '@/app/utils/firebaseConfig';
 
 export async function GET(request: Request, { params }: { params: { userID: string } }) {
   const profileRef = doc(db, 'profiles', params.userID);
