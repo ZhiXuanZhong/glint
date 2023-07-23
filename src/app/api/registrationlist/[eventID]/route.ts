@@ -3,23 +3,20 @@ import { collection, getDocs } from 'firebase/firestore';
 import db from '@/app/utils/firebaseConfig';
 
 export async function GET(request: Request, { params }: { params: { eventID: string } }) {
-    const applicants: any = []
-    const applicantsRef = collection(db, 'events', params.eventID, 'applicants')
-    const applicantsFire = await getDocs(applicantsRef);
-    applicantsFire.forEach((doc) => {
-        const user = doc.data()
-        user.id = doc.id
-        applicants.push(user)
-    });
+    const applicantsRef = collection(db, 'events', params.eventID, 'applicants');
+    const participantsRef = collection(db, 'events', params.eventID, 'participants');
 
-    const participants: any = []
-    const participantsRef = collection(db, 'events', params.eventID, 'participants')
-    const participantsFire = await getDocs(participantsRef);
-    participantsFire.forEach((doc) => {
-        const user = doc.data()
-        user.id = doc.id
-        participants.push(user)
-    });
+    const [applicantsSnap, participantsSnap] = await Promise.all([getDocs(applicantsRef), getDocs(participantsRef)]);
 
-    return NextResponse.json({ applicants, participants })
+    const applicants: Applicants[] = applicantsSnap.docs.map((doc) => ({
+        ...(doc.data() as Applicants),
+        id: doc.id,
+    }));
+
+    const participants: Participants[] = participantsSnap.docs.map((doc) => ({
+        ...(doc.data() as Participants),
+        id: doc.id,
+    }));
+
+    return NextResponse.json({ applicants, participants });
 }
