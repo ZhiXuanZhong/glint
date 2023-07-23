@@ -99,8 +99,6 @@ const SideBar = () => {
         <div className="hidden w-full items-center px-3 py-2 md:flex">
           <div className="flex-grow border-t border-moonlight-200"></div>
         </div>
-
-        <ProfileButton />
       </div>
     </>
   );
