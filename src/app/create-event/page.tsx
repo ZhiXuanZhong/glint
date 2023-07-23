@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { BarLoader } from 'react-spinners';
 
 import db from '../utils/firebaseConfig';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
@@ -17,6 +18,7 @@ const Page = () => {
   const [authUser] = useAuthStore((state) => [state.authUser]);
   const [authProfile] = useAuthStore((state) => [state.authProfile]);
 
+  const [isSending, setIsSending] = useState<Boolean>(false);
   const [mainImage, setMainImage] = useState<Blob | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -51,6 +53,8 @@ const Page = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setIsSending(true);
 
     try {
       const formData = new FormData(e.currentTarget);
@@ -216,16 +220,24 @@ const Page = () => {
         />
       </div>
 
-      <div>
-        <input type="checkbox" required />
-        <label className="ml-2">我同意遵守《服務條款》中的條款和條件。</label>
-      </div>
-
-      <div>
-        <button className="rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600">
-          建立活動
-        </button>
-      </div>
+      {isSending ? (
+        <div className="mb-10 flex flex-col items-center gap-2 text-lg tracking-widest text-sunrise-500">
+          <div>活動建立中</div>
+          <BarLoader color="#ff690e" />
+        </div>
+      ) : (
+        <div className="mb-10 flex flex-col items-center gap-2">
+          <div>
+            <input type="checkbox" required />
+            <label className="ml-2">我同意遵守《服務條款》中的條款和條件。</label>
+          </div>
+          <div>
+            <button className="rounded-md bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600">
+              建立活動
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 };
