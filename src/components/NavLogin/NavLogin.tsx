@@ -45,7 +45,7 @@ const NavLogin = () => {
             onClick={() => setOpen((prev) => !prev)}
           >
             <Image width="50" height="50" src={authProfile?.avatarURL} alt="logo" style={{ objectFit: 'contain' }} className="rounded-full border border-white" />
-            <div className="mx-2">{authProfile?.username}</div>
+            <div className="mx-2 line-clamp-1">{authProfile?.username}</div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-4 w-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
             </svg>
