@@ -53,7 +53,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
                 </div>
                 <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
                   <div className="text-center text-3xl font-black text-moonlight-800">
-                    {rating ? rating.toFixed(1) : ''}
+                    {rating.toFixed(1)}
                   </div>
                   <div className="pt-1 text-center text-xs font-light text-gray-500">
                     根據{reviewCount}篇評價
@@ -117,9 +117,8 @@ export default async function Page({ params }: { params: { eventID: string } }) 
         <div className="order-first md:order-none md:w-4/6 md:pl-3">
           <div className=" shadow-sm">
             <Image
-              width={0}
-              height={0}
-              sizes="100vw"
+              width={550}
+              height={250}
               style={{ width: '100%', height: '250px', objectFit: 'cover' }}
               src={eventInfos.data.mainImage}
               alt={'event picture'}

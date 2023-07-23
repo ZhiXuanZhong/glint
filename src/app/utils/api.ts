@@ -1,26 +1,22 @@
 import getProtocolHost from './getProtocolHost';
 
+const apiRequest = async (path: string, next: { revalidate: number }) => {
+  const { protocol, host } = await getProtocolHost();
+  const response = await fetch(`${protocol}://${host}${path}`, {
+    next,
+  });
+  return response.json();
+};
+
 const api = {
   async getProfile(userID: string) {
-    const { protocol, host } = await getProtocolHost();
-    const response = await fetch(`${protocol}://${host}/api/profile/${userID}`, {
-      next: { revalidate: 30 },
-    });
-    return response.json();
+    return apiRequest(`/api/profile/${userID}`, { revalidate: 30 });
   },
   async getEventInfo(eventID: string) {
-    const { protocol, host } = await getProtocolHost();
-    const response = await fetch(`${protocol}://${host}/api/event/${eventID}`, {
-      next: { revalidate: 5 },
-    });
-    return response.json();
+    return apiRequest(`/api/event/${eventID}`, { revalidate: 5 });
   },
   async getRating(userID: string) {
-    const { protocol, host } = await getProtocolHost();
-    const response = await fetch(`${protocol}://${host}/api/rating/${userID}`, {
-      next: { revalidate: 60 },
-    });
-    return response.json();
+    return apiRequest(`/api/rating/${userID}`, { revalidate: 60 });
   },
 };
 
