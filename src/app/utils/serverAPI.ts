@@ -8,7 +8,7 @@ const apiRequest = async (path: string, next: { revalidate: number }) => {
   return response.json();
 };
 
-const api = {
+const serverAPI = {
   async getProfile(userID: string) {
     return apiRequest(`/api/profile/${userID}`, { revalidate: 30 });
   },
@@ -20,4 +20,4 @@ const api = {
   },
 };
 
-export default api;
+export default serverAPI;

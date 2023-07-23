@@ -15,13 +15,13 @@ import ApplyButton from '@/components/ApplyButton/ApplyButton';
 import FavoriteButton from '@/components/FavoriteButton/FavoriteButton';
 import RegistrationList from '@/components/RegistrationList/RegistrationList';
 
-import api from '@/app/utils/api';
+import serverAPI from '@/app/utils/serverAPI';
 import { convertLocationCode } from '@/app/utils/convertLocationCode';
 import { convertCategoryCode } from '@/app/utils/convertCategoryCode';
 
 export default async function Page({ params }: { params: { eventID: string } }) {
-  const eventInfos = await api.getEventInfo(params.eventID);
-  const { rating, reviewCount } = await api.getRating(eventInfos.data.organizer);
+  const eventInfos = await serverAPI.getEventInfo(params.eventID);
+  const { rating, reviewCount } = await serverAPI.getRating(eventInfos.data.organizer);
 
   return (
     <div className="mx-4 flex h-screen flex-col p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl">

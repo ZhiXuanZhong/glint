@@ -1,8 +1,9 @@
 'use client';
 import Image from 'next/image';
-import classNames from '@/app/utils/classNames';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+
+import classNames from '@/app/utils/classNames';
 
 interface SizedInfo {
   userID: string;
@@ -17,6 +18,7 @@ const UserInfo = ({ userID, children, size = 60 }: SizedInfo) => {
     const initData = async () => {
       const profileData = await fetch(`/api/profile/${userID}`).then((res) => res.json());
       const profile = await profileData[userID];
+
       setProfile(profile);
     };
 
@@ -33,7 +35,10 @@ const UserInfo = ({ userID, children, size = 60 }: SizedInfo) => {
           src={profile.avatarURL}
           alt={'avatar'}
           style={{ borderRadius: '999px', objectFit: 'cover' }}
-          className={classNames('aspect-[1/1] border border-white shadow-sm', size === 60 ? 'mt-2' : null)}
+          className={classNames(
+            'aspect-[1/1] border border-white shadow-sm',
+            size === 60 ? 'mt-2' : null
+          )}
         />
       )}
 
