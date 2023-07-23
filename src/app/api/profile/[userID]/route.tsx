@@ -5,11 +5,7 @@ import db from '@/app/utils/firebaseConfig';
 export async function GET(request: Request, { params }: { params: { userID: string } }) {
   const profileRef = doc(db, 'profiles', params.userID);
   const response = await getDoc(profileRef);
-  const profile = response.data();
+  const profile = response.exists() ? { [params.userID]: response.data() } : { [params.userID]: 'User not found' };
 
-  if (profile) {
-    return NextResponse.json({ [params.userID]: profile });
-  }
-
-  return NextResponse.json({ [params.userID]: 'User not found' });
+  return NextResponse.json(profile);
 }
