@@ -1,10 +1,8 @@
-import db from '@/app/utils/firebaseConfig';
-import { collection, getFirestore } from 'firebase/firestore';
-import { getDocs } from "firebase/firestore";
 import { NextResponse } from 'next/server';
+import { collection, getDocs } from 'firebase/firestore';
+import db from '@/app/utils/firebaseConfig';
 
 export async function GET(request: Request, { params }: { params: { eventID: string } }) {
-
     const applicants: any = []
     const applicantsRef = collection(db, 'events', params.eventID, 'applicants')
     const applicantsFire = await getDocs(applicantsRef);
@@ -24,5 +22,4 @@ export async function GET(request: Request, { params }: { params: { eventID: str
     });
 
     return NextResponse.json({ applicants, participants })
-
 }
