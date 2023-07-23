@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-const getProtocolHost = () => {
+const getProtocolHost = async () => {
     const headersData = headers();
     const protocol = headersData.get('x-forwarded-proto');
     const host = headersData.get('host');

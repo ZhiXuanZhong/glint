@@ -1,7 +1,9 @@
-import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+
 import db from '@/app/utils/firebaseConfig';
+import getProtocolHost from '@/app/utils/getProtocolHost';
+import api from '@/app/utils/api';
 
 interface Location {
   userID: string;
@@ -35,9 +37,7 @@ interface FeatureCollection {
 }
 
 export async function GET(request: Request, { params }: { params: { userID: string } }) {
-  const headersData = headers();
-  const protocol = headersData.get('x-forwarded-proto');
-  const host = headersData.get('host');
+  const { protocol, host } = getProtocolHost();
 
   // 取得當前用戶追蹤清單，只加入公開的資料
   const getFollowing = async (userID: string) => {
@@ -51,16 +51,18 @@ export async function GET(request: Request, { params }: { params: { userID: stri
   };
 
   // 取得單筆profile資料
-  const getProfile = async (userID: string) => {
-    const response = await fetch(`${protocol}://${host}/api/profile/${userID}`, { next: { revalidate: 5 } });
-    return response.json();
-  };
+  // const getProfile = async (userID: string) => {
+  //   const response = await fetch(`${protocol}://${host}/api/profile/${userID}`, { next: { revalidate: 5 } });
+  //   return response.json();
+  // };
+
+  // const getProfile = api.getProfile(userID: string)
 
   // 一次取回追蹤清單的profile資料
   const getProfiles = async (arr: string[]) => {
     const profiles = await Promise.all(
       arr.map(async (userID) => {
-        const profile = await getProfile(userID);
+        const profile = api.getProfile(userID);
         return profile;
       })
     );
