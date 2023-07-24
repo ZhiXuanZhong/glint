@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import db from '@/app/utils/firebaseConfig';
-import api from '@/app/utils/api';
+import serverAPI from '@/app/utils/serverAPI';
 
 interface Location {
   userID: string;
@@ -48,7 +48,7 @@ export async function GET(request: Request, { params }: { params: { userID: stri
   const getProfiles = async (userIDs: string[]) => {
     const profiles = await Promise.all(
       userIDs.map(async (userID) => {
-        const profile = api.getProfile(userID);
+        const profile = serverAPI.getProfile(userID);
         return profile;
       })
     );
