@@ -1,11 +1,14 @@
 'use client';
-import RevokeButton from '@/components/RevokeButton/RevokeButton';
-import ConfirmButton from '@/components/ConfirmButton/ConfirmButton';
-import { Key, useEffect, useState } from 'react';
+
+import { useEffect, useState } from 'react';
+import { collection, getDocs, onSnapshot, query } from 'firebase/firestore';
 import db from '@/app/utils/firebaseConfig';
-import { collection, query, onSnapshot } from 'firebase/firestore';
-import { getDocs } from 'firebase/firestore';
-import UserInfo from '../UserInfo/UserInfo';
+
+import ConfirmButton from '@/components/ConfirmButton/ConfirmButton';
+import RevokeButton from '@/components/RevokeButton/RevokeButton';
+import UserInfo from '@/components/UserInfo/UserInfo';
+
+// 這份檔案還只有整理到import排序而已 之後要接著做帳號 等其他整理
 
 const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizerID: string }) => {
   const [regList, setRegList] = useState<RegList>();
@@ -18,7 +21,10 @@ const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizer
 
   //   取回所有報名清單
   const getRegistrations = async () => {
-    const [applicantsSnap, participantsSnap] = await Promise.all([getDocs(applicantsRef), getDocs(participantsRef)]);
+    const [applicantsSnap, participantsSnap] = await Promise.all([
+      getDocs(applicantsRef),
+      getDocs(participantsRef),
+    ]);
 
     const applicants = applicantsSnap.docs.map((doc) => {
       const user = doc.data() as Applicants;
@@ -75,7 +81,9 @@ const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizer
         if (change.type === 'removed') {
           setRegList((prev) => {
             if (prev && prev.participants) {
-              const updatedParticipants = prev.participants.filter((person) => person.id !== userID);
+              const updatedParticipants = prev.participants.filter(
+                (person) => person.id !== userID
+              );
               return { ...prev, participants: updatedParticipants };
             }
             return prev;
@@ -140,31 +148,49 @@ const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizer
         <div className="pb-3 text-xl text-moonlight-950"> 已加入活動</div>
         <div className="flex flex-wrap">
           {profiles &&
-            regList?.participants.map((participant: { name: string; level: string; id: string }, index: Key) => (
-              <div key={index} className="w-full lg:mb-3 lg:w-1/2">
-                <UserInfo imageURL={profiles[participant.id as any].avatarURL} name={participant.name} level={participant.level} licence={true} userID={participant.id}>
-                  {organizerID === userID && <RevokeButton userID={participant.id} eventID={eventID} />}
-                </UserInfo>
-              </div>
-            ))}
+            regList?.participants.map(
+              (participant: { name: string; level: string; id: string }, index: number) => (
+                <div key={index} className="w-full lg:mb-3 lg:w-1/2">
+                  <UserInfo
+                    imageURL={profiles[participant.id as any].avatarURL}
+                    name={participant.name}
+                    level={participant.level}
+                    licence={true}
+                    userID={participant.id}
+                  >
+                    {organizerID === userID && (
+                      <RevokeButton userID={participant.id} eventID={eventID} />
+                    )}
+                  </UserInfo>
+                </div>
+              )
+            )}
         </div>
       </div>
 
       <div className="border-t pb-3 pt-5 text-xl text-moonlight-950">等待清單</div>
       {profiles && (
         <div className="flex flex-wrap">
-          {regList?.applicants.map((applicant: { name: string; level: string; id: string }, index: Key) => (
-            <div key={index} className="w-full lg:mb-3 lg:w-1/2">
-              <UserInfo imageURL={profiles[applicant.id as string]?.avatarURL} name={applicant.name} level={applicant.level} licence={true} userID={applicant.id}>
-                {organizerID === userID && (
-                  <div className="flex flex-wrap gap-1">
-                    <ConfirmButton userID={applicant.id} eventID={eventID} accept />
-                    <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
-                  </div>
-                )}
-              </UserInfo>
-            </div>
-          ))}
+          {regList?.applicants.map(
+            (applicant: { name: string; level: string; id: string }, index: number) => (
+              <div key={index} className="w-full lg:mb-3 lg:w-1/2">
+                <UserInfo
+                  imageURL={profiles[applicant.id as string]?.avatarURL}
+                  name={applicant.name}
+                  level={applicant.level}
+                  licence={true}
+                  userID={applicant.id}
+                >
+                  {organizerID === userID && (
+                    <div className="flex flex-wrap gap-1">
+                      <ConfirmButton userID={applicant.id} eventID={eventID} accept />
+                      <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
+                    </div>
+                  )}
+                </UserInfo>
+              </div>
+            )
+          )}
         </div>
       )}
     </>
