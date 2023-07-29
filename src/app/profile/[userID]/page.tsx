@@ -18,6 +18,7 @@ import Image from 'next/image';
 import EventCard from '@/components/EventCard/EventCard';
 import FollowUserButton from '@/components/FollowUserButton/FollowUserButton';
 import MessageUserButton from '@/components/MessageUserButton/MessageUserButton';
+import { GoTelescopeFill } from 'react-icons/go';
 
 interface Licence {
   imageURL: string;
@@ -204,13 +205,20 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
           <div className="mb-5 w-full rounded border border-moonlight-200 p-4">
             <div className="mb-3 text-xl font-medium text-moonlight-950">未來的行程</div>
-            {futureEvents?.map((event, index) => {
-              return (
-                <div className="mb-3 rounded-sm" key={index}>
-                  <EventCard event={event} />
-                </div>
-              );
-            })}
+            {futureEvents?.length ? (
+              futureEvents.map((event, index) => {
+                return (
+                  <div className="mb-3 rounded-sm" key={index}>
+                    <EventCard event={event} />
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex flex-col items-center gap-3 py-5 text-gray-500">
+                <GoTelescopeFill className="text-7xl" />
+                <div>目前尚無未來行程</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
