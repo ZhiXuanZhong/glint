@@ -18,6 +18,7 @@ import RegistrationList from '@/components/RegistrationList/RegistrationList';
 import serverAPI from '@/app/utils/serverAPI';
 import { convertLocationCode } from '@/app/utils/convertLocationCode';
 import { convertCategoryCode } from '@/app/utils/convertCategoryCode';
+import MessageUserButton from '@/components/MessageUserButton/MessageUserButton';
 
 export default async function Page({ params }: { params: { eventID: string } }) {
   const eventInfo = (await serverAPI.getEventInfo(params.eventID)).data as Event;
@@ -42,15 +43,9 @@ export default async function Page({ params }: { params: { eventID: string } }) 
               <div className="flex flex-col">
                 <div className="mt-2 flex w-full flex-wrap justify-center gap-3">
                   <FollowUserButton userID={eventInfo.organizer} />
-                  <Link
-                    href={`/messages/${eventInfo.organizer}`}
-                    className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-center
-                    text-white hover:bg-sunrise-600 hover:transition-all md:w-24"
-                  >
-                    <button>發送訊息</button>
-                  </Link>
+                  <MessageUserButton userID={eventInfo.organizer} />
                 </div>
-                <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
+                <div className="mt-3 flex w-full min-w-[200px] flex-col rounded-sm bg-moonlight-100 p-2">
                   <div className="text-center text-3xl font-black text-moonlight-800">
                     {rating.toFixed(1)}
                   </div>
