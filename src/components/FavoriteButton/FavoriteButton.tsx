@@ -51,6 +51,8 @@ const FavoriteButton = ({ eventInfo }: { eventInfo: Event }) => {
     };
   }, [loaded]);
 
+  if (!authUser) return;
+
   return !isFavorite ? (
     <button
       className="rounded-sm border border-transparent bg-moonlight-600 px-4 py-1 text-white transition-colors hover:bg-slate-400"

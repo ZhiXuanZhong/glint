@@ -18,6 +18,7 @@ import RegistrationList from '@/components/RegistrationList/RegistrationList';
 import serverAPI from '@/app/utils/serverAPI';
 import { convertLocationCode } from '@/app/utils/convertLocationCode';
 import { convertCategoryCode } from '@/app/utils/convertCategoryCode';
+import MessageUserButton from '@/components/MessageUserButton/MessageUserButton';
 
 export default async function Page({ params }: { params: { eventID: string } }) {
   const eventInfo = (await serverAPI.getEventInfo(params.eventID)).data as Event;
@@ -29,7 +30,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
         {eventInfo.title}
       </h1>
       <div className="flex flex-col pb-20 md:flex md:flex-row">
-        <div className="md:w-2/6 md:pr-3 ">
+        <div className="md:w-2/6 md:min-w-[250px] md:pr-3">
           <div className="mb-5">
             <div className="mb-6 flex items-center">
               <MdPool className="mr-1 text-xl" />
@@ -40,18 +41,11 @@ export default async function Page({ params }: { params: { eventID: string } }) 
                 <UserInfo userID={eventInfo.organizer} size={80} />
               </div>
               <div className="flex flex-col">
-                <div className="mt-2 flex w-full flex-wrap gap-3">
+                <div className="mt-2 flex w-full flex-wrap justify-center gap-3">
                   <FollowUserButton userID={eventInfo.organizer} />
-                  <Link href={`/messages/${eventInfo.organizer}`}>
-                    <button
-                      className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-white
-                    hover:bg-sunrise-600 hover:transition-all md:w-24"
-                    >
-                      發送訊息
-                    </button>
-                  </Link>
+                  <MessageUserButton userID={eventInfo.organizer} />
                 </div>
-                <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
+                <div className="mt-3 flex w-full min-w-[200px] flex-col rounded-sm bg-moonlight-100 p-2">
                   <div className="text-center text-3xl font-black text-moonlight-800">
                     {rating.toFixed(1)}
                   </div>
