@@ -1,0 +1,17 @@
+export const diveCertifications = [
+  { value: 'AIDA 1', label: 'AIDA 1' },
+  { value: 'AIDA 2', label: 'AIDA 2' },
+  { value: 'AIDA 3', label: 'AIDA 3' },
+  { value: 'AIDA 4', label: 'AIDA 4' },
+  { value: 'AIDA Instructor', label: 'AIDA Instructor' },
+  { value: 'PADI Basic Freediver', label: 'PADI Basic Freediver' },
+  { value: 'PADI Freediver', label: 'PADI Freediver' },
+  { value: 'PADI Advanced Freediver', label: 'PADI Advanced Freediver' },
+  { value: 'PADI Master Freediver', label: 'PADI Master Freediver' },
+  { value: 'PADI Instructor', label: 'PADI Instructor' },
+  { value: 'SSI Basic Pool', label: 'SSI Basic / Pool' },
+  { value: 'SSI Level 1', label: 'SSI Level 1' },
+  { value: 'SSI Level 2', label: 'SSI Level 2' },
+  { value: 'SSI Level 3', label: 'SSI Level 3' },
+  { value: 'SSI Instructor', label: 'SSI Instructor' },
+];
