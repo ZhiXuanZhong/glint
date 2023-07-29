@@ -1,16 +1,21 @@
 'use client';
 
-import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useImmer } from 'use-immer';
-import mapboxgl from 'mapbox-gl';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import formatDate from '../utils/formatDate';
-import startEndToTimecodes from '../utils/startEndToTimecodes';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { useImmer } from 'use-immer';
+import { useAuthStore } from '@/store/authStore';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
+import DatePicker from 'react-datepicker';
+import mapboxgl from 'mapbox-gl';
+import 'react-datepicker/dist/react-datepicker.css';
+
+import formatDate from '../utils/formatDate';
+import startEndToTimecodes from '../utils/startEndToTimecodes';
+
+mapboxgl.accessToken =
+  'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
 
 // 依照日期filter新結果
 const filterFeaturesByDateRange = (data, dateRange) => {
@@ -20,7 +25,10 @@ const filterFeaturesByDateRange = (data, dateRange) => {
     const { startTime, endTime } = feature.properties;
 
     // 只要資料的startTime或是endTime任何一者在日期區間即符合條件
-    if ((startTime >= startTimestamp && startTime <= endTimestamp) || (endTime >= startTimestamp && endTime <= endTimestamp)) {
+    if (
+      (startTime >= startTimestamp && startTime <= endTimestamp) ||
+      (endTime >= startTimestamp && endTime <= endTimestamp)
+    ) {
       return true;
     }
   });
@@ -29,6 +37,9 @@ const filterFeaturesByDateRange = (data, dateRange) => {
 };
 
 const Page = () => {
+  const router = useRouter();
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef(null) as mapboxgl;
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
@@ -36,7 +47,9 @@ const Page = () => {
   const lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(lastDayOfYear);
-  const [dateRange, setDateRange] = useState<number[] | null>(startEndToTimecodes([new Date(), lastDayOfYear]));
+  const [dateRange, setDateRange] = useState<number[] | null>(
+    startEndToTimecodes([new Date(), lastDayOfYear])
+  );
 
   const originalGeoData = useRef();
   const [filteredGeo, setFilteredGeo] = useImmer(null);
@@ -47,9 +60,15 @@ const Page = () => {
   const datePickerRef = useRef(null);
   const [datePickerContainerHeight, setDatePickerContainerHeight] = useState<number>();
 
+  useEffect(() => {
+    if (!authUser) router.push('/login');
+  }, []);
+
   // 取資料的effect
   useEffect(() => {
-    fetch(`api/get-locations/${userID}`)
+    if (!authUser) return;
+
+    fetch(`api/get-locations/${authUser}`)
       .then((res) => res.json())
       .then((data) => data)
       .then((geoJSON) => {
@@ -59,7 +78,10 @@ const Page = () => {
         const updatedFeatures = {
           ...geoJSON.data,
           features: geoJSON.data.features
-            .filter((feature) => feature.properties.startTime >= startDate || feature.properties.endTime >= endDate)
+            .filter(
+              (feature) =>
+                feature.properties.startTime >= startDate || feature.properties.endTime >= endDate
+            )
             .sort((a, b) => a.properties.startTime - b.properties.startTime),
         };
         // [...events].sort((a, b) => a.startTime - b.startTime)
@@ -70,7 +92,7 @@ const Page = () => {
 
     // 高度 +2 是為了讓UI初始化比較流暢
     setDatePickerContainerHeight(datePickerRef.current.offsetHeight + 2);
-  }, []);
+  }, [authUser]);
 
   // 資料取回來後會出發filteredGeo更新，在這邊就把map source更新
   useEffect(() => {
@@ -84,7 +106,9 @@ const Page = () => {
   useEffect(() => {
     setFilteredGeo((draft) => {
       if (originalGeoData.current) {
-        const mapUpdate = originalGeoData.current.features.filter((data) => bounds?.contains(data.geometry.coordinates));
+        const mapUpdate = originalGeoData.current.features.filter((data) =>
+          bounds?.contains(data.geometry.coordinates)
+        );
         const dateUpdate = filterFeaturesByDateRange(mapUpdate, dateRange);
 
         draft.features = dateUpdate;
@@ -256,7 +280,10 @@ const Page = () => {
 
   return (
     <div className="flex h-[calc(100vh_-_5rem)] w-full">
-      <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" />
+      <link
+        rel="stylesheet"
+        href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css"
+      />
       <div className="grow" ref={mapContainer}></div>
       <div className=" h-screenoverflow-scroll absolute bottom-0 top-0 w-full bg-white md:static md:w-1/4 md:min-w-fit md:overflow-scroll">
         {/* divers' list */}
@@ -289,13 +316,24 @@ const Page = () => {
             return (
               <div key={index} className="m-2 border border-gray-50 p-3 shadow-md">
                 <div className="flex items-center gap-3 border-b py-2">
-                  <Image width={80} height={80} quality={100} src={feature.properties.avatar} alt="avatar" className="rounded-full border" />
+                  <Image
+                    width={80}
+                    height={80}
+                    quality={100}
+                    src={feature.properties.avatar}
+                    alt="avatar"
+                    className="rounded-full border"
+                  />
                   <div>
                     <Link href={`/profile/${feature.properties.userID}`}>
-                      <div className="text-xl font-medium text-moonlight-900 hover:text-moonlight-400">{feature.properties.name}</div>
+                      <div className="text-xl font-medium text-moonlight-900 hover:text-moonlight-400">
+                        {feature.properties.name}
+                      </div>
                     </Link>
                     <Link href={`/messages/${feature.properties.userID}`}>
-                      <button className="mt-1 w-16 rounded-sm border border-moonlight-200 py-1 text-sm text-moonlight-600 hover:bg-moonlight-200 hover:transition-all">發送訊息</button>
+                      <button className="mt-1 w-16 rounded-sm border border-moonlight-200 py-1 text-sm text-moonlight-600 hover:bg-moonlight-200 hover:transition-all">
+                        發送訊息
+                      </button>
                     </Link>
                   </div>
                 </div>
@@ -303,7 +341,8 @@ const Page = () => {
                   <div className="py-2">
                     <div className="text-moonlight-700">{feature.properties.eventTitle}</div>
                     <div className="text-moonlight-950">
-                      {formatDate(feature.properties.startTime)}~{formatDate(feature.properties.endTime)}
+                      {formatDate(feature.properties.startTime)}~
+                      {formatDate(feature.properties.endTime)}
                     </div>
                   </div>
                   <div className="ml-auto flex items-end">
