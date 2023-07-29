@@ -72,7 +72,7 @@ const FollowUserButton = ({ userID, setFollowCount }: FollowUserButton) => {
     };
   }, [authUser, userID]);
 
-  if (authUser === userID) return;
+  if (authUser === userID || !authUser) return;
 
   return (
     <>

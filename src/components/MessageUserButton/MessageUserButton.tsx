@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/authStore';
 const MessageUserButton = ({ userID }: { userID: string }) => {
   const [authUser] = useAuthStore((state) => [state.authUser]);
 
-  if (authUser === userID) return;
+  if (authUser === userID || !authUser) return;
 
   return (
     <Link
