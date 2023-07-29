@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -16,8 +17,11 @@ const Page = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="flex flex-col items-center py-24">
+      <div className="flex flex-col items-center pt-12">
         <EmailLogin />
+      </div>
+      <div className="pt-6 text-center text-sunrise-600 hover:text-sunrise-400">
+        <Link href={'/signup'}>馬上註冊</Link>
       </div>
     </div>
   );

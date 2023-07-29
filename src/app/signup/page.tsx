@@ -78,6 +78,7 @@ const Page = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSending(true);
 
     const formElement = e.target;
     const formData = new FormData(formElement);
