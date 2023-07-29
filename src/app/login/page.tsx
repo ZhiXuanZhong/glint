@@ -1,17 +1,32 @@
 'use client';
+import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { GoogleLogin, EmailLogin } from '@/components/Login/Login';
+import { useAuthStore } from '@/store/authStore';
+import { EmailLogin } from '@/components/Login/Login';
 
-const page = () => {
+const Page = () => {
+  const router = useRouter();
+
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+
+  useEffect(() => {
+    if (authUser) router.back();
+  }, [authUser]);
+
   return (
     <div className="container mx-auto">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center pt-12">
         <EmailLogin />
-        <hr className="my-6  max-w-sm mx-auto" />
-        <GoogleLogin />
+      </div>
+      <div className="pt-6 text-center">
+        <Link href={'/signup'} className="text-sunrise-600 hover:text-sunrise-400">
+          馬上註冊
+        </Link>
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;

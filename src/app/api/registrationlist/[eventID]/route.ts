@@ -1,28 +1,25 @@
-import db from '@/app/utils/firebaseConfig';
-import { collection, getFirestore } from 'firebase/firestore';
-import { getDocs } from "firebase/firestore";
 import { NextResponse } from 'next/server';
+import { collection, getDocs } from 'firebase/firestore';
+import db from '@/app/utils/firebaseConfig';
 
 export async function GET(request: Request, { params }: { params: { eventID: string } }) {
+  const applicantsRef = collection(db, 'events', params.eventID, 'applicants');
+  const participantsRef = collection(db, 'events', params.eventID, 'participants');
 
-    const applicants: any = []
-    const applicantsRef = collection(db, 'events', params.eventID, 'applicants')
-    const applicantsFire = await getDocs(applicantsRef);
-    applicantsFire.forEach((doc) => {
-        const user = doc.data()
-        user.id = doc.id
-        applicants.push(user)
-    });
+  const [applicantsSnap, participantsSnap] = await Promise.all([
+    getDocs(applicantsRef),
+    getDocs(participantsRef),
+  ]);
 
-    const participants: any = []
-    const participantsRef = collection(db, 'events', params.eventID, 'participants')
-    const participantsFire = await getDocs(participantsRef);
-    participantsFire.forEach((doc) => {
-        const user = doc.data()
-        user.id = doc.id
-        participants.push(user)
-    });
+  const applicants: Applicants[] = applicantsSnap.docs.map((doc) => ({
+    ...(doc.data() as Applicants),
+    id: doc.id,
+  }));
 
-    return NextResponse.json({ applicants, participants })
+  const participants: Participants[] = participantsSnap.docs.map((doc) => ({
+    ...(doc.data() as Participants),
+    id: doc.id,
+  }));
 
+  return NextResponse.json({ applicants, participants });
 }

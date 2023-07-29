@@ -1,8 +1,8 @@
 declare interface QueryParams {
     locations: string | null;
     category: string | null;
-    startTime: number;
-    endTime: number;
+    startTime?: number;
+    endTime?: number;
     organizerType: string | null;
     [index: string]: string | number | null;
 }

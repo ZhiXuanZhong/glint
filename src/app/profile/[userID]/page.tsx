@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
 import Link from 'next/link';
 import db from '@/app/utils/firebaseConfig';
-import { DocumentData, QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, getCountFromServer, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import formatDate from '@/app/utils/formatDate';
 import Image from 'next/image';
 import EventCard from '@/components/EventCard/EventCard';
@@ -46,7 +46,8 @@ const Page = ({ params }: { params: { userID: string } }) => {
     const queryEvents = query(eventsRef, where('organizer', '==', userID), where('endTime', '>=', Date.now()));
     const snapshot = await getDocs(queryEvents);
     snapshot.forEach((event) => {
-      events.push(event.data() as Event);
+      const eventWithID = { ...event.data(), id: event.id };
+      events.push(eventWithID as Event);
     });
 
     const sortedEvents = events.sort((a, b) => a.startTime - b.startTime);
@@ -56,14 +57,18 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
   useEffect(() => {
     const initData = async () => {
-      const profileRes = await getProfile(params.userID);
-      setProfile({ ...profileRes[params.userID], id: params.userID });
+      const [profileRes, ratingRes, followersCountRes, followingsCountRes] = await Promise.all([
+        getProfile(params.userID),
+        getRating(params.userID),
+        getCountFromServer(followersRef),
+        getCountFromServer(followingsRef),
+      ]);
 
-      const ratingRes = await getRating(params.userID);
+      setProfile({ ...profileRes[params.userID], id: params.userID });
       setRating(ratingRes);
 
-      const followersCount = (await getCountFromServer(followersRef)).data().count;
-      const followingsCount = (await getCountFromServer(followingsRef)).data().count;
+      const followersCount = followersCountRes.data().count;
+      const followingsCount = followingsCountRes.data().count;
       setFollowCount({ followersCount, followingsCount });
 
       const futureEventsResponse = await getFutureEvents(params.userID);
@@ -79,21 +84,29 @@ const Page = ({ params }: { params: { userID: string } }) => {
     const followingsRef = collection(db, 'users', params.userID, 'followings');
 
     initData();
+
+    return () => {
+      licenceUnsub();
+    };
   }, []);
 
   return (
     <div className="flex flex-col gap-4 p-10 md:mx-auto md:max-w-3xl lg:max-w-5xl lg:flex-row">
       <div className="flex w-full flex-col lg:w-2/6">
         <div>
-          <div className="mx-auto flex w-full flex-col items-center rounded-sm  p-4 shadow-md shadow-moonlight-100">
-            {profile?.id && <UserInfo imageURL={profile?.avatarURL} name={profile?.username} level={profile?.level} licence={profile?.hasLicence} size={70} userID={profile.id} />}
-            <div className="flex flex-col">
+          <div className="mx-auto flex min-h-[200px] w-full flex-col items-center  rounded-sm p-4 shadow-md shadow-moonlight-100">
+            <div className="min-h-[76px]">
+              {profile?.id && <UserInfo imageURL={profile?.avatarURL} name={profile?.username} level={profile?.level} licence={profile?.hasLicence} size={70} userID={profile.id} />}
+            </div>
+            <div className="flex min-h-[126px] flex-col">
               <div className="mt-2 flex w-full flex-wrap gap-3">
-                <FollowUserButton />
                 {profile && (
-                  <Link href={`/messages/${profile.id}`}>
-                    <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
-                  </Link>
+                  <>
+                    <FollowUserButton userID={params.userID} setFollowCount={setFollowCount} />
+                    <Link href={`/messages/${profile.id}`}>
+                      <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
+                    </Link>
+                  </>
                 )}
               </div>
               {rating && (
@@ -107,12 +120,12 @@ const Page = ({ params }: { params: { userID: string } }) => {
         </div>
 
         <div className="flex items-center justify-center gap-3 rounded-sm p-4 shadow-md shadow-moonlight-100">
-          <div className="flex flex-col items-center">
+          <div className="flex min-h-[44px] flex-col items-center">
             <div className="w-20 text-center text-sm text-moonlight-600">粉絲人數</div>
             <div className="text-moonlight-900">{followCount?.followersCount}</div>
           </div>
 
-          <div className="flex flex-col items-center">
+          <div className="flex min-h-[44px] flex-col items-center">
             <div className="w-20 text-center text-sm text-moonlight-600">關注中</div>
             <div className="text-moonlight-900">{followCount?.followingsCount}</div>
           </div>
@@ -138,26 +151,25 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
             <div className="flex">
               <div className="w-1/2">
-                <div className="mb-2">
+                <div className="mb-2 min-h-[48px]">
                   <div className="mb-1 text-sm text-moonlight-600">等級</div>
                   <div>{profile?.level}</div>
                 </div>
 
-                <div className="mb-2">
+                <div className="mb-2 min-h-[48px]">
                   <div className="mb-1 text-sm text-moonlight-600">最近更新日期</div>
                   <div>{formatDate(licence?.uploadTime)}</div>
                 </div>
               </div>
 
-              <div className="w-1/2">
+              <div className="min-h-[220px] w-1/2">
                 <div className="mb-1 w-full text-sm text-moonlight-600">執照影像</div>
-
-                {licence && <Image width={0} height={0} sizes="100vh" src={licence.imageURL} alt={'licence'} className="h-auto w-full" />}
+                {licence && <Image width={700} height={400} src={licence.imageURL} alt={'licence'} priority style={{ objectFit: 'contain', maxWidth: '100%' }} />}
               </div>
             </div>
           </div>
 
-          <div className="mb-5 rounded border border-moonlight-200 p-4">
+          <div className="mb-5 w-full rounded border border-moonlight-200 p-4">
             <div className="mb-3 text-xl font-medium text-moonlight-950">未來的行程</div>
             {futureEvents?.map((event, index) => {
               return (

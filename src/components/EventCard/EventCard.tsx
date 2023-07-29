@@ -29,20 +29,20 @@ const EventCard = ({
   return (
     <div className="flex flex-col overflow-hidden rounded-md border shadow-md lg:h-64 lg:flex-row">
       {/* left pic */}
-      <div className="h-52 lg:h-auto lg:w-[550px]">
-        <Image width={0} height={0} sizes="100vw" src={event.mainImage} alt={'event picture'} className="h-full w-full  object-cover " />
+      <div className="h-52 lg:h-auto lg:w-2/5">
+        <Image width={400} height={300} quality={90} src={event.mainImage} alt={'event picture'} style={{ height: '100%', width: '100%', objectFit: 'cover' }} />
       </div>
 
       {/* right col */}
-      <div className="w-full border p-3">
+      <div className="border p-3 lg:w-3/5">
         {/* upper-right */}
-        <div className="flex flex-wrap justify-between">
-          <div className="mb-2">
-            <h1 className=" mb-1 text-lg font-semibold text-moonlight-900">{event.title}</h1>
+        <div className="flex flex-wrap justify-between md:flex-nowrap">
+          <div className="mb-2 lg:max-w-[400px]">
+            <h1 className="mb-1 line-clamp-1 text-lg font-semibold text-moonlight-900">{event.title}</h1>
             <div className="text-moonlight-800">
               {formatDate(event.startTime)} - {formatDate(event.endTime)}
             </div>
-            <p className=" text-moonlight-800">{event.levelSuggection}</p>
+            <p className="line-clamp-1 text-moonlight-800">{event.levelSuggection}</p>
             <div className="mt-2 flex gap-3">
               <div className="my-1 w-fit rounded-sm bg-moonlight-500 px-3 py-1 text-sm font-light text-white">{convertCategoryCode(event.category)}</div>
               {event.locations?.map((location: string, index: number) => (

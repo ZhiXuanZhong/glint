@@ -1,7 +1,7 @@
-import db from '@/app/utils/firebaseConfig';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
-import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import db from '@/app/utils/firebaseConfig';
+import serverAPI from '@/app/utils/serverAPI';
 
 interface Location {
   userID: string;
@@ -35,15 +35,9 @@ interface FeatureCollection {
 }
 
 export async function GET(request: Request, { params }: { params: { userID: string } }) {
-  const headersData = headers();
-  const protocol = headersData.get('x-forwarded-proto');
-  const host = headersData.get('host');
-
-  // 取得當前用戶追蹤清單，只加入公開的資料
   const getFollowing = async (userID: string) => {
     const list: string[] = [];
     const followingRef = collection(db, 'users', userID, 'followings');
-    const followingQuery = query(followingRef, where('isLocationPublic', '==', 'true'));
 
     const followingSnap = await getDocs(followingRef);
     followingSnap.forEach((user) => list.push(user.id));
@@ -51,28 +45,22 @@ export async function GET(request: Request, { params }: { params: { userID: stri
     return list;
   };
 
-  // 取得單筆profile資料
-  const getProfile = async (userID: string) => {
-    const response = await fetch(`${protocol}://${host}/api/profile/${userID}`, { next: { revalidate: 5 } });
-    return response.json();
-  };
-
-  // 一次取回追蹤清單的profile資料
-  const getProfiles = async (arr: string[]) => {
+  const getProfiles = async (userIDs: string[]) => {
     const profiles = await Promise.all(
-      arr.map(async (userID) => {
-        const profile = await getProfile(userID);
+      userIDs.map(async (userID) => {
+        const profile = serverAPI.getProfile(userID);
         return profile;
       })
     );
+
     return Object.assign({}, ...profiles);
   };
 
   const getLocations = async (userID: string) => {
     const locationRef = doc(db, 'userLocations', userID);
-    const promission = (await getDoc(locationRef)).data() as { [key: string]: boolean };
+    const permission = (await getDoc(locationRef)).data() as { [key: string]: boolean };
 
-    if (!promission.isLocationPublic) return;
+    if (!permission.isLocationPublic) return;
 
     const locationsList: Location[] = [];
     const userLocationsRef = collection(db, 'userLocations', userID, 'locations');
@@ -92,6 +80,7 @@ export async function GET(request: Request, { params }: { params: { userID: stri
     const promises = userIDs.map((userID) => getLocations(userID));
     const results = await Promise.all(promises);
     const allLocations = results.flat().filter((locations) => locations !== undefined);
+
     return allLocations;
   };
 

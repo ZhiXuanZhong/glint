@@ -1,8 +1,11 @@
 'use client';
+
 import Image from 'next/image';
-import classNames from '@/app/utils/classNames';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+
+import clientAPI from '@/app/utils/clientAPI';
+import classNames from '@/app/utils/classNames';
 
 interface SizedInfo {
   userID: string;
@@ -15,37 +18,40 @@ const UserInfo = ({ userID, children, size = 60 }: SizedInfo) => {
 
   useEffect(() => {
     const initData = async () => {
-      const profileData = await fetch(`/api/profile/${userID}`).then((res) => res.json());
-      const profile = await profileData[userID];
+      const profileData = await clientAPI.getProfile(userID);
+      const profile = profileData[userID];
       setProfile(profile);
     };
 
     initData();
-  }, []);
+  }, [userID]);
 
   return (
     <div className="flex w-fit flex-wrap items-start justify-center lg:flex lg:flex-wrap lg:items-start">
       {profile && (
-        <Image
-          quality={100}
-          width={size}
-          height={size}
-          src={profile.avatarURL}
-          alt={'avatar'}
-          style={{ borderRadius: '999px', objectFit: 'cover' }}
-          className={classNames('aspect-[1/1] border border-white shadow-sm', size === 60 ? 'mt-2' : null)}
-        />
-      )}
+        <>
+          <Image
+            quality={100}
+            width={size}
+            height={size}
+            src={profile.avatarURL}
+            alt={'avatar'}
+            style={{ borderRadius: '999px', objectFit: 'cover' }}
+            className={classNames(
+              'aspect-[1/1] border border-gray-300 shadow-sm',
+              size === 60 ? 'mt-2' : null
+            )}
+          />
 
-      {profile && (
-        <div className="ml-2">
-          <div className="font-semibold text-gray-950 hover:text-moonlight-700">
-            <Link href={`/profile/${userID}`}>{profile.username}</Link>
+          <div className="ml-2">
+            <div className="font-semibold text-gray-950 hover:text-moonlight-700">
+              <Link href={`/profile/${userID}`}>{profile.username}</Link>
+            </div>
+            <div className="font-thin text-gray-700">{profile.level}</div>
+            <div className="text-gray-700">{profile.hasLicence ? '執照已上傳' : '執照未上傳'}</div>
+            <div className="mt-1">{children}</div>
           </div>
-          <div className="font-thin text-gray-700">{profile.level}</div>
-          <div className="text-gray-700">{profile.hasLicence ? '執照已上傳' : '執照未上傳'}</div>
-          <div className="mt-1">{children}</div>
-        </div>
+        </>
       )}
     </div>
   );

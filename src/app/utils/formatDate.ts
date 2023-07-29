@@ -5,7 +5,7 @@ const formatDate = (timestamp?: number) => {
     return formattedDate;
 };
 
-export const timeToHTMLInput = (timestamp: number): string => {
+export const timeToHyphenYMD = (timestamp: number): string => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');

@@ -10,8 +10,14 @@ import { addDoc, collection } from 'firebase/firestore';
 import { useProfilesStore } from '@/store/messageUserProfilesStore';
 import Image from 'next/image';
 import { FaMicrophone, FaRegImage, FaVideo } from 'react-icons/fa';
+import { PiChatsThin } from 'react-icons/pi';
+import { useAuthStore } from '@/store/authStore';
+import classNames from '@/app/utils/classNames';
 
 const Messages = ({ messages, currentConversation }: { messages: Message[]; currentConversation: string }) => {
+  const [authUser] = useAuthStore((state) => [state.authUser]);
+  const [authProfile] = useAuthStore((state) => [state.authProfile]);
+
   const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const username = 'Admin';
   const inputImageRef = useRef<HTMLInputElement>(null);
@@ -56,8 +62,8 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
     const messagesDetailsRef = collection(db, 'messages', currentConversation, 'details');
 
     const message = {
-      userID: userID,
-      username: username,
+      userID: authUser,
+      username: authProfile.username,
       timestamp: Date.now(),
       type,
       data,
@@ -72,7 +78,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex items-center justify-between border-b bg-white px-5 shadow-sm ">
+      <div className="flex min-h-[80px] items-center justify-between border-b bg-white px-5 shadow-sm">
         {profiles
           .filter((profile) => profile.conversationID === currentConversation)
           .map((profile, index) => {
@@ -84,9 +90,9 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
             );
           })}
         <div
-          className="m-1 flex cursor-pointer items-center justify-center gap-2 rounded border
-          border-transparent bg-sunrise-400 px-5 py-2 font-bold text-white transition-all 
-          hover:border hover:border-sunrise-500 hover:bg-white hover:text-sunrise-500 hover:shadow-md
+          className="m-1 ml-auto flex cursor-pointer items-center justify-center gap-2 rounded
+          border border-transparent bg-sunrise-400 px-5 py-2 font-bold text-white 
+          transition-all hover:border hover:border-sunrise-500 hover:bg-white hover:text-sunrise-500 hover:shadow-md
           "
           onClick={toggleStreaming}
         >
@@ -95,24 +101,29 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
         </div>
       </div>
       {isStreaming && <VideoChat toggleStreaming={toggleStreaming} />}
-      <div className="mt-auto overflow-auto">
-        {messages?.map((message, index) => (
-          <MessageBubble key={index} message={message} />
-        ))}
+      <div className={classNames('mt-auto overflow-auto', messages.length ? null : 'mb-auto')}>
+        {messages.length ? (
+          messages.map((message, index) => <MessageBubble key={index} message={message} authUser={authUser} />)
+        ) : (
+          <div className="flex w-full flex-col items-center justify-center">
+            <PiChatsThin className="text-9xl text-moonlight-800 opacity-50" />
+            <div className="select-none text-xl font-medium text-moonlight-900 opacity-60">說聲Hello，開啟旅程吧！</div>
+          </div>
+        )}
         <div ref={dummyRef}></div>
       </div>
       {/* 文字外的媒體呈現區塊 */}
       {audioStream && <AudioMessage stream={audioStream} sendMessage={sendMessage} />}
       {inputImage && <ImageMessage inputImage={inputImage} setInputImage={setInputImage} sendMessage={sendMessage} />}
       {/* 聊天室功能UI */}
-      <div className="flex h-36 w-full items-center px-4">
+      <div className="mb-14 flex h-fit w-full items-center px-4 md:mb-0">
         <form
-          className="flex grow items-center"
+          className="flex grow flex-wrap items-center"
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <input className="grow rounded-full border border-slate-300 py-1 pl-3 pr-3 shadow-sm focus:outline-none" type="text" placeholder="輸入訊息..." ref={inputTextRef} />
+          <input className="min-w grow rounded-full border border-slate-300 py-1 pl-3 pr-3 shadow-sm focus:outline-none" type="text" placeholder="輸入訊息..." ref={inputTextRef} />
 
           <div className="flex px-2">
             <div className=" cursor-pointer rounded-md p-3 text-2xl hover:bg-moonlight-300" onClick={getMicrophonePermission}>
@@ -129,7 +140,7 @@ const Messages = ({ messages, currentConversation }: { messages: Message[]; curr
           </div>
 
           <button
-            className="rounded bg-gray-600 px-10 py-2 font-bold text-white"
+            className="grow rounded bg-gray-600 px-10 py-2 font-bold text-white lg:max-w-[120px]"
             onClick={() => {
               if (inputTextRef.current && inputTextRef.current.value !== '') {
                 sendMessage('text', inputTextRef.current?.value);
