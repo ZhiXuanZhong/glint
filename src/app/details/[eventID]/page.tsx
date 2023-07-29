@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: { eventID: string } }) 
         {eventInfo.title}
       </h1>
       <div className="flex flex-col pb-20 md:flex md:flex-row">
-        <div className="md:w-2/6 md:pr-3 ">
+        <div className="md:w-2/6 md:min-w-[250px] md:pr-3">
           <div className="mb-5">
             <div className="mb-6 flex items-center">
               <MdPool className="mr-1 text-xl" />
@@ -40,15 +40,14 @@ export default async function Page({ params }: { params: { eventID: string } }) 
                 <UserInfo userID={eventInfo.organizer} size={80} />
               </div>
               <div className="flex flex-col">
-                <div className="mt-2 flex w-full flex-wrap gap-3">
+                <div className="mt-2 flex w-full flex-wrap justify-center gap-3">
                   <FollowUserButton userID={eventInfo.organizer} />
-                  <Link href={`/messages/${eventInfo.organizer}`}>
-                    <button
-                      className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-white
-                    hover:bg-sunrise-600 hover:transition-all md:w-24"
-                    >
-                      發送訊息
-                    </button>
+                  <Link
+                    href={`/messages/${eventInfo.organizer}`}
+                    className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-center
+                    text-white hover:bg-sunrise-600 hover:transition-all md:w-24"
+                  >
+                    <button>發送訊息</button>
                   </Link>
                 </div>
                 <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
