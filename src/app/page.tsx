@@ -7,7 +7,7 @@ export default function Home() {
       <LandingBackground />
       <div className="relative flex h-[calc(100vh_-_5rem)] w-screen flex-col justify-end">
         <div className="relative bottom-1/4 mx-auto w-2/4 rounded-sm border border-moonlight-50 bg-white px-3 py-1 drop-shadow-xl">
-          <SearchEvents locations="NEC" category="divingTravel" organizerType="instructor" />
+          <SearchEvents locations="all" category="all" organizerType="all" />
         </div>
       </div>
     </main>

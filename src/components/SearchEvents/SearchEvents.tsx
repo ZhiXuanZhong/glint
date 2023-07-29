@@ -13,13 +13,17 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
   const defaultStartDate = new Date();
   const lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
 
-  const defaultLocations = locations ? locations : 'NEC';
-  const defaultCategory = category ? category : 'divingTravel';
-  const defaultOrganizerType = organizerType ? organizerType : 'instructor';
+  const defaultLocations = locations ? locations : 'all';
+  const defaultCategory = category ? category : 'all';
+  const defaultOrganizerType = organizerType ? organizerType : 'all';
 
-  const [startDate, setStartDate] = useState<Date>(startTime ? new Date(startTime) : defaultStartDate);
+  const [startDate, setStartDate] = useState<Date>(
+    startTime ? new Date(startTime) : defaultStartDate
+  );
   const [endDate, setEndDate] = useState(endTime ? new Date(endTime) : lastDayOfYear);
-  const [dateRange, setDateRange] = useState<number[]>(startEndToTimecodes([new Date(), lastDayOfYear]));
+  const [dateRange, setDateRange] = useState<number[]>(
+    startEndToTimecodes([new Date(), lastDayOfYear])
+  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -60,6 +64,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
                 name="location"
                 className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none"
               >
+                <option value="all">不限</option>
                 <option value="NEC">東北角</option>
                 <option value="XL">小琉球</option>
                 <option value="KT">墾丁</option>
@@ -68,7 +73,11 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
                 <option value="LY">蘭嶼</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <svg
+                  className="h-4 w-4 fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                 </svg>
               </div>
@@ -83,6 +92,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
                 name="category"
                 className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none"
               >
+                <option value="all">不限</option>
                 <option value="divingTravel">潛旅</option>
                 <option value="training">訓練</option>
                 <option value="certificationTraining">證照課程</option>
@@ -90,7 +100,11 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
                 <option value="instructorWanted">找教練</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <svg
+                  className="h-4 w-4 fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                 </svg>
               </div>
@@ -119,11 +133,16 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
                 name="organizerType"
                 className="block w-full appearance-none rounded border border-gray-200 bg-gray-100 px-4 py-3 pr-8 leading-tight text-gray-700 focus:outline-none"
               >
+                <option value="all">不限</option>
                 <option value="instructor">教練</option>
                 <option value="diver">一般潛水員</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <svg
+                  className="h-4 w-4 fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                 </svg>
               </div>
@@ -131,7 +150,10 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
           </div>
 
           <div className="mb-6 flex w-full grow items-end px-3 md:mb-0 md:w-fit">
-            <button className="w-full rounded bg-sunrise-500 px-6 py-3 font-bold text-white hover:bg-sunrise-400" type="submit">
+            <button
+              className="w-full rounded bg-sunrise-500 px-6 py-3 font-bold text-white hover:bg-sunrise-400"
+              type="submit"
+            >
               GO
             </button>
           </div>
