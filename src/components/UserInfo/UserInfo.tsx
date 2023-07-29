@@ -38,7 +38,7 @@ const UserInfo = ({ userID, children, size = 60 }: SizedInfo) => {
             alt={'avatar'}
             style={{ borderRadius: '999px', objectFit: 'cover' }}
             className={classNames(
-              'aspect-[1/1] border border-white shadow-sm',
+              'aspect-[1/1] border border-gray-300 shadow-sm',
               size === 60 ? 'mt-2' : null
             )}
           />

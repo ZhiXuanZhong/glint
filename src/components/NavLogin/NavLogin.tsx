@@ -55,8 +55,7 @@ const NavLogin = () => {
               height="50"
               src={authProfile?.avatarURL}
               alt="logo"
-              style={{ objectFit: 'contain' }}
-              className="rounded-full border border-white"
+              className="h-[50px] w-[50px] rounded-full border border-gray-300 object-cover"
             />
             <div className="mx-2 line-clamp-1">{authProfile?.username}</div>
             <svg
