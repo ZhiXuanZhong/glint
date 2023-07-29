@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 import { getAuth, signOut } from 'firebase/auth';
@@ -13,6 +14,7 @@ import { ImExit } from 'react-icons/im';
 import ProfileButton from '../ProfileButton/ProfileButton';
 
 const NavLogin = () => {
+  const router = useRouter();
   const [loaded, setLoaded] = useState(false);
   const [open, setOpen] = useState(false);
   const [authUser, updateAuthUser] = useAuthStore((state) => [
@@ -32,9 +34,12 @@ const NavLogin = () => {
         // Sign-out successful.
         updateAuthUser('');
         updateAuthProfile(null);
+        router.replace('/');
       })
       .catch((error) => {
-        // An error happened.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
       });
   };
 
