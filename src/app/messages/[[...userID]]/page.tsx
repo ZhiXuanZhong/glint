@@ -140,7 +140,13 @@ const Page = ({ params }: { params: { userID: string } }) => {
                 setCurrentConversation(data.conversationID);
               }}
             >
-              <ConversationCard data={data} authUser={authUser} messagesChunk={messagesChunk} />
+              <ConversationCard
+                data={data}
+                authUser={authUser}
+                messagesChunk={messagesChunk
+                  .filter((message) => message.conversationID === data.conversationID)
+                  .slice(-1)}
+              />
             </div>
           ))}
         </div>
