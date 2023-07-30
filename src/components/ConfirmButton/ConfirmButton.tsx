@@ -1,6 +1,6 @@
 'use client';
 import db from '@/app/utils/firebaseConfig';
-import { doc, deleteDoc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, deleteDoc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 
 const ConfirmButton = ({
   userID,
@@ -19,10 +19,18 @@ const ConfirmButton = ({
     await deleteDoc(userRef);
     await setDoc(participantsRef, { ...userData, approvedTime: serverTimestamp() });
 
-    const userEventsRef = doc(db, 'users', userID, 'events', eventID);
-    await setDoc(userEventsRef, {
-      type: 'joined',
-    });
+    const userEventRef = doc(db, 'users', userID, 'events', eventID);
+    const userEventSnap = await getDoc(userEventRef);
+
+    if (userEventSnap.exists()) {
+      updateDoc(userEventRef, {
+        type: 'joined',
+      });
+    } else {
+      await setDoc(userEventRef, {
+        type: 'joined',
+      });
+    }
   };
 
   const handleReject = async () => {

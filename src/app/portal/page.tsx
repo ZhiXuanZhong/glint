@@ -29,10 +29,11 @@ const Page = () => {
 
   const [ongoingEvents, upcomingEvents, endedEvents, favoriteEvents] = [
     userEvents?.filter(
-      (event) => event.detail.startTime <= Date.now() && event.detail.endTime > Date.now()
+      (event) =>
+        event.type && event.detail.startTime <= Date.now() && event.detail.endTime > Date.now()
     ),
-    userEvents?.filter((event) => event.detail.startTime >= Date.now()),
-    userEvents?.filter((event) => event.detail.endTime <= Date.now()),
+    userEvents?.filter((event) => event.type && event.detail.startTime >= Date.now()),
+    userEvents?.filter((event) => event.type && event.detail.endTime <= Date.now()),
     userEvents?.filter((event) => event.isFavorite),
   ];
 
@@ -69,8 +70,8 @@ const Page = () => {
         detail: await clientAPI.getEvent(event.id!),
       }));
       const eventWithDetail = await Promise.all(eventsDetail);
-      const sortedEvents = eventWithDetail.sort((a, b) => b.detail.startTime - a.detail.startTime);
-      setUserEvents(sortedEvents);
+      const updatedEvents = eventWithDetail.sort((a, b) => b.detail.startTime - a.detail.startTime);
+      setUserEvents(updatedEvents);
       console.log(eventWithDetail);
     };
 
