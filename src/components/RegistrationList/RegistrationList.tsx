@@ -138,7 +138,7 @@ const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizer
                 (participant: { name: string; level: string; id: string }, index: number) => (
                   <div key={index} className="w-full lg:mb-3 lg:w-1/2">
                     <UserInfo userID={participant.id}>
-                      {organizerID === authUser && (
+                      {organizerID === authUser && participant.id !== authUser && (
                         <RevokeButton userID={participant.id} eventID={eventID} />
                       )}
                     </UserInfo>
