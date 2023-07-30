@@ -19,33 +19,22 @@ interface UserEvent {
   status: string;
   type: string;
   id: string;
+  detail: Event;
 }
 
 const Page = () => {
   const router = useRouter();
   const [authUser] = useAuthStore((state) => [state.authUser]);
   const [userEvents, setUserEvents] = useState<UserEvent[] | null>(null);
-  const [eventsDetail, setEventsDetail] = useState<Event[] | null>(null);
 
   const [ongoingEvents, upcomingEvents, endedEvents, favoriteEvents] = [
-    userEvents?.filter((event) => event.startTime <= Date.now() && event.endTime > Date.now()),
-    userEvents?.filter((event) => event.startTime >= Date.now()),
-    userEvents?.filter((event) => event.endTime <= Date.now()),
+    userEvents?.filter(
+      (event) => event.detail.startTime <= Date.now() && event.detail.endTime > Date.now()
+    ),
+    userEvents?.filter((event) => event.detail.startTime >= Date.now()),
+    userEvents?.filter((event) => event.detail.endTime <= Date.now()),
     userEvents?.filter((event) => event.isFavorite),
   ];
-
-  const getEventsDetail = async (userEvents: UserEvent[]) => {
-    const eventsDetailPromises = userEvents.map((event) => clientAPI.getEvent(event.id!));
-
-    const eventsDetail = await Promise.all(eventsDetailPromises);
-
-    const eventsDetailObject = eventsDetail.reduce((acc, eventDetail) => {
-      acc[eventDetail.id] = eventDetail;
-      return acc;
-    }, {} as { [key: string]: Event });
-
-    return eventsDetailObject;
-  };
 
   useEffect(() => {
     if (!authUser) router.push('/login');
@@ -73,19 +62,22 @@ const Page = () => {
       return events;
     };
 
-    const fetchData = async () => {
+    const initData = async () => {
       const list = await getEventList();
-      const eventsDetail = await getEventsDetail(list);
-      return { list, eventsDetail };
+      const eventsDetail = list.map(async (event) => ({
+        ...event,
+        detail: await clientAPI.getEvent(event.id!),
+      }));
+      const eventWithDetail = await Promise.all(eventsDetail);
+      const sortedEvents = eventWithDetail.sort((a, b) => b.detail.startTime - a.detail.startTime);
+      setUserEvents(sortedEvents);
+      console.log(eventWithDetail);
     };
 
-    fetchData().then(({ list, eventsDetail }) => {
-      setUserEvents(list);
-      setEventsDetail(eventsDetail);
-    });
+    initData();
   }, [authUser]);
 
-  if (!(userEvents && eventsDetail)) return;
+  if (!userEvents) return;
 
   return (
     <div className="pt-10">
@@ -96,13 +88,7 @@ const Page = () => {
               <h2 className="mb-2 text-lg font-medium">進行中的活動</h2>
               {ongoingEvents?.length ? (
                 ongoingEvents.map((event, index) => {
-                  return (
-                    <EventCard
-                      key={index}
-                      event={eventsDetail[event.id as keyof typeof eventsDetail]}
-                      portal
-                    />
-                  );
+                  return <EventCard key={index} event={event.detail} portal />;
                 })
               ) : (
                 <div className="text-gray-700">目前尚無活動</div>
@@ -112,13 +98,7 @@ const Page = () => {
               <h2 className="mb-2 text-lg font-medium">即將展開</h2>
               {upcomingEvents?.length ? (
                 upcomingEvents.map((event, index) => {
-                  return (
-                    <EventCard
-                      key={index}
-                      event={eventsDetail[event.id as keyof typeof eventsDetail]}
-                      portal
-                    />
-                  );
+                  return <EventCard key={index} event={event.detail} portal />;
                 })
               ) : (
                 <div className="text-gray-700">目前尚無活動</div>
@@ -128,13 +108,7 @@ const Page = () => {
               <h2 className="mb-2 text-lg font-medium">已結束</h2>
               {endedEvents?.length ? (
                 endedEvents.map((event, index) => {
-                  return (
-                    <EventCard
-                      key={index}
-                      event={eventsDetail[event.id as keyof typeof eventsDetail]}
-                      portal
-                    />
-                  );
+                  return <EventCard key={index} event={event.detail} portal />;
                 })
               ) : (
                 <div className="text-gray-700">目前尚無活動</div>
@@ -148,13 +122,7 @@ const Page = () => {
               <h2 className="mb-2 text-lg font-medium">已蒐藏的活動</h2>
               {favoriteEvents?.length ? (
                 favoriteEvents.map((event, index) => {
-                  return (
-                    <EventCard
-                      key={index}
-                      event={eventsDetail[event.id as keyof typeof eventsDetail]}
-                      portal
-                    />
-                  );
+                  return <EventCard key={index} event={event.detail} portal />;
                 })
               ) : (
                 <div className="text-gray-700">目前尚無活動</div>

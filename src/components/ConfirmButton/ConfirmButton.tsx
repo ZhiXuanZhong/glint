@@ -18,6 +18,11 @@ const ConfirmButton = ({
     const userData = (await getDoc(userRef)).data();
     await deleteDoc(userRef);
     await setDoc(participantsRef, { ...userData, approvedTime: serverTimestamp() });
+
+    const userEventsRef = doc(db, 'users', userID, 'events', eventID);
+    await setDoc(userEventsRef, {
+      type: 'joined',
+    });
   };
 
   const handleReject = async () => {
