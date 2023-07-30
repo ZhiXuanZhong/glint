@@ -56,8 +56,8 @@ const MessageUserButton = ({ userID }: { userID: string }) => {
 
   return (
     <div
-      className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-center
-    text-white hover:bg-sunrise-600 hover:transition-all md:w-24"
+      className="w-full cursor-pointer rounded-sm border border-transparent bg-blue-400 py-1
+    text-center text-white hover:bg-sunrise-600 hover:transition-all md:w-24"
     >
       <button onClick={handleClick}>發送訊息</button>
     </div>
