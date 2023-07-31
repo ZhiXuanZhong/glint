@@ -92,6 +92,9 @@ const Page = () => {
 
       await setDoc(defaultParticipantsRef, defaultParticipant);
 
+      const userEventRef = doc(db, 'users', authUser, 'events', newEventRef.id);
+      await setDoc(userEventRef, { type: 'joined', isFavorite: true });
+
       router.replace(`/details/${newEventRef.id}`);
     } catch (error) {
       console.log(error);
