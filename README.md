@@ -1,34 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Glint
+[Glint](https://glintme.vercel.app) Glint is a platform that helps divers find the ideal diving activities, offering various search options based on their skill level, departure time, and destination. Additionally, Glint ensures safety and satisfaction through an interactive messaging module.
 
-First, run the development server:
+## About Glint
+- Developed with Next.js 13.4 App Router and TypeScript, deployed on Vercel.
+- Built API endpoints using Next.js Route Handlers.
+- Boosted loading speed with React Server Components.
+- Enhanced search interactivity by filtering data via map container provided by Mapbox GL JS.
+- Enabled video chat in the message module by utilizing 100ms SDK.
+- Utilized the MediaStream Recording API to enable sending voice messages.
+- Implemented custom component design using Tailwind CSS.
+- Implemented RWD with breakpoints for mobile and desktop devices.
+- Managed global state with Zustand.
+- Leveraged Firebase Firestore as the database.
+- Enabled real-time messaging with Firebase Firestore onSnapshot.
+- Implemented secure login and signup with Firebase Authentication.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Built with
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)	![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Base**
+- Next.js
+- Zustand
+- Firebase
+- Tailwind
+- ESLint
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Libraries**
+- Mapbox GL JS
+- 100ms SDK
+- react-datepicker
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<!-- ### Future Features -->
+### Contact
+  <a href="https://www.linkedin.com/in/zhixuan-zhong/" text-decoration="none">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="mailto:zhixuandev@gmail.com">
+    <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
