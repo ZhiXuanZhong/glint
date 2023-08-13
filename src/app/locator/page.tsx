@@ -14,17 +14,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import formatDate from '../utils/formatDate';
 import startEndToTimecodes from '../utils/startEndToTimecodes';
 
-mapboxgl.accessToken =
-  'pk.eyJ1IjoiamVmb2RvYjM0OCIsImEiOiJjbGl3dDBwZWUwMTBhM2dudXRydjZxdDlmIn0.8ETyiwSlhW9BwT7ObaZ3dw';
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
-// 依照日期filter新結果
 const filterFeaturesByDateRange = (data, dateRange) => {
   const [startTimestamp, endTimestamp] = dateRange;
 
   const filteredFeatures = data.filter((feature) => {
     const { startTime, endTime } = feature.properties;
 
-    // 只要資料的startTime或是endTime任何一者在日期區間即符合條件
     if (
       (startTime >= startTimestamp && startTime <= endTimestamp) ||
       (endTime >= startTimestamp && endTime <= endTimestamp)
@@ -42,7 +39,6 @@ const Page = () => {
 
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef(null) as mapboxgl;
-  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
 
   const lastDayOfYear = new Date(new Date().getFullYear(), 11, 31);
   const [startDate, setStartDate] = useState(new Date());
@@ -55,8 +51,6 @@ const Page = () => {
   const [filteredGeo, setFilteredGeo] = useImmer(null);
   const [bounds, setBounds] = useState();
 
-  // datePickerRef 用來抓日曆目前的高度
-  // datePickerContainerHeight 用來設定CSS樣式觸發transition
   const datePickerRef = useRef(null);
   const [datePickerContainerHeight, setDatePickerContainerHeight] = useState<number>();
 
@@ -64,7 +58,6 @@ const Page = () => {
     if (!authUser) router.push('/login');
   }, []);
 
-  // 取資料的effect
   useEffect(() => {
     if (!authUser) return;
 
@@ -72,8 +65,6 @@ const Page = () => {
       .then((res) => res.json())
       .then((data) => data)
       .then((geoJSON) => {
-        // 活動的開始、結束時段，只要跟篩選的頭尾有重疊都會顯示，因為可以只參加幾天
-        // 資料篩選不在firebase做的原因：因為不能多個>=這種判斷在單一query，那就全部取回篩因為要包含頭尾，如果只取>startTime，那startTime在之前，但尚未結束的活動會被篩掉
         // FIXME: 排序要拉到firebase做，可以減少user取回資料後都要重排，提高效能
         const updatedFeatures = {
           ...geoJSON.data,
@@ -84,17 +75,14 @@ const Page = () => {
             )
             .sort((a, b) => a.properties.startTime - b.properties.startTime),
         };
-        // [...events].sort((a, b) => a.startTime - b.startTime)
         setFilteredGeo(updatedFeatures);
         originalGeoData.current = updatedFeatures;
-      })
-      .then(console.log('got GeoJSON'));
+      });
 
     // 高度 +2 是為了讓UI初始化比較流暢
     setDatePickerContainerHeight(datePickerRef.current.offsetHeight + 2);
   }, [authUser]);
 
-  // 資料取回來後會出發filteredGeo更新，在這邊就把map source更新
   useEffect(() => {
     const source = map.current?.getSource('locations');
     if (source) {
@@ -102,7 +90,6 @@ const Page = () => {
     }
   }, [filteredGeo]);
 
-  // 透過bounds 從原始資料篩新的filteredGeo
   useEffect(() => {
     setFilteredGeo((draft) => {
       if (originalGeoData.current) {
@@ -114,12 +101,8 @@ const Page = () => {
         draft.features = dateUpdate;
       }
     });
-    console.log('[dateRange,bounds] effect');
   }, [bounds, dateRange]);
 
-  // 隨時都在更新的圖面
-  // 其他功能性在這邊config
-  // on move監聽bounds在這邊綁的，把即時的bounds存到state中去影響depens 是bounds的effect
   useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
@@ -128,43 +111,32 @@ const Page = () => {
       attributionControl: false,
       center: [120.8937, 23.1956],
       zoom: 7,
-      // pitch: 31,
-      // bearing: -7.7,
     });
 
     map.current?.on('load', () => {
-      /* Add the data to your map as a layer */
       map.current?.addLayer({
         id: 'locations',
         type: 'circle',
-        /* Add a GeoJSON source containing place coordinates and information. */
         source: {
           type: 'geojson',
           data: filteredGeo,
           cluster: true,
-          clusterMaxZoom: 14, // Max zoom to cluster points on
-          clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+          clusterMaxZoom: 14,
+          clusterRadius: 50,
         },
       });
 
-      // Add clusters' circle
       map.current?.addLayer({
         id: 'clusters',
         type: 'circle',
         source: 'locations',
         filter: ['has', 'point_count'],
         paint: {
-          // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-          // with three steps to implement three types of circles:
-          //   * Blue, 20px circles when point count is less than 100
-          //   * Yellow, 30px circles when point count is between 100 and 750
-          //   * Pink, 40px circles when point count is greater than or equal to 750
           'circle-color': ['step', ['get', 'point_count'], '#FFF', 0, '#ff8b37'],
           'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40],
         },
       });
 
-      // add clusters' count number
       map.current?.addLayer({
         id: 'cluster-count',
         type: 'symbol',
@@ -177,7 +149,6 @@ const Page = () => {
         },
       });
 
-      // style number equal to 1
       map.current?.addLayer({
         id: 'unclustered-point',
         type: 'circle',
@@ -209,56 +180,22 @@ const Page = () => {
     });
 
     map.current?.on('click', (event) => {
-      /* Determine if a feature in the "locations" layer exists at that point. */
       const features = map.current?.queryRenderedFeatures(event.point, {
         layers: ['locations'],
       });
 
-      /* If it does not exist, return */
       if (!features.length) return;
 
       const clickedPoint = features[0];
 
-      /* Fly to the point */
       flyToUser(clickedPoint);
-
-      /* Close all other popups and display popup for clicked store */
-      // createPopUp(clickedPoint);
-      // 這邊先關掉不要有popup 因為也沒實際資料可以顯示
     });
 
-    // 4-1 enable click then center behaviour by using mapbox flyTo method
     const flyToUser = (currentFeature) => {
       map.current?.flyTo({
         center: currentFeature.geometry.coordinates,
         zoom: 9.7,
       });
-    };
-
-    //4-2 create Popup to display user's info
-    const createPopUp = (currentFeature) => {
-      const popUps = document.getElementsByClassName('mapboxgl-popup');
-      /** Check if there is already a popup on the map and if so, remove it */
-      if (popUps[0]) popUps[0].remove();
-
-      const popup = new mapboxgl.Popup({ closeOnClick: false })
-        .setLngLat(currentFeature.geometry.coordinates)
-        .setHTML(
-          `
-                 <div style="display:flex;width:250px">
-                  <div>
-                    <img src="${currentFeature.properties.avatar}"/>
-                  </div>
-                  <div>
-                      <div>${currentFeature.properties.name}</div>
-                      <div>tel:${currentFeature.properties.phone}</div>
-                      <div>Last updated:${currentFeature.properties.lastUpdate}</div>
-                  </div>
-                
-                </div>
-                `
-        )
-        .addTo(map.current);
     };
   });
 
@@ -267,13 +204,11 @@ const Page = () => {
     setStartDate(start);
     setEndDate(end);
 
-    // 有點選結束時間才取dateRange
     if (end) {
       setDateRange(startEndToTimecodes(dates));
     }
   };
 
-  // 日曆換月時把新的高度set到state中，進而推動CSS高度更新，觸發transition
   const datePickerContainerTransition = () => {
     setDatePickerContainerHeight(datePickerRef.current.offsetHeight);
   };
