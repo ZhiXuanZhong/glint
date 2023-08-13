@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
-import Link from 'next/link';
 import db from '@/app/utils/firebaseConfig';
 import {
   collection,
@@ -31,14 +30,12 @@ interface FollowCount {
 }
 
 const Page = ({ params }: { params: { userID: string } }) => {
-  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const [profile, setProfile] = useState<UsersProfile>();
   const [rating, setRating] = useState<UserRating>();
   const [licence, setLicence] = useState<Licence>();
   const [followCount, setFollowCount] = useState<FollowCount>();
   const [futureEvents, setFutureEvents] = useState<Event[]>();
 
-  // 取得單筆profile資料
   const getProfile = async (id: string) => {
     const response = await fetch(`/api/profile/${id}`, { next: { revalidate: 5 } });
     return response.json();

@@ -44,13 +44,6 @@ const Page = () => {
   useEffect(() => {
     if (!authUser) return;
 
-    // 取回user collection內所有活動清單，並包含
-    // ID(用來抓event資料)
-    // 時間(用來抓即將展開、以結束)
-    // status 用來判斷能否退出 waiting, confirm
-    // isFavorite 用來判斷是不是蒐藏
-    // hasReview 用來確定是否可以留言
-
     const getEventList = async () => {
       const eventsRef = collection(db, 'users', authUser, 'events');
       const events: UserEvent[] = [];

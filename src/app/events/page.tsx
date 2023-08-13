@@ -41,7 +41,6 @@ export default function Page() {
     getEvents(objString).then((res) => {
       addEvents(res.data);
       setIsLoading(false);
-      // console.log(res);
     });
   }, [searchParams]);
 
