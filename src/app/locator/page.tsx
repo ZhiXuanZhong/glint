@@ -104,7 +104,7 @@ const Page = () => {
   }, [bounds, dateRange]);
 
   useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current as HTMLElement,
       style: 'mapbox://styles/mapbox/light-v11',
