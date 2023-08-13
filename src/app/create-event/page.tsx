@@ -9,7 +9,7 @@ import { BarLoader } from 'react-spinners';
 
 import db from '../utils/firebaseConfig';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 import { diveSites, eventTypes } from '@/data/searchOptions';
 import startEndToTimecodes from '../utils/startEndToTimecodes';
@@ -52,6 +52,26 @@ const Page = () => {
     return downloadURL;
   };
 
+  const addLocation = async (eventID: string, event: Event) => {
+    const location = {
+      KT: [21.949239, 120.808472],
+      NEC: [25.1862, 121.934671],
+      XL: [22.341305, 120.378651],
+      GI: [22.661247, 121.466742],
+      PH: [23.569991, 119.579704],
+      LY: [22.041006, 121.532034],
+    };
+
+    const userEventRef = collection(db, 'userLocations', authUser, 'locations');
+    await addDoc(userEventRef, {
+      eventID,
+      eventTitle: event.title,
+      coordinates: location[event.locations],
+      startTime: dateRange[0],
+      endTime: dateRange[1],
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -91,6 +111,10 @@ const Page = () => {
       };
 
       await setDoc(defaultParticipantsRef, defaultParticipant);
+
+      const userEventRef = doc(db, 'users', authUser, 'events', newEventRef.id);
+      await setDoc(userEventRef, { type: 'joined', isFavorite: true });
+      await addLocation(newEventRef.id, eventData);
 
       router.replace(`/details/${newEventRef.id}`);
     } catch (error) {

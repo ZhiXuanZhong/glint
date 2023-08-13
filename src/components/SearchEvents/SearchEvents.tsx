@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { timeToHyphenYMD } from '@/app/utils/formatDate';
 import startEndToTimecodes from '@/app/utils/startEndToTimecodes';
 
 const SearchEvents = ({ locations, category, startTime, endTime, organizerType }: QueryParams) => {
@@ -56,7 +55,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
     <div className="min-h-[60px] py-3">
       <form action="/" method="get" name="query" onSubmit={handleSubmit}>
         <div className="flex flex-wrap justify-center">
-          <div className="mb-6 w-full px-3 md:mb-0 md:w-2/12">
+          <div className="mb-6 w-full min-w-fit px-3 md:mb-3 lg:mb-0 lg:w-2/12">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">地點</label>
             <div className="relative">
               <select
@@ -84,7 +83,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
             </div>
           </div>
 
-          <div className="mb-6 w-full px-3 md:mb-0 md:w-2/12">
+          <div className="mb-6 w-full min-w-fit px-3 md:mb-3 lg:mb-0 lg:w-2/12">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">類型</label>
             <div className="relative">
               <select
@@ -111,7 +110,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
             </div>
           </div>
 
-          <div className="mb-6 w-full px-3 md:mb-0 md:w-[250px]">
+          <div className="mb-6 w-full px-3 md:mb-3 lg:mb-0 lg:w-[250px]">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">出發區間</label>
             <ReactDatePicker
               selectsRange={true}
@@ -125,7 +124,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
             />
           </div>
 
-          <div className="mb-6 w-full px-3 md:mb-0 md:w-2/12">
+          <div className="mb-6 w-full min-w-fit px-3 md:mb-3 lg:mb-0 lg:w-2/12">
             <label className="mb-2 block font-semibold tracking-wide text-gray-500">發起人</label>
             <div className="relative">
               <select
@@ -149,7 +148,7 @@ const SearchEvents = ({ locations, category, startTime, endTime, organizerType }
             </div>
           </div>
 
-          <div className="mb-6 flex w-full grow items-end px-3 md:mb-0 md:w-fit">
+          <div className="mb-6 flex w-full grow items-end px-3 md:mb-3 lg:mb-0 lg:w-fit">
             <button
               className="w-full rounded bg-sunrise-500 px-6 py-3 font-bold text-white hover:bg-sunrise-400"
               type="submit"

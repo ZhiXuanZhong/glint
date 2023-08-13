@@ -22,7 +22,6 @@ const FavoriteButton = ({ eventInfo }: { eventInfo: Event }) => {
     } else {
       await setDoc(eventRef, {
         type: 'favorite',
-        status: 'waiting',
         startTime: eventInfo.startTime,
         endTime: eventInfo.endTime,
         isFavorite: true,
@@ -50,6 +49,8 @@ const FavoriteButton = ({ eventInfo }: { eventInfo: Event }) => {
       unsubscribe();
     };
   }, [loaded]);
+
+  if (!authUser) return;
 
   return !isFavorite ? (
     <button

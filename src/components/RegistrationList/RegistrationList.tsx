@@ -9,6 +9,8 @@ import db from '@/app/utils/firebaseConfig';
 import ConfirmButton from '@/components/ConfirmButton/ConfirmButton';
 import RevokeButton from '@/components/RevokeButton/RevokeButton';
 import UserInfo from '@/components/UserInfo/UserInfo';
+import { VscSignIn } from 'react-icons/vsc';
+import Link from 'next/link';
 
 const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizerID: string }) => {
   const [loaded, setLoaded] = useState(false);
@@ -120,42 +122,50 @@ const RegistrationList = ({ eventID, organizerID }: { eventID: string; organizer
 
   return (
     <>
-      <div className="mb-5 border-t pt-5">
-        <div className="pb-3 text-xl text-moonlight-950"> 已加入活動</div>
-        <div className="flex flex-wrap">
-          {regList?.participants.map(
-            (participant: { name: string; level: string; id: string }, index: number) => (
-              <div key={index} className="w-full lg:mb-3 lg:w-1/2">
-                <UserInfo userID={participant.id}>
-                  {organizerID === authUser && (
-                    <RevokeButton userID={participant.id} eventID={eventID} />
-                  )}
-                </UserInfo>
-              </div>
-            )
-          )}
+      {!authUser ? (
+        <div className="mt-7 flex flex-col items-center gap-3 border-t pt-7">
+          <Link href={'/login'}>
+            <VscSignIn className="text-6xl text-sunrise-500" />
+          </Link>
+          <div className="tracking-wide text-gray-600">請登入查看參與清單！</div>
         </div>
-      </div>
-
-      <div className="border-t pb-3 pt-5 text-xl text-moonlight-950">等待清單</div>
-      {
-        <div className="flex flex-wrap">
-          {regList?.applicants.map(
-            (applicant: { name: string; level: string; id: string }, index: number) => (
-              <div key={index} className="w-full lg:mb-3 lg:w-1/2">
-                <UserInfo userID={applicant.id}>
-                  {organizerID === authUser && (
-                    <div className="flex flex-wrap gap-1">
-                      <ConfirmButton userID={applicant.id} eventID={eventID} accept />
-                      <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
-                    </div>
-                  )}
-                </UserInfo>
-              </div>
-            )
-          )}
+      ) : (
+        <div>
+          <div className="mb-5 border-t pt-5">
+            <div className="pb-3 text-xl text-moonlight-950"> 已加入活動</div>
+            <div className="flex flex-wrap">
+              {regList?.participants.map(
+                (participant: { name: string; level: string; id: string }, index: number) => (
+                  <div key={index} className="w-full lg:mb-3 lg:w-1/2">
+                    <UserInfo userID={participant.id}>
+                      {organizerID === authUser && participant.id !== authUser && (
+                        <RevokeButton userID={participant.id} eventID={eventID} />
+                      )}
+                    </UserInfo>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+          <div className="border-t pb-3 pt-5 text-xl text-moonlight-950">等待清單</div>
+          <div className="flex flex-wrap">
+            {regList?.applicants.map(
+              (applicant: { name: string; level: string; id: string }, index: number) => (
+                <div key={index} className="w-full lg:mb-3 lg:w-1/2">
+                  <UserInfo userID={applicant.id}>
+                    {organizerID === authUser && (
+                      <div className="flex flex-wrap gap-1">
+                        <ConfirmButton userID={applicant.id} eventID={eventID} accept />
+                        <ConfirmButton userID={applicant.id} eventID={eventID} accept={false} />
+                      </div>
+                    )}
+                  </UserInfo>
+                </div>
+              )
+            )}
+          </div>
         </div>
-      }
+      )}
     </>
   );
 };

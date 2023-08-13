@@ -101,7 +101,6 @@ const Page = () => {
         level: formData.get('level'),
       };
 
-      // console.log(profile);
       console.log(formData.get('email'), formData.get('confirmPassword'));
 
       createUserWithEmailAndPassword(auth, formData.get('email'), formData.get('confirmPassword'))

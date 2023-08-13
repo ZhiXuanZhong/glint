@@ -5,8 +5,14 @@ import { useAuthStore } from '@/store/authStore';
 import { useEffect } from 'react';
 
 const GetFireSignState = () => {
-  const [authUser, updateAuthUser] = useAuthStore((state) => [state.authUser, state.updateAuthUser]);
-  const [authProfile, updateAuthProfile] = useAuthStore((state) => [state.authProfile, state.updateAuthProfile]);
+  const [authUser, updateAuthUser] = useAuthStore((state) => [
+    state.authUser,
+    state.updateAuthUser,
+  ]);
+  const [authProfile, updateAuthProfile] = useAuthStore((state) => [
+    state.authProfile,
+    state.updateAuthProfile,
+  ]);
 
   const auth = getAuth(app);
 
@@ -25,8 +31,6 @@ const GetFireSignState = () => {
         getProfile(uid).then((res) => updateAuthProfile(res[uid]));
       } else {
         console.log('signed out');
-        // User is signed out
-        // ...
       }
     });
   }, []);

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSearchEventsStore } from '@/store/searchEventsStore';
@@ -7,6 +8,7 @@ import { useSearchEventsStore } from '@/store/searchEventsStore';
 import SearchEvents from '../../components/SearchEvents/SearchEvents';
 import EventResults from '../../components/EventResults/EventResults';
 import { ScaleLoader } from 'react-spinners';
+import { GiDoubleFish } from 'react-icons/gi';
 
 export const revalidate = 0;
 
@@ -39,7 +41,6 @@ export default function Page() {
     getEvents(objString).then((res) => {
       addEvents(res.data);
       setIsLoading(false);
-      // console.log(res);
     });
   }, [searchParams]);
 
@@ -60,7 +61,21 @@ export default function Page() {
           <div>行程搜尋中</div>
         </div>
       )}
-      <EventResults events={events} />
+
+      {!isLoading && !events.length ? (
+        <div className="flex flex-col items-center gap-5 py-5">
+          <GiDoubleFish className="text-7xl text-gray-500" />
+          <div className="text-center text-lg tracking-wider text-gray-500">
+            哎呀！剛好沒有相關結果，先到
+            <span className="px-3 text-sunrise-500">
+              <Link href={'/events'}>所有活動</Link>
+            </span>
+            看看？
+          </div>
+        </div>
+      ) : (
+        <EventResults events={events} />
+      )}
     </div>
   );
 }

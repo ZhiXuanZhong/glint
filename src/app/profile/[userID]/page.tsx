@@ -2,13 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import UserInfo from '@/components/UserInfo/UserInfo';
-import Link from 'next/link';
 import db from '@/app/utils/firebaseConfig';
-import { collection, doc, getCountFromServer, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getCountFromServer,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore';
 import formatDate from '@/app/utils/formatDate';
 import Image from 'next/image';
 import EventCard from '@/components/EventCard/EventCard';
 import FollowUserButton from '@/components/FollowUserButton/FollowUserButton';
+import MessageUserButton from '@/components/MessageUserButton/MessageUserButton';
+import { GoTelescopeFill } from 'react-icons/go';
 
 interface Licence {
   imageURL: string;
@@ -21,14 +30,12 @@ interface FollowCount {
 }
 
 const Page = ({ params }: { params: { userID: string } }) => {
-  const userID = 'rGd4NQzBRHgYUTdTLtFaUh8j8ot1';
   const [profile, setProfile] = useState<UsersProfile>();
   const [rating, setRating] = useState<UserRating>();
   const [licence, setLicence] = useState<Licence>();
   const [followCount, setFollowCount] = useState<FollowCount>();
   const [futureEvents, setFutureEvents] = useState<Event[]>();
 
-  // 取得單筆profile資料
   const getProfile = async (id: string) => {
     const response = await fetch(`/api/profile/${id}`, { next: { revalidate: 5 } });
     return response.json();
@@ -43,7 +50,11 @@ const Page = ({ params }: { params: { userID: string } }) => {
     const events: Event[] = [];
 
     const eventsRef = collection(db, 'events');
-    const queryEvents = query(eventsRef, where('organizer', '==', userID), where('endTime', '>=', Date.now()));
+    const queryEvents = query(
+      eventsRef,
+      where('organizer', '==', userID),
+      where('endTime', '>=', Date.now())
+    );
     const snapshot = await getDocs(queryEvents);
     snapshot.forEach((event) => {
       const eventWithID = { ...event.data(), id: event.id };
@@ -96,23 +107,34 @@ const Page = ({ params }: { params: { userID: string } }) => {
         <div>
           <div className="mx-auto flex min-h-[200px] w-full flex-col items-center  rounded-sm p-4 shadow-md shadow-moonlight-100">
             <div className="min-h-[76px]">
-              {profile?.id && <UserInfo imageURL={profile?.avatarURL} name={profile?.username} level={profile?.level} licence={profile?.hasLicence} size={70} userID={profile.id} />}
+              {profile?.id && (
+                <UserInfo
+                  imageURL={profile?.avatarURL}
+                  name={profile?.username}
+                  level={profile?.level}
+                  licence={profile?.hasLicence}
+                  size={70}
+                  userID={profile.id}
+                />
+              )}
             </div>
             <div className="flex min-h-[126px] flex-col">
               <div className="mt-2 flex w-full flex-wrap gap-3">
                 {profile && (
                   <>
                     <FollowUserButton userID={params.userID} setFollowCount={setFollowCount} />
-                    <Link href={`/messages/${profile.id}`}>
-                      <button className="w-full rounded-sm border border-transparent bg-blue-400 py-1 text-base text-white hover:bg-sunrise-600 hover:transition-all md:w-24">發送訊息</button>
-                    </Link>
+                    <MessageUserButton userID={profile.id!} />
                   </>
                 )}
               </div>
               {rating && (
-                <div className="mt-3 flex flex-col rounded-sm bg-moonlight-100 p-2">
-                  <div className="text-center text-3xl font-black text-moonlight-800">{rating?.rating}</div>
-                  <div className="pt-1 text-center text-xs font-light text-gray-500">根據{rating?.reviewCount}篇評價</div>
+                <div className="mt-3 flex min-w-[200px] flex-col rounded-sm bg-moonlight-100 p-2">
+                  <div className="text-center text-3xl font-black text-moonlight-800">
+                    {rating?.rating}
+                  </div>
+                  <div className="pt-1 text-center text-xs font-light text-gray-500">
+                    根據{rating?.reviewCount}篇評價
+                  </div>
                 </div>
               )}
             </div>
@@ -164,20 +186,36 @@ const Page = ({ params }: { params: { userID: string } }) => {
 
               <div className="min-h-[220px] w-1/2">
                 <div className="mb-1 w-full text-sm text-moonlight-600">執照影像</div>
-                {licence && <Image width={700} height={400} src={licence.imageURL} alt={'licence'} priority style={{ objectFit: 'contain', maxWidth: '100%' }} />}
+                {licence && (
+                  <Image
+                    width={700}
+                    height={400}
+                    src={licence.imageURL}
+                    alt={'licence'}
+                    priority
+                    style={{ objectFit: 'contain', maxWidth: '100%' }}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div className="mb-5 w-full rounded border border-moonlight-200 p-4">
             <div className="mb-3 text-xl font-medium text-moonlight-950">未來的行程</div>
-            {futureEvents?.map((event, index) => {
-              return (
-                <div className="mb-3 rounded-sm" key={index}>
-                  <EventCard event={event} />
-                </div>
-              );
-            })}
+            {futureEvents?.length ? (
+              futureEvents.map((event, index) => {
+                return (
+                  <div className="mb-3 rounded-sm" key={index}>
+                    <EventCard event={event} />
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex flex-col items-center gap-3 py-5 text-gray-500">
+                <GoTelescopeFill className="text-7xl" />
+                <div>目前尚無未來行程</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
