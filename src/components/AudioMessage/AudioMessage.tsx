@@ -1,7 +1,6 @@
 'use client';
 
 import fireMediaUpload from '@/app/utils/fireMediaUpload';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRef, useState } from 'react';
 
 const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessage: Function }) => {
@@ -17,11 +16,8 @@ const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessag
   const startRecording = async () => {
     setAudio(null);
     setIsRecording(true);
-    //create new Media recorder instance using the stream
     const media = new MediaRecorder(stream, { mimeType: mimeType });
-    //set the MediaRecorder instance to the mediaRecorder ref
     mediaRecorder.current = media;
-    //invokes the start method to start the recording process
     mediaRecorder.current.start();
 
     let localAudioChunks: Blob[] = [];
@@ -37,12 +33,10 @@ const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessag
   const stopRecording = () => {
     if (mediaRecorder.current) {
       setIsRecording(false);
-      //stops the recording instance
+
       mediaRecorder.current.stop();
       mediaRecorder.current.onstop = () => {
-        //creates a blob file from the audiochunks data
         audioBlob.current = new Blob(audioChunks, { type: mimeType });
-        //creates a playable URL from the blob file.
         const audioUrl = URL.createObjectURL(audioBlob.current);
         setAudio(audioUrl);
         setAudioChunks([]);
@@ -52,10 +46,11 @@ const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessag
 
   const handleAudioUpload = async () => {
     if (audioBlob.current) {
-      // 先以 `${userID}_${Date.now()}}` 當檔名建立url
-      // 再回到上層取用發訊息的function
-      // 再清空audio讓UI隱藏
-      const fileURL = await fireMediaUpload(audioBlob.current, 'message-audio', `${userID}_${Date.now()}`);
+      const fileURL = await fireMediaUpload(
+        audioBlob.current,
+        'message-audio',
+        `${userID}_${Date.now()}`
+      );
       await sendMessage('audio', fileURL);
       setAudio(null);
     }
@@ -65,11 +60,18 @@ const AudioMessage = ({ stream, sendMessage }: { stream: MediaStream; sendMessag
     <div className="flex justify-end pr-3">
       {audio && <audio src={audio} controls></audio>}
       {audio && (
-        <button className="m-1 rounded bg-blue-500 px-4 py-2  text-white hover:bg-blue-600 active:bg-blue-700" onClick={handleAudioUpload}>
+        <button
+          className="m-1 rounded bg-blue-500 px-4 py-2  text-white hover:bg-blue-600 active:bg-blue-700"
+          onClick={handleAudioUpload}
+        >
           送出語音
         </button>
       )}
-      <button onMouseDown={startRecording} onMouseUp={stopRecording} className="m-1 rounded bg-orange-500 px-4 py-2  text-white hover:bg-orange-600 active:bg-orange-700">
+      <button
+        onMouseDown={startRecording}
+        onMouseUp={stopRecording}
+        className="m-1 rounded bg-orange-500 px-4 py-2  text-white hover:bg-orange-600 active:bg-orange-700"
+      >
         {isRecording ? '錄音中...' : '按下錄音'}
       </button>
     </div>
