@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,7 +12,6 @@ import { useAuthStore } from '@/store/authStore';
 import { BiUserCircle } from 'react-icons/bi';
 import { MdPerson } from 'react-icons/md';
 import { ImExit } from 'react-icons/im';
-import ProfileButton from '../ProfileButton/ProfileButton';
 
 const NavLogin = () => {
   const router = useRouter();
@@ -31,7 +31,6 @@ const NavLogin = () => {
     signOut(auth)
       .then(() => {
         console.log('Sign-out successful.');
-        // Sign-out successful.
         updateAuthUser('');
         updateAuthProfile(null);
         router.replace('/');
@@ -114,8 +113,3 @@ const NavLogin = () => {
 };
 
 export default NavLogin;
-
-{
-  /* <Link href={`/profile/${userID}`}>
-</Link> */
-}
