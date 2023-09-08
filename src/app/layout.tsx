@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div>
           <Nav />
-          <div className="relative">
+          <div className="relative z-10">
             <SideBar />
             <div className="relative top-[80px] md:ml-[208px] ">{children}</div>
           </div>
